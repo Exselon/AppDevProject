@@ -56,7 +56,12 @@ def login():
             session['username'] = user[1]
             session['role'] = user[3]
             flash('Login successful!', 'success')
-            return redirect(url_for('dashboard'))
+
+            if session['role'] == "user":
+                print("user")
+            else:
+                print("admin")
+            ##return redirect(url_for('dashboard'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('Login.html')
@@ -80,8 +85,8 @@ def signup():
             cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
             conn.commit()
             conn.close()
+            flash('Registration successful. Please log in.', 'success')
 
-        flash('Registration successful. Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('Signup.html')
 
