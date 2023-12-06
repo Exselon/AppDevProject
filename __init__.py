@@ -29,6 +29,7 @@ def create_table():
 
 create_table()
 
+##
 def username_exists(username):
     conn = sqlite3.connect('Userdata.db')
     cursor = conn.cursor()
@@ -61,7 +62,7 @@ def login():
                 print("user")
             else:
                 print("admin")
-            ##return redirect(url_for('dashboard'))
+            return redirect(url_for('adminHome'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('Login.html')
@@ -90,10 +91,10 @@ def signup():
         return redirect(url_for('login'))
     return render_template('Signup.html')
 
-@app.route('/dashboard')
+@app.route('/adminHome')
 def dashboard():
     if 'user_id' in session:
-        return render_template('dashboard.html', username=session['username'], role=session['role'])
+        return render_template('adminHome.html', username=session['username'], role=session['role'])
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
