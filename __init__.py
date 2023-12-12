@@ -62,7 +62,7 @@ def login():
                 print("user")
             else:
                 print("admin")
-            return redirect(url_for('adminHome'))
+            return redirect(url_for('adminDashboard'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('Login.html')
@@ -91,13 +91,16 @@ def signup():
         return redirect(url_for('login'))
     return render_template('Signup.html')
 
-@app.route('/adminHome')
-def dashboard():
+@app.route('/adminDashboard')
+def adminDashboard():
     if 'user_id' in session:
-        return render_template('adminHome.html', username=session['username'], role=session['role'])
+        return render_template('adminDashboard.html', username=session['username'], role=session['role'])
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 
+
 if __name__ == '__main__':
     app.run()
+
+
