@@ -15,11 +15,26 @@
     <form method="post" action="{{ url_for('signup') }}">
 
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
+        {{ form.name(class="form-control") }}
+
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        {{ form.password(class="form-control") }}
+
+        <label for="password">cfm password:</label>
+        {{ form.cfmpassword(class="form-control") }}
+
+        <label for="email">email:</label>
+        {{ form.email(class="form-control") }}
+
+        <label for="dName">Contact Number:</label>
+        {{ form.number(class="form-control") }}
+
+        <label for="Name">Date of birth:</label>
+        {{ form.dob(class="form-control") }}
+        <input type="submit" value="Submit" class="btn btn-primary"/>
         <input type="submit" value="Register">
     </form>
+
     <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
 
 {% endblock %}
