@@ -73,7 +73,7 @@ def login():
                 print("customer")
             else:
                 print("admin")
-            return redirect(url_for('adminDashboard'))
+                return redirect(url_for('adminDashboard'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('Login.html', form=userLoginform)
@@ -109,8 +109,8 @@ def signup():
 
 @app.route('/adminDashboard')
 def adminDashboard():
-    if 'user_id' in session:
-        return render_template('adminDashboard.html', username=session['username'], role=session['role'])
+    if 'User_ID' in session:
+        return render_template('adminDashboard.html',username=session['Username'], role=session['Role'])
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
