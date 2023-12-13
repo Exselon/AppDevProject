@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Bootstrap CSS -->
-<link href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-<script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-
-    <meta charset="UTF-8">
-
-    <title>{% block title %}{% endblock %}</title>
-</head>
-<body>
-{% block navbar %}
-    {% include 'includes/_AdminNavbar.html' %}
-{% endblock %}
-
-<div class="container-fluid">
+{% extends "adminBase.html" %}
+{% block title %}Admin{% endblock %}
 {% block content %}
-{% endblock %}
-</div>
 
-</body>
-</html>
+
+{% endblock %}
