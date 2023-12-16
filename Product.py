@@ -9,3 +9,9 @@ class Product:
         self.category = ProductCategory
         self.stock = ProductStock
         self.image_path = ProductImg
+
+class ProductManager:
+    def __init__(self, db="products.db"):
+        self.conn = sqlite3.connect(db_file)
+        self.cursor = self.conn.cursor()
+
