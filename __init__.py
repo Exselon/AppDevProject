@@ -115,6 +115,27 @@ def adminDashboard():
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 
+@app.route('/adminOrder')
+def adminOrder():
+    return render_template('adminOrder.html')
+
+@app.route('/adminProducts')
+def adminProducts():
+    return render_template('adminProducts.html')
+
+@app.route('/adminPromotions')
+def adminPromotions():
+    return render_template('adminPromotions.html')
+
+@app.route('/adminEditAdmin')
+def adminEditAdmin():
+    return render_template('adminEditAdmin.html')
+
+@app.route('/adminEditCustomer')
+def adminEditCustomer():
+    return render_template('adminEditCustomer.html')
+
+
 if __name__ == '__main__':
     app.run()
 

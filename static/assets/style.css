@@ -5,15 +5,25 @@ body{
 
 /* Admin NavBar */
 
+body {
+    background-color: #99989a;
+    font-family: 'Poppins';
+    color: black;
+}
+
 .sidebar {
-    width: 60px;
+    width: 200px;
     height: 100vh;
     box-sizing: border-box;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: black;
     transition: ease-in-out 0.3s;
     overflow: hidden;
     border-radius: 4px;
+}
+
+.sidebar > .item .text {
+    opacity: 1;
 }
 
 .hr {
@@ -28,10 +38,32 @@ body{
     margin: 20px 0;
 }
 
+
 .item .text {
     opacity: 0;
     transition: ease-in-out 0.3s;
     transition-delay: .2s;
     margin-left: 15px;
     white-space: nowrap;
+}
+
+.box {
+    background-color: black;
+    height: 80px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.Header {
+    padding-left: 250px;
+    color: white;
+    padding-top: 15px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
 }
