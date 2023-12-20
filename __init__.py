@@ -141,6 +141,15 @@ def Productpage():
 
     return render_template('Product.html', products=products)
 
+@app.route('/product/<int:product_id>')
+def display_product(product_id):
+    product_manager = ProductManager()
+    product = product_manager.get_product_by_id(product_id)
+    product_manager.close_connection()
+
+    if product:
+        return render_template('product_detail.html', product=product)
+
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:

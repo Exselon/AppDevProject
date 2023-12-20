@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %} {{ product.name }} - Product Details {% endblock %}
+
+{% block content %}
+
+<style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .product-details {
+            display: flex;
+            justify-content: space-around;
+        }
+        .product-image {
+            max-width: 40%;
+            height: auto;
+        }
+        .product-info {
+            width: 50%;
+        }
+    </style>
+
+
+<h1>{{ product.name }} - Product Details</h1>
+    <div class="product-details">
+        <img class="product-image" src="{{ product.image_path }}" alt="{{ product.name }}">
+        <div class="product-info">
+            <p>ID: {{ product.id }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <p>Category: {{ product.category }}</p>
+            <p>Stock: {{ product.stock }}</p>
+            <p>Description: {{ product.description }}</p>
+            <p>Size: {{ product.size }}</p>
+            <!-- Add more details as needed -->
+        </div>
+    </div>
+
+
+{% endblock %}

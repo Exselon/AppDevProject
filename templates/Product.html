@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Product Page{% endblock %}
+{% block content %}
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        .product-image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+
+<h1>Product List</h1>
+    <div class="product-container">
+        {% for product in products %}
+            <div class="product-card">
+
+                <h3>{{ product.name }}</h3>
+                <p>Price: ${{ product.price }}</p>
+                <p>Category: {{ product.category }}</p>
+                <a href="{{ url_for('display_product', product_id=product.id) }}">View Details</a>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
