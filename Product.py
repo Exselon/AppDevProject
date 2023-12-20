@@ -1,18 +1,21 @@
 import sqlite3
 
+
 class Product:
-    def __init__(self, ProductID, ProductName, ProductDetail, ProductPrice, ProductCategory, ProductStock, ProductImg):
+    def __init__(self, ProductID,ProductImg,ProductName,ProductPrice,ProductCategory,ProductStock,ProductDescription,ProductSize):
         self.id = ProductID
+        self.image_path = ProductImg
         self.name = ProductName
-        self.detail = ProductDetail
         self.price = ProductPrice
         self.category = ProductCategory
         self.stock = ProductStock
-        self.image_path = ProductImg
+        self.description = ProductDescription
+        self.size = ProductSize
+
 
 class ProductManager:
-    def __init__(self, db="products.db"):
-        self.conn = sqlite3.connect(db_file)
+    def __init__(self, db="Product.db"):
+        self.conn = sqlite3.connect(db)
         self.cursor = self.conn.cursor()
 
     def get_all_products(self):
@@ -28,9 +31,10 @@ class ProductManager:
             return Product(*product_data)
         return None
 
-    def add_product(self, name, price, image_path):
-        self.cursor.execute("INSERT INTO products (name, price, image) VALUES (?, ?, ?)",
-                            (name, price, image_path))
+    def add_product(self, image_path,name,price,category,stock,description,size):
+        self.cursor.execute(
+            "INSERT INTO products (image, name, price, category, stock,description,size) VALUES (?, ?, ?, ?, ?, ?,?)",
+            (image_path,name,price,category,stock,description,size))
         self.conn.commit()
 
     def close_connection(self):

@@ -1,22 +1,25 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
-from Form import userSignup, userLogin
+from Form import userSignup, userLogin, ProductForm
+from Product import ProductManager, Product  # Import the Product class
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 
+
 @app.route('/')
 def home():
     return render_template('home.html')
+
 
 @app.route('/contactUs')
 def contact_us():
     return render_template('contactUs.html')
 
 
-####################CODE FOR DB############################
+# ---------------CODE FOR DB---------------#
 
-def create_table():
+def create_Userdata():
     conn = sqlite3.connect('Userdata.db')
     cursor = conn.cursor()
     cursor.execute('''
@@ -34,7 +37,29 @@ def create_table():
     conn.close()
 
 
-create_table()
+create_Userdata()
+
+
+def create_Product():
+    conn = sqlite3.connect('Product.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image TEXT,
+            name TEXT,
+            price REAL,
+            category TEXT,
+            stock INTEGER,
+            description TEXT,
+            size TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+create_Product()
 
 
 ####################check for username############################
@@ -91,14 +116,15 @@ def signup():
         email = userSignupform.email.data
         dob = userSignupform.dob.data
 
-
         if username_exists(username):
             flash('Username already exists. Please choose a different username.', 'danger')
         else:
 
             conn = sqlite3.connect('Userdata.db')
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?)', (username, password, number, email, dob))
+            cursor.execute(
+                'INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?)',
+                (username, password, number, email, dob))
             conn.commit()
             conn.close()
             flash('Registration successful. Please log in.', 'success')
@@ -107,29 +133,56 @@ def signup():
     return render_template('Signup.html', form=userSignupform)
 
 
+@app.route('/Product')
+def Productpage():
+    product_manager = ProductManager()
+    products = product_manager.get_all_products()
+    product_manager.close_connection()
+
+    return render_template('Product.html', products=products)
+
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:
-        return render_template('adminDashboard.html',username=session['Username'], role=session['Role'])
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'])
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
+
 
 @app.route('/adminOrder')
 def adminOrder():
     return render_template('adminOrder.html')
 
-@app.route('/adminProducts')
+
+@app.route('/adminProducts', methods=['GET', 'POST'])
 def adminProducts():
-    return render_template('adminProducts.html')
+    productForm = ProductForm(request.form)
+    if request.method == 'POST':
+        image_path = productForm.image.data
+        name = productForm.name.data
+        price = productForm.price.data
+        category = productForm.category.data
+        stock = productForm.stock.data
+        description = productForm.description.data
+        size = productForm.size.data
+
+        product_manager = ProductManager()
+        product_manager.add_product(image_path,name,price,category,stock,description,size)
+        product_manager.close_connection()
+        return redirect(url_for('Productpage'))
+    return render_template('adminProducts.html', form=productForm)
+
 
 @app.route('/adminPromotions')
 def adminPromotions():
     return render_template('adminPromotions.html')
 
+
 @app.route('/adminEditAdmin')
 def adminEditAdmin():
     return render_template('adminEditAdmin.html')
+
 
 @app.route('/adminEditCustomer')
 def adminEditCustomer():
@@ -138,5 +191,3 @@ def adminEditCustomer():
 
 if __name__ == '__main__':
     app.run()
-
-

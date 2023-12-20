@@ -5,6 +5,32 @@
 <div class="box">
 <h1 class="Header"> Products </h1>
 </div>
+    <form method="post" action="{{ url_for('adminProducts') }}">
+        <label for="Image">Image:</label>
+        {{ form.image(class="form-control") }}
+
+        <label for="name">name:</label>
+        {{ form.name(class="form-control") }}
+
+        <label for="price">price:</label>
+        {{ form.price(class="form-control") }}
+
+        <label for="category">category:</label>
+        {{ form.category(class="form-control") }}
+
+        <label for="stock">stock:</label>
+        {{ form.stock(class="form-control") }}
+
+        <label for="description">description:</label>
+        {{ form.description(class="form-control") }}
+
+        <label for="size">size:</label>
+        {{ form.size(class="form-control") }}
+
+
+        <input type="submit" value="Add Product">
+    </form>
+
 
 
 {% endblock %}

@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators
+from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,SelectField
 
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150), validators.DataRequired()])
@@ -12,4 +12,11 @@ class userLogin(Form):
     username = StringField('username', [validators.DataRequired()])
     password = PasswordField('password', [validators.DataRequired()])
 
-#class test(Form):
+class ProductForm(Form):
+    image = StringField('ImageURL', [validators.DataRequired()])
+    name = StringField('Name', [validators.DataRequired()])
+    price = FloatField('Price', [validators.DataRequired()])
+    category = StringField('Category', [validators.DataRequired()])
+    stock = IntegerField('Stock', [validators.DataRequired()])
+    description = TextAreaField('Description', [validators.DataRequired()])
+    size = SelectField('Size', choices=[('small', 'Small'), ('medium', 'Medium'), ('large', 'Large')])
