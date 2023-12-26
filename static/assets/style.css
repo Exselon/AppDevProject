@@ -64,3 +64,8 @@ body {
     flex: 1;
     padding: 20px;
 }
+
+.Logo {
+    width: 100%;
+    height: auto;
+}
