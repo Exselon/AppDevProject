@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
+import os
 from Form import userSignup, userLogin, ProductForm
 from Product import ProductManager, Product  # Import the Product class
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
-
+app.config['UPLOAD_FOLDER'] = 'static/image'
 
 @app.route('/')
 def home():
@@ -71,6 +73,9 @@ def username_exists(username):
     conn.close()
     return existing_user is not None
 
+####################Check file upload name############################
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
 ####################CODE FOR LOGIN############################
 @app.route('/login', methods=['GET', 'POST'])
@@ -168,7 +173,8 @@ def adminOrder():
 def adminProducts():
     productForm = ProductForm(request.form)
     if request.method == 'POST':
-        image_path = productForm.image.data
+
+        # Collect form Data
         name = productForm.name.data
         price = productForm.price.data
         category = productForm.category.data
@@ -176,9 +182,24 @@ def adminProducts():
         description = productForm.description.data
         size = productForm.size.data
 
+        # Handle image upload
+        image_upload = request.files['image']
+
+        if image_upload and allowed_file(image_upload.filename):
+            filename = secure_filename(image_upload.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image_upload.save(image_path)
+
+        # Extract just the filename without the path
+        filename_only = os.path.basename(image_path)
+
+        # Save the product to the database
         product_manager = ProductManager()
-        product_manager.add_product(image_path,name,price,category,stock,description,size)
+        product_manager.add_product(filename_only, name, price, category, stock, description, size)
         product_manager.close_connection()
+
+
+
         return redirect(url_for('Productpage'))
     return render_template('adminProducts.html', form=productForm)
 
