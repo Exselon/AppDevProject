@@ -5,7 +5,7 @@
 <div class="box">
 <h1 class="Header"> Products </h1>
 </div>
-    <form method="post" action="{{ url_for('adminProducts') }}">
+    <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data">
         <label for="Image">Image:</label>
         {{ form.image(class="form-control") }}
 
