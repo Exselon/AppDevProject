@@ -3,17 +3,21 @@
 {% block content %}
 
 <div class="box">
-<h1 class="Header"> Products </h1>
+<h1 class="Header"> Promotions </h1>
 </div>
     <form method="post" action="{{ url_for('adminPromotions') }}">
-        <label for="Name">Name:</label>
-        {{ form.image(class="form-control") }}
 
-        <label for="Discount">Discount:</label>
+        <label for="ID">ID:</label>
+        {{ form.ID(class="form-control") }}
+
+        <label for="Name">Name:</label>
         {{ form.name(class="form-control") }}
 
+        <label for="Discount">Discount:</label>
+        {{ form.discount(class="form-control") }}
+
         <label for="Description">Description:</label>
-        {{ form.price(class="form-control") }}
+        {{ form.description(class="form-control") }}
 
         <input type="submit" value="Add Promotion">
     </form>
