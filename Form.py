@@ -20,3 +20,9 @@ class ProductForm(Form):
     stock = IntegerField('Stock', [validators.DataRequired()])
     description = TextAreaField('Description', [validators.DataRequired()])
     size = SelectField('Size', choices=[('small', 'Small'), ('medium', 'Medium'), ('large', 'Large')])
+
+class PromotionForm(Form):
+    ID = StringField("ID",[validators.DataRequired()])
+    name = StringField("Name", [validators.DataRequired()])
+    discount = FloatField("Discount", [validators.DataRequired()])
+    description = TextAreaField("Description", [validators.DataRequired()])

@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
-from Form import userSignup, userLogin, ProductForm
+from Form import userSignup, userLogin, ProductForm , PromotionForm
 from Product import ProductManager, Product  # Import the Product class
+from Promotion import PromotionManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -185,7 +186,18 @@ def adminProducts():
 
 @app.route('/adminPromotions')
 def adminPromotions():
-    return render_template('adminPromotions.html')
+    promotionForm = PromotionForm(request.form)
+    if request.method == 'POST':
+        ID = promotionForm.ID.data
+        name = promotionForm.name.data
+        discount = promotionForm.discount.data
+        description = promotionForm.description.data
+
+        promotion_manager = PromotionManager()
+        promotion_manager.add_promotion(ID,name,discount,description)
+        promotion_manager.close_connection()
+        return redirect(url_for('PromotionPage'))
+    return render_template('adminPromotions.html', form=promotionForm)
 
 
 @app.route('/adminEditAdmin')
@@ -196,6 +208,22 @@ def adminEditAdmin():
 @app.route('/adminEditCustomer')
 def adminEditCustomer():
     return render_template('adminEditCustomer.html')
+
+def create_Promotion():
+    conn = sqlite3.connect('Promotion.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS promotions (
+            name TEXT,
+            discount REAL,
+            description TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+create_Promotion()
 
 
 if __name__ == '__main__':
