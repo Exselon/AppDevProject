@@ -1,18 +1,86 @@
-<nav class="navbar sticky-top navbar-expand-sm bg-dark navbar-dark">
-	<div class="container-fluid">
-    	<a class="navbar-brand" href="#"><img src="" alt="It Innovation" class="logo"></a>
-		<!-- Small Nav when resized -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"><span class="navbar-toggler-icon"></span></button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='image/Logo.png') }}" alt="Logo" class="logo"></a>
 
-	  	<!-- End of Small Nav when resized -->
-		<div class="collapse navbar-collapse flex-row-reverse" id="collapsibleNavbar">
-		  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-			<li class="nav-item"><a class="nav-link active" href="/">home</a></li>
-			<li class="nav-item"><a class="nav-link" href="/signup">signup</a></li>
-			<li class="nav-item "><a class="nav-link" href="/login">login</a></li>
-			<li class="nav-item "><a class="nav-link" href="/Product">Product</a></li>
-			<li class="nav-item"><a class="nav-link" href="/contactUs">contact us</a></li>
-		  </ul>
-		</div>
-	</div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contactUs">Contact</a>
+            </li>
+
+            <li class="nav-item dropdown-menu-end">
+                <a class="nav-link" role="button" data-toggle="dropdown" href="/Product">
+                    Product
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right p-4 dropdown-category">
+
+					<div class="row text-center">
+						<div class="col">
+							<a class="nav-link" href="#">
+							<div class="product-category">
+							<img src="image1.jpg" alt="MenImg"><br>
+							<span>Men</span>
+                    		</div>
+							</a>
+						</div>
+						<div class="col">
+							<a class="nav-link" href="#">
+							<div class="product-category">
+							<img src="image1.jpg" alt="WomenImg"><br>
+							<span>Women</span>
+                    		</div>
+							</a>
+						</div>
+						<div class="col">
+							<a class="nav-link" href="#">
+							<div class="product-category">
+							<img src="image1.jpg" alt="KidsImg"><br>
+							<span>Kids</span>
+                    		</div>
+							</a>
+						</div>
+						<div class="col">
+							<a class="nav-link" href="#">
+							<div class="product-category">
+							<img src="image1.jpg" alt="shoesimg"><br>
+							<span>Shoes</span>
+                    		</div>
+							</a>
+						</div>
+						<div class="col">
+							<a class="nav-link" href="#">
+							<div class="product-category">
+							<img src="image1.jpg" alt="others"><br>
+							<span>others</span>
+                    		</div>
+							</a>
+						</div>
+					</div>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown-login">
+                <a class="nav-link" role="button" data-toggle="dropdown" href="/login">
+                    Login
+                </a>
+                <div class="dropdown-menu dropdown-menu-right p-4" >
+                    <p>Welcome, User</p>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Setting</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Forgot Password?</a>
+                </div>
+            </li>
+        </ul>
+    </div>
 </nav>
