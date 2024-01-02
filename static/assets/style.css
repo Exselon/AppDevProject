@@ -75,3 +75,10 @@ body {
     height: 2px;
     border: none;
 }
+.promotion.col-11{
+    padding: 0px 80px;
+}
+
+.promo{
+    padding-top: 100px;
+}

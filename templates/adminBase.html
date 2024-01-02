@@ -8,16 +8,35 @@
     <meta charset="UTF-8">
 
     <title>{% block title %}{% endblock %}</title>
-</head>
-<body>
-{% block navbar %}
-    {% include 'includes/_AdminNavbar.html' %}
-{% endblock %}
 
-<div class="container-fluid">
-{% block content %}
-{% endblock %}
-</div>
+    <style>
+        body{
+            margin:0px;
+            padding:0px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+<!--<div class="left-0">-->
+    <div class="container-fluid gx-0">
+        <div class="row">
+            <div class="col-1">
+            {% block navbar %}
+                {% include 'includes/_AdminNavbar.html' %}
+            {% endblock %}
+            </div>
+            <div class="promotion col-11">
+            {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+    </div>
+<!--</div>-->
 
 </body>
 </html>

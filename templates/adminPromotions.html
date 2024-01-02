@@ -8,33 +8,42 @@
     table{
     width:100%;
     }
+    .delete{
+    width:3%;
+    height:10%;
+    }
 </style>
 <div class="box">
 <h1 class="Header"> Promotions </h1>
 </div>
-<div>
+
+<div class="promo">
     <table class="dbtable">
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Discount</th>
             <th>Description</th>
+            <th>Del</th>
         </tr>
-        {% for row in rows %}
+        {% for promotion in displaypromotion %}
         <tr>
-            <td>{{ row[0] }}</td>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[2] }}</td>
-            <td>{{ row[3] }}</td>
+            <td>{{ promotion[0] }}</td>
+            <td>{{ promotion[1] }}</td>
+            <td>{{ promotion[2] }}</td>
+            <td>{{ promotion[3] }}</td>
+            <td class="delete">
+                <form method="post" action="{{ url_for('delete_promotion') }}">
+                    <input type="hidden" name="id" value="{{ promotion[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
 </div>
 <div>
     <form method="post" action="{{ url_for('adminPromotions') }}">
-
-        <label for="ID">ID:</label>
-        {{ form.ID(class="form-control") }}
 
         <label for="Name">Name:</label>
         {{ form.name(class="form-control") }}
@@ -48,4 +57,5 @@
         <input type="submit" value="Add Promotion">
     </form>
 </div>
+
 {% endblock %}

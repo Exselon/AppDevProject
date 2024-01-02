@@ -15,15 +15,19 @@ class PromotionManager:
     def get_all_promotion(self):
         self.cursor.execute("SELECT * FROM promotions")
         promotion_data = self.cursor.fetchall()
-        promotion = [Promotion(*data) for data in promotion_data]
-        return promotion
+        return promotion_data
 
-    def add_promotion(self,ID,name,discount,description):
+
+    def add_promotion(self,name,discount,description):
         self.cursor.execute(
-            "INSERT INTO promotions (ID,name, discount,description) VALUES (? ,?, ?, ?)",
-            (ID,name,discount,description))
+            "INSERT INTO promotions (name, discount,description) VALUES (?, ?, ?)",
+            (name,discount,description))
         self.conn.commit()
 
+    def del_promotion(self,promotion_id):
+        self.id = promotion_id
+        self.cursor.execute("DELETE FROM promotions WHERE ID = ?",(promotion_id,))
+        self.conn.commit()
     def close_connection(self):
         self.conn.close()
 
