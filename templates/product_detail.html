@@ -27,7 +27,7 @@
 
 <h1>{{ product.name }} - Product Details</h1>
     <div class="product-details">
-        <img class="product-image" src="{{ product.image_path }}" alt="{{ product.name }}">
+        <img class="product-image" src="{{ url_for('static', filename='image/' + product.image_path) }}" alt="{{ product.name }}">
         <div class="product-info">
             <p>ID: {{ product.id }}</p>
             <p>Price: ${{ product.price }}</p>
