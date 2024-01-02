@@ -20,7 +20,7 @@ class PromotionManager:
 
     def add_promotion(self,ID,name,discount,description):
         self.cursor.execute(
-            "INSERT INTO promotion (ID,name, discount,description) VALUES (? ,?, ?, ?)",
+            "INSERT INTO promotions (ID,name, discount,description) VALUES (? ,?, ?, ?)",
             (ID,name,discount,description))
         self.conn.commit()
 

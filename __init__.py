@@ -205,8 +205,33 @@ def adminProducts():
     return render_template('adminProducts.html', form=productForm)
 
 
-@app.route('/adminPromotions')
+# def ID_exists(ID):
+#     conn = sqlite3.connect('Promotion.db')
+#     cursor = conn.cursor()
+#     cursor.execute('SELECT * FROM promotions WHERE ID=?', (ID,))
+#     existing_ID = cursor.fetchone()
+#     conn.close()
+#     return existing_ID is not None
+
+def get_promotion_connection():
+    conn = sqlite3.connect('Promotion.db')
+    return conn
+def read_Promotion():
+    conn = sqlite3.connect('Promotion.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM promotions')
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+@app.route('/adminPromotions', methods=['GET', 'POST'])
 def adminPromotions():
+    # checkID = PromotionForm(request.form)
+    # ID = checkID.ID.data
+    #
+    # if ID_exists(ID):
+    #     flash('Username already exists. Please choose a different username.', 'danger')
+    # else:
     promotionForm = PromotionForm(request.form)
     if request.method == 'POST':
         ID = promotionForm.ID.data
@@ -217,8 +242,9 @@ def adminPromotions():
         promotion_manager = PromotionManager()
         promotion_manager.add_promotion(ID,name,discount,description)
         promotion_manager.close_connection()
-        return redirect(url_for('PromotionPage'))
-    return render_template('adminPromotions.html', form=promotionForm)
+    rows = read_Promotion()
+
+    return render_template('adminPromotions.html', form=promotionForm, rows=rows)
 
 
 @app.route('/adminEditAdmin')
@@ -235,6 +261,7 @@ def create_Promotion():
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS promotions (
+            ID INTEGER,
             name TEXT,
             discount REAL,
             description TEXT
@@ -245,6 +272,8 @@ def create_Promotion():
 
 
 create_Promotion()
+
+
 
 
 if __name__ == '__main__':

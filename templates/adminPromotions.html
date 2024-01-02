@@ -1,10 +1,36 @@
 {% extends "adminBase.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-
+<style>
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+</style>
 <div class="box">
 <h1 class="Header"> Promotions </h1>
 </div>
+<div>
+    <table class="dbtable">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Discount</th>
+            <th>Description</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<div>
     <form method="post" action="{{ url_for('adminPromotions') }}">
 
         <label for="ID">ID:</label>
@@ -21,4 +47,5 @@
 
         <input type="submit" value="Add Promotion">
     </form>
+</div>
 {% endblock %}
