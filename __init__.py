@@ -175,7 +175,16 @@ def display_product(product_id):
     product_manager.close_connection()
 
     if product:
-        return render_template('product_detail.html', product=product)
+        sizes = product.size.split(',')
+        return render_template('product_detail.html', product=product, sizes=sizes)
+
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    selected_size = request.form.get('selected_size')
+    quantity = int(request.form.get('quantity', 1))  # Default to 1 if quantity is not provided
+    print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
+    # Add your cart handling logic here
+    return "Product added to cart successfully!"
 
 @app.route('/adminDashboard')
 def adminDashboard():

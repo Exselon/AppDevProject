@@ -6,38 +6,94 @@
 <style>
          body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
+
         }
         .product-details {
-            display: flex;
+            width: 80%;
+            padding-top:40px;
             justify-content: space-around;
         }
         .product-image {
-            max-width: 40%;
+            max-width: 50%;
             height: auto;
         }
         .product-info {
             width: 50%;
         }
+
+        .product-details .row{
+    }
     </style>
 
 
-<h1>{{ product.name }} - Product Details</h1>
-    <div class="product-details">
-        <img class="product-image" src="{{ url_for('static', filename='image/' + product.image_path) }}" alt="{{ product.name }}">
-        <div class="product-info">
-            <p>ID: {{ product.id }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <p>Category: {{ product.category }}</p>
-            <p>Stock: {{ product.stock }}</p>
-            <p>Description: {{ product.description }}</p>
-            <p>Size: {{ product.size }}</p>
-            <!-- Add more details as needed -->
+
+<div class="container-fluid product-details">
+    <div class="row">
+        <div class="col-5 text-center">
+            <img class="product-image" src="{{ url_for('static', filename='image/' + product.image_path) }}" alt="{{ product.name }}">
+        </div>
+        <div class="col-7">
+            <div class="product-info">
+                <p>{{ product.name }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <p>Description: {{ product.description }}</p>
+                <p>Size: {{ product.size }}</p>
+                <!-- Add more details as needed -->
+                <!-- display the size options -->
+                <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                    <label for="selected_size">Select Size:</label>
+                    <select name="selected_size" id="size">
+                        {% for size in sizes %}
+                            <option value="{{ size }}">{{ size }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="quantity">Quantity:</label>
+                    <div>
+                        <button type="button" onclick="decrement()">-</button>
+                        <input type="text" name="quantity" id="quantity" value="1" readonly>
+                        <button type="button" onclick="increment()">+</button>
+                    </div>
+
+                <button type="submit">Add to Cart</button>
+                </form>
+            </div>
         </div>
     </div>
 
+
+<script>
+        function increment() {
+            var quantityInput = document.getElementById('quantity');
+            var currentQuantity = parseInt(quantityInput.value, 10);
+            var maxStock = {{ product.stock }};
+
+            if (currentQuantity < maxStock) {
+                quantityInput.value = currentQuantity + 1;
+            }
+        }
+
+        function decrement() {
+            var quantityInput = document.getElementById('quantity');
+            var currentQuantity = parseInt(quantityInput.value, 10);
+
+            if (currentQuantity > 1) {
+                quantityInput.value = currentQuantity - 1;
+            }
+        }
+    </script>
+
+</div>
+
+
+
+<div><p>testing detail</p>
+<p>ID: {{ product.id }}</p>
+<p>Price: ${{ product.price }}</p>
+<p>Category: {{ product.category }}</p>
+<p>Stock: {{ product.stock }}</p>
+<p>Description: {{ product.description }}</p>
+<p>Size: {{ product.size }}</p>
+</div>
 
 {% endblock %}
