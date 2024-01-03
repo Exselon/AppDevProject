@@ -272,14 +272,12 @@ def delete_promotion():
     promotion_manager.close_connection()
     return redirect(url_for('adminPromotions'))
 
-@app.route('/adminEditAdmin')
+@app.route('/adminEditUsers')
 def adminEditAdmin():
-    return render_template('adminEditAdmin.html')
+    return render_template('adminEditUsers.html')
 
 
-@app.route('/adminEditCustomer')
-def adminEditCustomer():
-    return render_template('adminEditCustomer.html')
+
 
 
 
