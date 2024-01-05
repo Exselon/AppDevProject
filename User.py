@@ -17,3 +17,12 @@ class DisplayUser:
         self.conn.commit()
     def close_connection(self):
         self.conn.close()
+
+class UserManager:
+    def __init__(self, db="UserData.db"):
+        self.conn = sqlite3.connect(db)
+        self.cursor = self.conn.cursor()
+    def get_user_by_id(self, UserID):
+        self.cursor.execute("SELECT * FROM users WHERE UserID")
+
+

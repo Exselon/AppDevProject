@@ -124,6 +124,7 @@ def login():
 
             if session['Role'] == "customer":
                 print("customer")
+                return redirect(url_for('userdashboard'))
             else:
                 print("admin")
                 return redirect(url_for('adminDashboard'))
@@ -186,6 +187,14 @@ def add_to_cart(product_id):
     print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
     # Add your cart handling logic here
     return "Product added to cart successfully!"
+
+@app.route('/userdashboard')
+def userdashboard():
+    if 'User_ID' in session:
+        return render_template('userprofile.html', username=session['Username'], role=session['Role'], UserID=session['User_ID'])
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
 
 @app.route('/adminDashboard')
 def adminDashboard():
