@@ -5,6 +5,7 @@ from Form import userSignup, userLogin, ProductForm , PromotionForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
+from User import DisplayUser
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -272,14 +273,23 @@ def delete_promotion():
     promotion_manager.close_connection()
     return redirect(url_for('adminPromotions'))
 
-@app.route('/adminEditUsers')
-def adminEditAdmin():
-    return render_template('adminEditUsers.html')
 
 
+@app.route('/adminEditUsers' , methods=['GET', 'POST'])
+def adminEditUsers():
+    getUser = DisplayUser()
+    displayuser = getUser.get_all_user()
+    getUser.close_connection()
+    return render_template('adminEditUsers.html', displayuser = displayuser)
 
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    user_id = request.form.get('UserID')
 
-
+    User_manager = DisplayUser()
+    User_manager.del_user(user_id)
+    User_manager.close_connection()
+    return redirect(url_for('adminEditUsers'))
 
 
 

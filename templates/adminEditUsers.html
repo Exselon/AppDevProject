@@ -2,9 +2,53 @@
 {% block title %}Admin{% endblock %}
 {% block content %}
 
+<style>
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+</style>
 <div class="box">
 <h1 class="Header"> Edit Users </h1>
 </div>
 
+<div class="table">
+    <table class="dbtable">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>PhoneNumber</th>
+            <th>Email</th>
+            <th>DOB</th>
+            <th>Role</th>
+            <th>Del</th>
+        </tr>
+        {% for user in displayuser %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>{{ user[3] }}</td>
+            <td>{{ user[4] }}</td>
+            <td>{{ user[5] }}</td>
+            <td>{{ user[6] }}</td>
+            <td class="delete">
+                <form method="post" action="{{ url_for('delete_user') }}">
+                    <input type="hidden" name="UserID" value="{{ user[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
+<div>
+    <form method="post" >
+        <input type="submit" value="Edit Users">
+    </form>
+</div>
 {% endblock %}
