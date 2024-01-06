@@ -10,8 +10,17 @@
 
 {{ Email }}
 
+<h1>User Profile</h1>
+    <p>User ID: {{ UserID }}</p>
 
-
+    {% for user in userdata %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td>
+                    <!-- Add more cells as needed for other user details -->
+                </tr>
+            {% endfor %}
 First Name:
 
 Last Name:
