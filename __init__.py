@@ -207,6 +207,16 @@ def userdashboard():
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 
+#################code for del button on user profile#########################
+@app.route('/del_user', methods=['POST'])
+def del_user():
+    user_id = request.form.get('UserID')
+
+    User_manager = DisplayUser()
+    User_manager.del_user(user_id)
+    User_manager.close_connection()
+    return redirect(url_for('login'))
+
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:

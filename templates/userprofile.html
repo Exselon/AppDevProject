@@ -21,12 +21,13 @@
                     <!-- Add more cells as needed for other user details -->
                 </tr>
             {% endfor %}
-First Name:
+<p></p>
 
-Last Name:
+<br>
 
-Email:
-
-Phone Number:
+<form method="POST" action="{{ url_for('del_user') }}">
+        <input type="hidden" name="user_ID" value="userID">
+        <input type="submit" value="Delete Account">
+</form>
 
 {% endblock %}
