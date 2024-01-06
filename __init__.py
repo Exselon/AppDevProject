@@ -199,7 +199,7 @@ def userdashboard():
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'])
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'])
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
@@ -281,8 +281,6 @@ def delete_promotion():
     promotion_manager.del_promotion(promotion_id)
     promotion_manager.close_connection()
     return redirect(url_for('adminPromotions'))
-
-
 
 @app.route('/adminEditUsers' , methods=['GET', 'POST'])
 def adminEditUsers():
