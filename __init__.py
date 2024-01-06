@@ -190,8 +190,19 @@ def add_to_cart(product_id):
 
 @app.route('/userdashboard')
 def userdashboard():
+
     if 'User_ID' in session:
-        return render_template('userprofile.html', username=session['Username'], role=session['Role'], UserID=session['User_ID'])
+
+        test = session['User_ID']
+        print(test)
+        user_manager = DisplayUser()
+        userdata = user_manager.get_user_by_id(test)
+        user_manager.close_connection()
+        if userdata is not None:
+            return render_template('userprofile.html', userdata=userdata)
+        else:
+            flash('User not found.', 'warning')
+            return redirect(url_for('login'))
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
@@ -199,6 +210,7 @@ def userdashboard():
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:
+
         return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'])
     else:
         flash('You need to log in first.', 'warning')

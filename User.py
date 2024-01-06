@@ -14,11 +14,10 @@ class DisplayUser:
         self.cursor.execute("DELETE FROM users WHERE UserID = ?",(user_id,))
         self.conn.commit()
 
-
     def get_user_by_id(self,user_id):
-        self.id = user_id
         self.cursor.execute("SELECT * FROM users WHERE UserID = ?",(user_id,))
-        self.conn.commit()
+        user_data = self.cursor.fetchall()
+        return user_data
 
     def close_connection(self):
         self.conn.close()
