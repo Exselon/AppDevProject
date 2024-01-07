@@ -2,8 +2,6 @@
 {% block title %}User Profile Page{% endblock %}
 {% block content %}
 
-<h1>My Account</h1>
-
 {{ username }}
 
 {{ UserID }}
@@ -21,13 +19,39 @@
                     <!-- Add more cells as needed for other user details -->
                 </tr>
             {% endfor %}
-<p></p>
 
+<form method="POST" action="">
+<div class="form-group">
+{{ render_field(form.first_name, class="form-control") }}
+</div>
+<div class="form-group">
+{{ render_field(form.last_name, class="form-control") }}
+</div>
+<div class="form-group">
+{{ render_field(form.gender, class="form-control") }}
+</div>
+<div class="form-group">
+{{ render_field(form.membership, class="form-check", style="list-style-type:none") }}
+</div>
+<div id="prof">
+<div class="form-group">
+{{ render_field(form.remarks, class="form-control") }}
+</div>
+</div>
+<input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+<br>
+<br>
+<form method="POST" action="{{ url_for('del_user') }}">
+        <input type="hidden" name="order" value="order">
+        <input type="submit" value="View order">
+    </form>
+<br>
 <br>
 
 <form method="POST" action="{{ url_for('del_user') }}">
         <input type="hidden" name="user_ID" value="userID">
         <input type="submit" value="Delete Account">
-</form>
+    </form>
 
 {% endblock %}
