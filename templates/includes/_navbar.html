@@ -70,17 +70,41 @@
             </li>
 
             <li class="nav-item dropdown-login">
-                <a class="nav-link" role="button" data-toggle="dropdown" href="/login">
-                    Login
-                </a>
-                <div class="dropdown-menu dropdown-menu-right p-4" >
-                    <p>Welcome, User</p>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Setting</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Forgot Password?</a>
-                </div>
+
+				{% if 'User_ID' in session %}
+					{% if 'Role' in session and session['Role'] == 'customer' %}
+						<a class="nav-link" role="button" data-toggle="dropdown" href="/userdashboard">Profile</a>
+					{% else %}
+						<a class="nav-link" role="button" data-toggle="dropdown" href="/admindashboard">Profile</a>
+					{% endif %}
+
+
+					<div class="dropdown-menu dropdown-menu-right p-4" >
+						<p>Welcome, {{ session['Username'] }}</p>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">Setting</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#" onclick="confirmLogout()">Logout</a>
+					</div>
+
+				{% else %}
+
+					<a class="nav-link" role="button" data-toggle="dropdown" href="/login">
+						Login
+					</a>
+
+				{% endif %}
+
             </li>
+			<!-- For logout alert -->
+			<script>
+			function confirmLogout() {
+				if (confirm('Are you sure you want to logout?')) {
+					window.location.href = "{{ url_for('logout') }}";
+				}
+			}
+			</script>
+
         </ul>
     </div>
 </nav>

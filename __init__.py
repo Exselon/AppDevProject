@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
 from Form import userSignup, userLogin, ProductForm , PromotionForm
@@ -11,16 +11,15 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+# ---------------Clear Session when load---------------#
 
-
-@app.route('/contactUs')
-def contact_us():
-    return render_template('contactUs.html')
-
-
+session_cleared = False
+@app.before_request
+def before_request():
+    global session_cleared
+    if not session_cleared:
+        session.clear()
+        session_cleared = True
 # ---------------CODE FOR DB---------------#
 
 def create_Userdata():
@@ -40,9 +39,7 @@ def create_Userdata():
     conn.commit()
     conn.close()
 
-
 create_Userdata()
-
 
 def create_Product():
     conn = sqlite3.connect('Product.db')
@@ -62,10 +59,7 @@ def create_Product():
     conn.commit()
     conn.close()
 
-
 create_Product()
-
-
 
 def create_Promotion():
     conn = sqlite3.connect('Promotion.db')
@@ -84,10 +78,16 @@ def create_Promotion():
 
 create_Promotion()
 
+# ---------------Code for Home---------------#
+@app.route('/')
+def home():
+    return render_template('home.html')
 
+@app.route('/contactUs')
+def contact_us():
+    return render_template('contactUs.html')
 
-
-####################check for username############################
+# ---------------check for username---------------#
 def username_exists(username):
     conn = sqlite3.connect('Userdata.db')
     cursor = conn.cursor()
@@ -96,11 +96,11 @@ def username_exists(username):
     conn.close()
     return existing_user is not None
 
-####################Check file upload name############################
+# ---------------Check file upload name---------------#
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
-####################CODE FOR LOGIN############################
+# ---------------Check for login---------------#
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     userLoginform = userLogin(request.form)
@@ -132,8 +132,13 @@ def login():
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('Login.html', form=userLoginform)
 
+# ---------------Code for logout---------------#
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
 
-####################CODE FOR Signup############################
+# ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     userSignupform = userSignup(request.form)
@@ -161,7 +166,7 @@ def signup():
         return redirect(url_for('login'))
     return render_template('Signup.html', form=userSignupform)
 
-
+# ---------------Code for product---------------#
 @app.route('/Product')
 def Productpage():
     product_manager = ProductManager()
