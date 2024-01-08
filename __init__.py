@@ -198,13 +198,12 @@ def userdashboard():
 
     if 'User_ID' in session:
 
-        test = session['User_ID']
-        print(test)
+        UserID = session['User_ID']
         user_manager = DisplayUser()
-        userdata = user_manager.get_user_by_id(test)
+        userdata = user_manager.get_user_by_id(UserID)
         user_manager.close_connection()
         if userdata is not None:
-            return render_template('userprofile.html', userdata=userdata)
+            return render_template('userprofile.html', userdata=userdata, UserID=session['User_ID'])
         else:
             flash('User not found.', 'warning')
             return redirect(url_for('login'))
@@ -218,7 +217,7 @@ def del_user():
     UserID = request.form.get('UserID')
 
     User_manager = DisplayUser()
-    User_manager.del_user({{ UserID }})
+    User_manager.del_user(UserID)
     User_manager.close_connection()
     return redirect(url_for('login'))
 
