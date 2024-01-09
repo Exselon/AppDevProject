@@ -235,7 +235,6 @@ def adminDashboard():
 def adminOrder():
     return render_template('adminOrder.html')
 
-
 @app.route('/adminProducts', methods=['GET', 'POST'])
 def adminProducts():
     productForm = ProductForm(request.form)
@@ -249,6 +248,8 @@ def adminProducts():
         description = productForm.description.data
         size = productForm.size.data
 
+        #change add , for categroy
+        categories_string = ', '.join(category)
         # Handle image upload
         image_upload = request.files['image']
 
@@ -262,7 +263,7 @@ def adminProducts():
 
         # Save the product to the database
         product_manager = ProductManager()
-        product_manager.add_product(filename_only, name, price, category, stock, description, size)
+        product_manager.add_product(filename_only, name, price, categories_string, stock, description, size)
         product_manager.close_connection()
 
 
@@ -285,7 +286,6 @@ def adminPromotions():
     getpromotion = PromotionManager()
     displaypromotion = getpromotion.get_all_promotion()
     getpromotion.close_connection()
-
 
     if request.method == 'POST':
         name = promotionForm.name.data

@@ -16,7 +16,15 @@
         {{ form.price(class="form-control") }}
 
         <label for="category">category:</label>
-        {{ form.category(class="form-control") }}
+        {% for category, label in form.category.choices %}
+                <label>
+                    <input type="checkbox" name="category" value="{{ category }}"
+                           {% if category in form.category.data %}checked{% endif %}>
+                    {{ label }}
+                </label><br>
+            {% endfor %}
+
+
 
         <label for="stock">stock:</label>
         {{ form.stock(class="form-control") }}
