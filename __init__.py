@@ -6,6 +6,7 @@ from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
 from User import DisplayUser
+from Cart import CartManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -46,7 +47,7 @@ def create_Product():
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ProductID INTEGER PRIMARY KEY AUTOINCREMENT,
             image TEXT,
             name TEXT,
             price REAL,
@@ -75,8 +76,23 @@ def create_Promotion():
     conn.commit()
     conn.close()
 
-
 create_Promotion()
+
+def create_Cart():
+    conn = sqlite3.connect('Cart.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS cart (
+            user_id INTEGER,
+            product_id INTEGER,
+            quantity INTEGER,
+            size TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+create_Cart()
 
 # ---------------Code for Home---------------#
 @app.route('/')
@@ -185,14 +201,6 @@ def display_product(product_id):
         sizes = product.size.split(',')
         return render_template('product_detail.html', product=product, sizes=sizes)
 
-@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    selected_size = request.form.get('selected_size')
-    quantity = int(request.form.get('quantity', 1))  # Default to 1 if quantity is not provided
-    print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
-    # Add your cart handling logic here
-    return "Product added to cart successfully!"
-
 @app.route('/userdashboard')
 def userdashboard():
 
@@ -272,12 +280,6 @@ def adminProducts():
         return redirect(url_for('Productpage'))
     return render_template('adminProducts.html', form=productForm)
 
-
-def get_promotion_connection():
-    conn = sqlite3.connect('Promotion.db')
-    return conn
-
-
 # Code for Promotions
 @app.route('/adminPromotions', methods=['GET', 'POST'])
 def adminPromotions():
@@ -324,6 +326,36 @@ def delete_user():
     User_manager.del_user(user_id)
     User_manager.close_connection()
     return redirect(url_for('adminEditUsers'))
+
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    selected_size = request.form.get('selected_size')
+    quantity = int(request.form.get('quantity', 1))  # Default to 1 if quantity is not provided
+    user_id = session.get('User_ID') #retrive user_id from session
+
+    # print(user_id)
+    # print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
+
+    cartmanager = CartManager()
+    cartmanager.add_to_cart(user_id, product_id, quantity, selected_size)
+    cartmanager.close_connection()
+    return redirect(url_for('view_cart'))
+@app.route('/cart')
+def view_cart():
+    cartmanager = CartManager()
+    cart = cartmanager.get_all_cart()
+    cartmanager.close_connection()
+    return render_template('cart.html', cart=cart)
+
+
+@app.route('/del_cart', methods=['POST'])
+def del_cart():
+    UserID = request.form.get('UserID')
+
+    cart_manager = CartManager()
+    cart_manager.del_cart(UserID)
+    cart_manager.close_connection()
+    return redirect(url_for('home'))
 
 
 

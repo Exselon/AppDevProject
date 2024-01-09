@@ -25,7 +25,7 @@ class ProductManager:
         return products
 
     def get_product_by_id(self, product_id):
-        self.cursor.execute("SELECT * FROM products WHERE id=?", (product_id,))
+        self.cursor.execute("SELECT * FROM products WHERE ProductID=?", (product_id,))
         product_data = self.cursor.fetchone()
         if product_data:
             return Product(*product_data)
