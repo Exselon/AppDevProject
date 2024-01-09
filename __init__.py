@@ -214,10 +214,11 @@ def userdashboard():
 #################code for del button on user profile#########################
 @app.route('/del_user', methods=['POST'])
 def del_user():
-    UserID = request.form.get('UserID')
-
+    UserID1 = request.form.get('delAccount')
+    print(UserID1,"test")
     User_manager = DisplayUser()
-    User_manager.del_user(UserID)
+    User_manager.del_user(UserID1)
+    session.clear()
     User_manager.close_connection()
     return redirect(url_for('login'))
 
