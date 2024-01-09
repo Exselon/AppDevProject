@@ -6,7 +6,6 @@ from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
 from User import DisplayUser
-from Cart import CartManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -186,6 +185,13 @@ def display_product(product_id):
         sizes = product.size.split(',')
         return render_template('product_detail.html', product=product, sizes=sizes)
 
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    selected_size = request.form.get('selected_size')
+    quantity = int(request.form.get('quantity', 1))  # Default to 1 if quantity is not provided
+    print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
+    # Add your cart handling logic here
+    return "Product added to cart successfully!"
 
 @app.route('/userdashboard')
 def userdashboard():
@@ -318,105 +324,6 @@ def delete_user():
     User_manager.del_user(user_id)
     User_manager.close_connection()
     return redirect(url_for('adminEditUsers'))
-
-
-
-
-
-def create_Cart():
-    conn = sqlite3.connect('Cart.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cart (
-            user_id INTEGER,
-            product_id INTEGER,
-            quantity INTEGER,
-            size TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-
-create_Cart()
-
-
-
-
-@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    selected_size = request.form.get('selected_size')
-    quantity = int(request.form.get('quantity', 1))  # Default to 1 if quantity is not provided
-    user_id = session.get('User_ID') #retrive user_id from session
-    print(user_id)
-    print(f"Product ID: {product_id}, Selected Size: {selected_size}, Quantity: {quantity}")
-
-    test = CartManager()
-    cartmanager = CartManager()
-    cartmanager.add_to_cart(user_id, product_id, quantity, selected_size)
-    cartmanager.close_connection()
-    return redirect(url_for('view_cart'))
-
-
-
-
-
-@app.route('/cart')
-def view_cart():
-    cartmanager = CartManager()
-    cart = cartmanager.get_all_cart()
-    cartmanager.close_connection()
-    return render_template('cart.html', cart=cart)
-
-
-@app.route('/del_cart', methods=['POST'])
-def del_cart():
-    UserID = request.form.get('UserID')
-
-    cart_manager = CartManager()
-    cart_manager.del_cart(UserID)
-    cart_manager.close_connection()
-    return redirect(url_for('home'))
-
-
-
-# @app.route('/Product')
-# def Productpage():
-#     product_manager = ProductManager()
-#     products = product_manager.get_all_products()
-#     product_manager.close_connection()
-#
-#     return render_template('Product.html', products=products)
-#
-# @app.route('/product/<int:product_id>')
-# def display_product(product_id):
-#     product_manager = ProductManager()
-#     product = product_manager.get_product_by_id(product_id)
-#     product_manager.close_connection()
-#
-#     if product:
-#         sizes = product.size.split(',')
-#         return render_template('product_detail.html', product=product, sizes=sizes)
-
-
-
-
-# @app.route('/cart')
-# def view_cart():
-#     user_id = session.get('User_ID')
-#     cart_data = CartManager()
-#
-#     if user_id:
-#         cart_data = cart_data.get_cart_data(user_id)
-#         print(cart_data)
-#     else:
-#         return[]
-#
-#     return render_template('cart.html', cart=cart_data)
-
-
-
-
 
 
 
