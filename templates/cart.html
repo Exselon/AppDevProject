@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Shopping Cart{% endblock %}
+{% block content %}
+
+
+
+
+<style>
+        /* Add any CSS styles as needed */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+        }
+        form {
+            display: inline-block;
+        }
+    </style>
+
+
+     <h1>Your Shopping Cart</h1>
+    {% if cart %}
+        <table class="cart_table">
+        <tr>
+            <th>USERID</th>
+            <th>PRODUCTID</th>
+            <th>Quantity</th>
+            <th>size</th>
+            <th>Delete</th>
+        </tr>
+        {% for item in cart %}
+        <tr>
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td class="delete">
+                <form method="POST" action="{{ url_for('del_cart') }}">
+                    <input type="hidden" name="UserID" value="{{ item[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+
+{% endblock %}
