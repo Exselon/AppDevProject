@@ -9,7 +9,6 @@
         /* Add any CSS styles as needed */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
         }
         ul {
             list-style-type: none;
@@ -25,34 +24,42 @@
 
 
      <h1>Your Shopping Cart</h1>
-    {% if cart %}
-        <table class="cart_table">
-        <tr>
-            <th>USERID</th>
-            <th>PRODUCTID</th>
-            <th>Quantity</th>
-            <th>size</th>
-            <th>Delete</th>
-        </tr>
-        {% for item in cart %}
-        <tr>
-            <td>{{ item[0] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
-            <td class="delete">
-                <form method="POST" action="{{ url_for('del_cart') }}">
-                    <input type="hidden" name="UserID" value="{{ item[0] }}">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-        </table>
+    <h1>Your Cart</h1>
 
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
+    <p>User ID: {{ UserID }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Cart ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Size</th>
+                <th>Price</th>
+                <th>Action</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+             {% for i in range(cart|length) %}
+                {% if i < product_data_list|length %}
+                    <tr>
+                        <td>{{ cart[i][0] }}</td>  {# Assuming index 0 corresponds to cart ID #}
+                        <td>{{ product_data_list[i].name }}</td>
+                        <td>{{ cart[i][3] }}</td>  {# Assuming index 3 corresponds to Quantity #}
+                        <td>{{ cart[i][4] }}</td>  {# Assuming index 4 corresponds to Size #}
+                        <td>{{ product_data_list[i].price }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('del_cart') }}">
+                                <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 {% endblock %}

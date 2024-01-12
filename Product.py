@@ -37,5 +37,7 @@ class ProductManager:
             (image_path,name,price,category,stock,description,size))
         self.conn.commit()
 
+
+
     def close_connection(self):
         self.conn.close()

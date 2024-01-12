@@ -83,6 +83,7 @@ def create_Cart():
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS cart (
+            CartID INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             product_id INTEGER,
             quantity INTEGER,
@@ -340,25 +341,48 @@ def add_to_cart(product_id):
     cartmanager.add_to_cart(user_id, product_id, quantity, selected_size)
     cartmanager.close_connection()
     return redirect(url_for('view_cart'))
+
 @app.route('/cart')
 def view_cart():
-    cartmanager = CartManager()
-    cart = cartmanager.get_all_cart()
-    cartmanager.close_connection()
-    return render_template('cart.html', cart=cart)
+
+    if 'User_ID' in session:
+
+        userid = session['User_ID']
+        cartmanager = CartManager()
+        cart = cartmanager.get_cart_by_id(userid)
+        cartmanager.close_connection()
+
+        product_manager = ProductManager()  # Replace with the actual class for managing product data
+        product_data_list = []
+
+        for item in cart:
+            product_id = item[2]  # Replace with the actual key or attribute name
+            product = product_manager.get_product_by_id(product_id)
+
+            if product:
+                product_data_list.append(product)
+            else:
+                print(f"Product with ID {product_id} not found in the product database.")
+        # Now, product_data_list contains information about products in the cart
+        product_manager.close_connection()
+
+
+        return render_template('cart.html',cart=cart, UserID=userid, product_data_list=product_data_list)
+
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+
 
 
 @app.route('/del_cart', methods=['POST'])
 def del_cart():
-    UserID = request.form.get('UserID')
+    cart_id = request.form.get('CartID')
 
     cart_manager = CartManager()
-    cart_manager.del_cart(UserID)
+    cart_manager.del_cart(cart_id)
     cart_manager.close_connection()
-    return redirect(url_for('home'))
-
-
-
+    return redirect(url_for('view_cart'))
 
 if __name__ == '__main__':
     app.run()

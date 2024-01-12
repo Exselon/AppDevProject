@@ -28,6 +28,7 @@ class PromotionManager:
         self.id = promotion_id
         self.cursor.execute("DELETE FROM promotions WHERE ID = ?",(promotion_id,))
         self.conn.commit()
+        
     def close_connection(self):
         self.conn.close()
 

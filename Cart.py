@@ -26,9 +26,13 @@ class CartManager:
         cart = self.cursor.fetchall()
         return cart
 
-    def del_cart(self, user_id):
-        self.id = user_id
-        self.cursor.execute("DELETE FROM cart WHERE User_ID = ?", (user_id,))
+    def get_cart_by_id(self,userid):
+        self.cursor.execute("SELECT * FROM cart WHERE user_id =?",(userid,))
+        cart = self.cursor.fetchall()
+        return cart
+
+    def del_cart(self, cartid):
+        self.cursor.execute("DELETE FROM cart WHERE CartID = ?", (cartid,))
         self.conn.commit()
 
 
@@ -53,7 +57,6 @@ class CartManager:
     #     ''', (user_id,))
     #     cart_data = self.cursor.fetchall()
     #     return cart_data
-
 
 
 
