@@ -5,6 +5,7 @@
 <div class="box">
 <h1 class="Header"> Products </h1>
 </div>
+<div class="table">
     <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data">
         <label for="Image">Image:</label>
         {{ form.image(class="form-control") }}
@@ -38,7 +39,7 @@
 
         <input type="submit" value="Add Product">
     </form>
-
+</div>
 
 
 {% endblock %}
