@@ -19,5 +19,11 @@ class DisplayUser:
         user_data = self.cursor.fetchall()
         return user_data
 
+    #################INCOMPLETE#########################
+    def get_password_by_id(self,user_id):
+        self.cursor.execute("SELECT Password FROM users WHERE UserID = ?", (user_id,))
+        current_password = self.cursor.fetchone()
+        return current_password
+
     def close_connection(self):
         self.conn.close()

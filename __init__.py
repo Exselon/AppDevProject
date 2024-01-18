@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm , PromotionForm
+from Form import userSignup, userLogin, ProductForm , PromotionForm, PasswordChange
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
@@ -213,6 +213,25 @@ def userdashboard():
         user_manager.close_connection()
         if userdata is not None:
             return render_template('userprofile.html', userdata=userdata, UserID=session['User_ID'])
+        else:
+            flash('User not found.', 'warning')
+            return redirect(url_for('login'))
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+#################INCOMPLETE#########################
+@app.route('/passwordchange', methods=['POST'])
+def passwordchange():
+
+    if 'User_ID' in session:
+
+        UserID = session['User_ID']
+        password_change = DisplayUser()
+        current_password = password_change.get_password_by_id(UserID)
+        password_change.close_connection()
+        if current_password is not None:
+            return render_template('passwordchange.html', current_password=current_password,
+                                   UserId=session['User_ID'])
         else:
             flash('User not found.', 'warning')
             return redirect(url_for('login'))

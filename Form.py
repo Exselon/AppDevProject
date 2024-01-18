@@ -27,3 +27,8 @@ class PromotionForm(Form):
     name = StringField("Name", [validators.DataRequired()])
     discount = FloatField("Discount", [validators.DataRequired()])
     description = TextAreaField("Description", [validators.DataRequired()])
+
+class PasswordChange(Form):
+    CurrentPassword = PasswordField('CurrentPassword', [validators.DataRequired(), validators.length(min=8)])
+    NewPassword = PasswordField('NewPassword', [validators.DataRequired(), validators.length(min=8), validators.equal_to('ConfirmPassword', message='Passwords Must Match.')])
+    ConfirmPassword = PasswordField('ConfirmPassword', [validators.DataRequired(), validators.length(min=8)])
