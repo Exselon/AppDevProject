@@ -82,6 +82,7 @@ body {
     padding-top: 100px;
 }
 
+
 /*------ Main Navbar ------*/
 .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
     display: block !important;
@@ -101,7 +102,7 @@ body {
 }
 
 body{
-	font-family: Verdana;
+	font-family: Arial, sans-serif;
 	padding: 0;
 	margin: 0;
 }
@@ -140,3 +141,65 @@ body{
 	.navbar .nav-item:hover .nav-link{   }
 	.navbar .nav-item:hover .dropdown-menu{ display: block; }
 }
+
+/*------ Product CSS ------*/
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.product-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 15px;
+    width: 300px;
+}
+.productpg a{
+    text-decoration: none;
+    color:black;
+}
+
+.productH1 {
+    text-align: center;
+}
+
+
+/*------ Login CSS ------*/
+.loginpg{
+    padding: 150px 0px;
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: normal;
+
+
+}
+
+.img {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  }
+
+.img, .login-wrap {
+  width: 50%;
+   }
+
+.login-wrap {
+  position: relative;
+  background: #fff;
+  border-top-right-radius: 15px 15px;
+  border-bottom-right-radius: 15px 15px;
+ }
+
+ .img{
+  border-top-left-radius: 15px 15px;
+  border-bottom-left-radius: 15px 15px;
+ }
+
+.wrap.d-md-flex {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-top-right-radius: 15px 15px;
+    border-bottom-right-radius: 15px 15px;
+    border-top-left-radius: 15px 15px;
+    border-bottom-left-radius: 15px 15px;
+    }

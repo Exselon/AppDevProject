@@ -121,8 +121,10 @@ def allowed_file(filename):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     userLoginform = userLogin(request.form)
+    login_failure_message = None
+
     if request.method == 'POST':
-        username = userLoginform.username.data
+        username = userLoginform.username.data # using contact number as username
         password = userLoginform.password.data
 
         # Check if the username and password match
@@ -146,8 +148,9 @@ def login():
                 print("admin")
                 return redirect(url_for('adminDashboard'))
         else:
-            flash('Login failed. Please check your username and password.', 'danger')
-    return render_template('Login.html', form=userLoginform)
+            login_failure_message = "*Contact Number or password does not match.*"
+
+    return render_template('Login.html', form=userLoginform, login_failure_message=login_failure_message)
 
 # ---------------Code for logout---------------#
 @app.route('/logout')

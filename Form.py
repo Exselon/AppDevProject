@@ -8,9 +8,9 @@ class userSignup(Form):
     email = StringField('Email', [validators.Email(), validators.DataRequired()])
     dob = DateField('Date of Birth', [validators.DataRequired()], format='%Y-%m-%d')
 
-class userLogin(Form):
-    username = StringField('username', [validators.DataRequired()])
-    password = PasswordField('password', [validators.DataRequired()])
+class userLogin(Form):                                                                                           message='Enter a valid contact number.')]
+    username = StringField('username', [validators.DataRequired()], render_kw={'placeholder': 'Contact No'})
+    password = PasswordField('password', [validators.DataRequired()], render_kw={'placeholder': 'Password'})
 
 class ProductForm(Form):
     image = FileField('ImageURL', [validators.DataRequired()])
