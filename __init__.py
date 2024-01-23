@@ -225,6 +225,7 @@ def userdashboard():
 #################INCOMPLETE#########################
 @app.route('/passwordchange', methods=['POST'])
 def passwordchange():
+    passwordchangeform = PasswordChange(request.form)
 
     if 'User_ID' in session:
 
@@ -232,12 +233,9 @@ def passwordchange():
         password_change = DisplayUser()
         current_password = password_change.get_password_by_id(UserID)
         password_change.close_connection()
-        if current_password is not None:
-            return render_template('passwordchange.html', current_password=current_password,
-                                   UserId=session['User_ID'])
-        else:
-            flash('User not found.', 'warning')
-            return redirect(url_for('login'))
+
+        return render_template('passwordchange.html', current_password=current_password,UserId=session['User_ID'], form=passwordchangeform)
+
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))

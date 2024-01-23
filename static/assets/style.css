@@ -164,14 +164,12 @@ body{
 }
 
 
-/*------ Login CSS ------*/
+/*------ Login/Signup CSS ------*/
 .loginpg{
     padding: 150px 0px;
     font-size: 16px;
     line-height: 1.8;
     font-weight: normal;
-
-
 }
 
 .img {
@@ -203,3 +201,13 @@ body{
     border-top-left-radius: 15px 15px;
     border-bottom-left-radius: 15px 15px;
     }
+
+.loginpg .form-control {
+  border: 1px solid #333;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  display: block;
+  padding: 0;
+  border-radius: 0px;
+  }

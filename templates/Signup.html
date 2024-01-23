@@ -2,39 +2,70 @@
 {% block title %}Library Loan System - Home{% endblock %}
 {% block content %}
 
-<h1>Register</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="post" action="{{ url_for('signup') }}">
+<div class="container loginpg ">
 
-        <label for="username">Username:</label>
-        {{ form.name(class="form-control") }}
+<div class="row justify-content-center">
+	<div class="col-md-12 col-lg-10">
+		<div class="wrap d-md-flex">
+			<div class="img" style="background-image: url({{ url_for('static', filename='image/green-leaves.jpg') }});"></div>
 
-        <label for="password">Password:</label>
-        {{ form.password(class="form-control") }}
+			<div class="login-wrap p-4 p-md-5">
 
-        <label for="password">cfm password:</label>
-        {{ form.cfmpassword(class="form-control") }}
+      	<div class="d-flex">
+      		<div class="w-100">
+      			<h3 class="mb-4" style="font-weight:bold;">Account Registration</h3>
+      		</div>
+      	</div>
 
-        <label for="email">email:</label>
-        {{ form.email(class="form-control") }}
+			<form method="post" action="{{ url_for('signup') }}">
 
-        <label for="dName">Contact Number:</label>
-        {{ form.number(class="form-control") }}
 
-        <label for="Name">Date of birth:</label>
-        {{ form.dob(class="form-control") }}
-        <input type="submit" value="Submit" class="btn btn-primary"/>
-        <input type="submit" value="Register">
-    </form>
+                      <div class="form-group mb-3">
+                         <label for="username">Display Name:</label>
+                         {{ form.name(class="form-control") }}
+                     </div>
+                     <div class="form-group mb-3">
+                         <label for="password">Password:</label>
+                         {{ form.password(class="form-control") }}
+                     </div>
+                     <div class="form-group mb-3">
+                         <label for="password">Repeat password:</label>
+                         {{ form.cfmpassword(class="form-control") }}
+                     </div>
+                     <div class="form-group mb-3">
+                         <label for="email">Email:</label>
+                         {{ form.email(class="form-control") }}
+                     </div>
+                     <div class="form-group mb-3">
+                         <label for="dName">Contact Number:</label>
+                         {{ form.number(class="form-control") }}
+                     </div>
+                     <div class="form-group mb-3">
+                         <label for="Dob">Date of birth:</label>
+                         {{ form.dob(class="form-control") }}
+                     </div>
 
-    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+                     <input type="submit" value="Register" class="form-control btn btn-primary rounded submit px-3">
+                 </form>
+                <br>
+             <p class="text-center">Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+		     </div>
+		   </div>
+	</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% endblock %}
