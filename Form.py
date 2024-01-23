@@ -1,17 +1,16 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,SelectField,FileField,SelectMultipleField,EmailField, MonthField
+from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,SelectField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
 
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150), validators.DataRequired()])
     password = PasswordField('Password', [validators.Length(min=8), validators.DataRequired()])
     cfmpassword = PasswordField('cfmPassword', [validators.Length(min=8), validators.DataRequired()])
-    number = StringField('Contact Number', [validators.Length(min=8, max=8), validators.DataRequired()])
-    email = StringField('Email', [validators.Email(), validators.DataRequired()])
+    number = IntegerField('Contact Number', [validators.Length(min=8, max=8), validators.DataRequired()])
+    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
     dob = DateField('Date of Birth', [validators.DataRequired()], format='%Y-%m-%d')
 
 class userLogin(Form):
-    message=[('Enter a valid contact number.')]
-    username = StringField('username', [validators.DataRequired()], render_kw={'placeholder': 'Contact No'})
-    password = PasswordField('password', [validators.DataRequired()], render_kw={'placeholder': 'Password'})
+    username = StringField('username', [validators.DataRequired()])
+    password = PasswordField('password', [validators.DataRequired()])
 
 class ProductForm(Form):
     image = FileField('ImageURL', [validators.DataRequired()])
@@ -33,6 +32,20 @@ class PasswordChange(Form):
     CurrentPassword = PasswordField('CurrentPassword', [validators.DataRequired(), validators.length(min=8)])
     NewPassword = PasswordField('NewPassword', [validators.DataRequired(), validators.length(min=8), validators.equal_to('ConfirmPassword', message='Passwords Must Match.')])
     ConfirmPassword = PasswordField('ConfirmPassword', [validators.DataRequired(), validators.length(min=8)])
+
+class ProductFilter(Form):
+    category_men = BooleanField('Men')
+    category_women = BooleanField('Women')
+    category_kids = BooleanField('Kids')
+    category_shoes = BooleanField('Shoes')
+    category_others = BooleanField('Others')
+    price_range = RadioField('Price Range', choices=[
+        ('', 'All'),
+        ('1-25', '1 - 25'),
+        ('26-50', '26 - 50'),
+        ('51-75', '51 - 75'),
+        ('76-100', '76 - 100')
+    ], default='')
 
 
 class Checkout(Form):

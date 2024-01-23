@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm , PromotionForm, PasswordChange
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
@@ -189,11 +189,12 @@ def signup():
 # ---------------Code for product---------------#
 @app.route('/Product')
 def Productpage():
+    ProductFilterForm = ProductFilter(request.form)
     product_manager = ProductManager()
     products = product_manager.get_all_products()
     product_manager.close_connection()
 
-    return render_template('Product.html', products=products)
+    return render_template('Product.html', products=products, form=ProductFilterForm)
 
 @app.route('/product/<int:product_id>')
 def display_product(product_id):
