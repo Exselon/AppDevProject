@@ -1,7 +1,7 @@
 {% extends "adminBase.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-<style>
+<style xmlns="http://www.w3.org/1999/html">
     table, th, td {
   border: 1px solid;
     }
@@ -34,8 +34,8 @@
             <td>{{ promotion[3] }}</td>
             <td class="delete">
                 <form method="post" action="{{ url_for('delete_promotion') }}">
-                    <input type="hidden" name="id" value="{{ promotion[0] }}">
-                    <button type="submit">Delete</button>
+                    <input type="hidden" name="id" value="{{ promotion[0] }} ">
+                    <button type="submit" onclick="return confirmdelPromotion()">Delete</button>
                 </form>
             </td>
         </tr>
@@ -54,8 +54,19 @@
         <label for="Description">Description:</label>
         {{ form.description(class="form-control") }}
 
-        <input type="submit" value="Add Promotion">
+        <button type="submit" onclick="return confirmAddPromo()">Add Promotion</button>
     </form>
 </div>
+
+    <script>
+    function confirmdelPromotion() {
+		return confirm('Confirm Delete?');
+		}
+<!--            function confirmAddPromo() {-->
+<!--        return confirm('Add Promotion?");-->
+<!--        }-->
+    </script>
+
+
 
 {% endblock %}

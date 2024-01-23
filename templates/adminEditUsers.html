@@ -38,7 +38,7 @@
             <td class="delete">
                 <form method="post" action="{{ url_for('delete_user') }}">
                     <input type="hidden" name="UserID" value="{{ user[0] }}">
-                    <button type="submit">Delete</button>
+                    <button type="submit" onclick="return confirmDelUser()">Delete</button>
                 </form>
             </td>
         </tr>
@@ -46,10 +46,9 @@
     </table>
 </div>
 
-<div>
-    <form method="post" >
-        <input type="submit" value="Edit Users">
-    </form>
-</div>
-
+<script>
+    function confirmDelUser() {
+        return confirm('Confirm Delete?');
+	    }
+</script>
 {% endblock %}
