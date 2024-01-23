@@ -1,26 +1,34 @@
+ <div class="sidebar">
+     <div class="item">
+         <img class="Logo" src="{{ url_for('static', filename='image/Logo.png') }}">
+     </div>
+     <hr class="Line">
+     <div class="item">
+         <div class="text"><a class="sideNav-item active" href="/adminDashboard">Dashboard</a></div>
+     </div>
+     <div class="item">
+         <div class="text"><a class="sideNav-item" href="/adminOrder">Orders</a></div>
+     </div>
+     <div class="item">
+         <div class="text"><a class="sideNav-item" href="/adminProducts">Products</a></div>
+     </div>
+     <div class="item">
+         <div class="text"><a class="sideNav-item" href="/adminPromotions">Promotions</a></div>
+     </div>
+     <div class="item">
+         <div class="text"><a class="sideNav-item" href="/adminEditUsers">Users</a></div>
+     </div>
+     <div class="item">
+         <div class="text"><a role="button" href="#" onclick="Logout()">Logout</a>
+             <script>
+     function Logout() {
+		if (confirm('Are you sure you want to logout?')) {
+			window.location.href = "{{ url_for('logout') }}";
+		}
+	}
+             </script>
+         </div>
+     </div>
 
+ </div>
 
-        <div class="sidebar">
-            <div class="item">
-                <img class="Logo" src="{{ url_for('static', filename='image/Logo.png') }}">
-            </div>
-            <hr class="Line">
-            <div class="item">
-                <div class="text"><a class="sideNav-item active" href="/adminDashboard">Dashboard</a></div>
-            </div>
-            <div class="item">
-                <div class="text"><a class="sideNav-item" href="/adminOrder">Orders</a></div>
-            </div>
-            <div class="item">
-                <div class="text"><a class="sideNav-item" href="/adminProducts">Products</a></div>
-            </div>
-            <div class="item">
-                <div class="text"><a class="sideNav-item" href="/adminPromotions">Promotions</a></div>
-            </div>
-            <div class="item">
-                <div class="text"><a class="sideNav-item" href="/adminEditUsers">Users</a></div>
-            </div>
-            <div class="item">
-                <div class="text"><a class="sideNav-item" href="/Logout">Logout</a></div>
-            </div>
-        </div>

@@ -1,23 +1,21 @@
+<link rel="stylesheet" href="userprofile.css">
+
 {% extends "base.html" %}
 {% block title %}User Profile Page{% endblock %}
 {% block content %}
-
-{{ username }}
-
-{{ UserID }}
-
-{{ Email }}
 
 <h1>User Profile</h1>
     <p>User ID: {{ UserID }}</p>
 
     {% for user in userdata %}
-                <tr>
-                    <td>{{ user[0] }}</td>
+            <div>
+                <tr class="profile">
+                    <td>Username: {{ user[0] }}</td>
                     <td>{{ user[1] }}</td>
                     <td>{{ user[2] }}</td>
                     <!-- Add more cells as needed for other user details -->
                 </tr>
+                </div>
             {% endfor %}
 
 
@@ -29,10 +27,17 @@
 </form>
 <br>
 <br>
+<form method="POST" action="{{ url_for('passwordchange') }}">
+        <input type="hidden" name="PasswordChange" value="{{ UserID }}">
+        <input type="submit"  value="Change Your Password">
+</form>
+<br>
+<br>
 
 <form method="POST" action="{{ url_for('del_user') }}">
         <input type="hidden" name="delAccount" value="{{ UserID }}">
-        <input type="submit" onclick="return confirm('Are you sure you want to delete your account? This action is PERMANENT!');" value="Delete Account">
+        <input type="submit" onclick="return confirm('Are you sure you want to delete your account?
+        This action is PERMANENT!');" value="Delete Account">
 </form>
 
 {% endblock %}
