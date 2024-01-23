@@ -24,9 +24,9 @@ class ProductForm(Form):
 
 class PromotionForm(Form):
     ID = StringField("ID",[validators.DataRequired()])
-    name = StringField("Name", [validators.DataRequired()])
+    name = StringField("Name")
     discount = FloatField("Discount", [validators.DataRequired()])
-    description = TextAreaField("Description", [validators.DataRequired()])
+    description = TextAreaField("Description")
 
 class PasswordChange(Form):
     CurrentPassword = PasswordField('CurrentPassword', [validators.DataRequired(), validators.length(min=8)])

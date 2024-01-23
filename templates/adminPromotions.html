@@ -43,30 +43,75 @@
     </table>
 </div>
 <div>
-    <form method="post" action="{{ url_for('adminPromotions') }}">
+    <form method="post" action="{{ url_for('adminPromotions') }}" onsubmit="return validateForm()">
 
         <label for="Name">Name:</label>
         {{ form.name(class="form-control") }}
+        <div id="nameError" style="color: red;"></div>
+
 
         <label for="Discount">Discount:</label>
         {{ form.discount(class="form-control") }}
+        <div id="discountError" style="color: red;"></div>
 
         <label for="Description">Description:</label>
         {{ form.description(class="form-control") }}
+        <div id="descriptionError" style="color: red;"></div>
 
-        <button type="submit" onclick="return confirmAddPromo()">Add Promotion</button>
+
+        <button type="submit" onclick="confirmAddPromo">Add Promotion</button>
     </form>
 </div>
 
-    <script>
+<script>
     function confirmdelPromotion() {
 		return confirm('Confirm Delete?');
 		}
-<!--            function confirmAddPromo() {-->
+</script>
+
+<!--<script>-->
+<!--    function confirmAddPromo() {-->
 <!--        return confirm('Add Promotion?");-->
 <!--        }-->
-    </script>
+<!--</script>-->
 
 
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var discount = document.getElementById('discount').value;
+        var description = document.getElementById('description').value;
+
+        var nameError = document.getElementById('nameError');
+        var discountError = document.getElementById('discountError');
+        var descriptionError = document.getElementById('descriptionError');
+
+        nameError.innerHTML = "";
+        discountError.innerHTML = "";
+        descriptionError.innerHTML = "";
+
+        if (name === "") {
+            nameError.innerHTML = "Name is required.";
+        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+            nameError.innerHTML = "Name must contain only letters and spaces.";
+        }
+
+        if (discount === "") {
+            discountError.innerHTML = "Discount is required.";
+        } else if (isNaN(discount) || discount < 1 || discount > 100) {
+            discountError.innerHTML = "Discount must be a number between 1 and 100.";
+        }
+
+        if (description === "") {
+            descriptionError.innerHTML = "Description is required.";
+        }
+
+        if (nameError.innerHTML !== "" || discountError.innerHTML !== "" || descriptionError.innerHTML !== "") {
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 {% endblock %}
