@@ -1,5 +1,10 @@
 
-/* Admin NavBar */
+/* General CSS */
+
+
+.containter{
+padding: 0px 15px;/* Give 15px padding on left and right*/
+ }
 
 body {
     /*background-color: #99989a*/;
@@ -7,6 +12,9 @@ body {
     color: black;
 }
 
+
+
+/* Admin NavBar */
 .sidebar {
     width: 200px;
     height: 100vh;
