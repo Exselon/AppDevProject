@@ -35,7 +35,20 @@ class CartManager:
         self.cursor.execute("DELETE FROM cart WHERE CartID = ?", (cartid,))
         self.conn.commit()
 
+    # <-------------- Incomplete Cart function --------------->
 
+    # def update_cart(self, cartid):
+    #     self.cursor.execute("""
+    #         UPDATE cart
+    #         SET quantity = ?
+    #         WHERE CartID = ?
+    #     """, (cartid))
+    #     self.conn.commit()
+
+
+
+
+# <-------------- Maybe new database --------------->
     # def get_cart_data(self, user_id):
     #     self.cursor.execute('''
     #         SELECT products.name, cart.quantity

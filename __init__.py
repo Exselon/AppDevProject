@@ -386,7 +386,6 @@ def view_cart():
         # Now, product_data_list contains information about products in the cart
         product_manager.close_connection()
 
-
         return render_template('cart.html',cart=cart, UserID=userid, product_data_list=product_data_list)
 
     else:
@@ -403,6 +402,19 @@ def del_cart():
     cart_manager.del_cart(cart_id)
     cart_manager.close_connection()
     return redirect(url_for('view_cart'))
+
+
+
+
+# <------------- Incomplete Cart code ------------------>
+# @app.route('/update_cart', methods=['POST'])
+# def update_cart():
+#     cart_id = request.form.get('CartID')
+#     quantity = int(request.form.get('quantity', 1))
+#     cart_manager = CartManager()
+#     cart_manager.update_cart(cart_id, quantity)
+#     cart_manager.close_connection()
+
 
 if __name__ == '__main__':
     app.run()
