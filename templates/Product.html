@@ -3,45 +3,51 @@
 {% block content %}
 
 <style>
-        body {
-            font-family: Arial, sans-serif;
 
-        }
-        h1 {
-            text-align: center;
-        }
-        .product-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-        .product-card {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px;
-            width: 250px;
-        }
-        .productpg a{
-            text-decoration: none;
-            color:black;
-        }
+
+
     </style>
 
+<h1 class="productH1">BANNER</h1>
+<h1 class="productH1">Product List</h1>
 
-<h1>Product List</h1>
-    <div class="product-container productpg">
-        {% for product in products %}
-        <a href="{{ url_for('display_product', product_id=product.id) }}">
-            <div class="card product-card">
-              <img src="{{ url_for('static', filename='image/' + product.image_path) }}" class="card-img-top" alt="">
-              <div class="card-body">
-                <p class="card-text">{{ product.name }}</p>
-                <p class="card-text">${{ product.price }}</p>
-              </div>
+
+
+<div class="containter">
+    <div class="row">
+        <div class="col-2">
+
+            filter<br>
+            slider
+
+
+        </div>
+
+        <div class="col-10">
+
+            <div class="product-container productpg">
+                {% for product in products %}
+                    <a href="{{ url_for('display_product', product_id=product.id) }}">
+                        <div class="card product-card">
+                          <img src="{{ url_for('static', filename='image/' + product.image_path) }}" class="card-img-top" alt="">
+                          <div class="card-body">
+                            <p class="card-text">{{ product.name }}</p>
+                            <p class="card-text">${{ product.price }}</p>
+                          </div>
+                        </div>
+                    </a>
+                {% endfor %}
             </div>
-        </a>
-        {% endfor %}
+
+
+
+        </div>
     </div>
+</div>
+
+
+
+
 
 
 
