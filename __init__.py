@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
 from User import DisplayUser
 from Cart import CartManager
+import plotly.express as px
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -255,8 +257,12 @@ def del_user():
 @app.route('/adminDashboard')
 def adminDashboard():
     if 'User_ID' in session:
+        data = {'Months': ['January', 'February', 'March', 'May','April','June','July','August','September', 'October','November','December'], 'Total Sold/ Month': [12, 5, 8, 9, 11, 15,7, 19, 11, 13 ,7 ,8]}
 
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'])
+        fig = px.line(data, x='Months', y='Total Sold/ Month', title='Product Sales')
+
+        plot_html = fig.to_html(full_html=False)
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html)
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
@@ -415,6 +421,9 @@ def del_cart():
 #     cart_manager = CartManager()
 #     cart_manager.update_cart(cart_id, quantity)
 #     cart_manager.close_connection()
+
+
+
 
 
 if __name__ == '__main__':

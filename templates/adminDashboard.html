@@ -5,8 +5,10 @@
 <div class="box">
 <h1 class="Header"> DashBoard </h1>
 </div>
-<br><br><br><br><br><br><br><br><br><br>
-{{ UserID }}
+<div class="table">
+    {{ plot_html|safe }}
+</div>
+
 
 
 {% endblock %}
