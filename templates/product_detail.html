@@ -3,29 +3,95 @@
 
 {% block content %}
 
-<style>
-         body {
-            font-family: Arial, sans-serif;
+<div class="container productdt">
+    <div class="row boxpadding">
+        <div class="col-6 text-center"><img class="product-image" src="{{ url_for('static', filename='image/' + product.image_path) }}" alt="{{ product.name }}"></div>
 
-        }
-        .product-details {
-            width: 80%;
-            padding-top:40px;
-            justify-content: space-around;
-        }
-        .product-image {
-            max-width: 50%;
-            height: auto;
-        }
-        .product-info {
-            width: 50%;
-        }
+        <div class="col-6 detail">
 
-        .product-details .row{
-    }
-    </style>
+            <h3 class="pt-3">{{ product.name }}</h3>
+            <h4 class="float-right"> ${{ product.price }}</h4><br><br>
+            <p class="pb-5">{{ product.description }}</p>
+
+            <div class="dropdown-divider pb-5"></div>
+                <!-- Add more details as needed -->
+                <!-- display the size options -->
+                <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+
+                    <div class="row pb-5">
+                        <div class="col-4">
+                            <label for="selected_size">Select Size:</label>
+                            <select name="selected_size" id="size">
+                                {% for size in sizes %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="quantity">Quantity:</label>
+                            <button type="button" onclick="decrement()">-</button>
+                            <input type="text" name="quantity" id="quantity" value="1" class="text-center" readonly>
+                            <button type="button" onclick="increment()">+</button>
+                        </div>
+                    </div>
+
+                {% if product.stock > 0 %}
+                    <button type="submit"  class="form-control btn btn-primary rounded submit px-3">Add to Cart</button>
+                {% else %}
+                    <p>This product is currently out of stock.</p>
+                {% endif %}
+                </form>
 
 
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container loginpg ">
+
+			<div class="row justify-content-center">
+				<div class="col-md-12 col-lg-10">
+					<div class="wrap d-md-flex">
+
+                    <div class="product-info">
+
+                <p>{{ product.name }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <p>Description: {{ product.description }}</p>
+
+                <!-- Add more details as needed -->
+                <!-- display the size options -->
+                <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                    <label for="selected_size">Select Size:</label>
+                    <select name="selected_size" id="size">
+                        {% for size in sizes %}
+                            <option value="{{ size }}">{{ size }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="quantity">Quantity:</label>
+                    <div>
+                        <button type="button" onclick="decrement()">-</button>
+                        <input type="text" name="quantity" id="quantity" value="1" readonly>
+                        <button type="button" onclick="increment()">+</button>
+                    </div>
+
+                {% if product.stock > 0 %}
+                    <button type="submit">Add to Cart</button>
+                {% else %}
+                    <p>This product is currently out of stock.</p>
+                {% endif %}
+                </form>
+            </div>
+
+
+					</div>
+				</div>
+			</div>
+</div>
 
 <div class="container-fluid product-details">
     <div class="row">

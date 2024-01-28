@@ -10,7 +10,7 @@
 
     <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
+<body style="background-image: url({{ url_for('static', filename='image/dust_scratches.png') }});">
 {% block navbar %}
     {% include 'includes/_navbar.html' %}
 {% endblock %}

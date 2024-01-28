@@ -38,13 +38,7 @@ class ProductFilter(Form):
     category_kids = BooleanField('Kids')
     category_shoes = BooleanField('Shoes')
     category_others = BooleanField('Others')
-    price_range = RadioField('Price Range', choices=[
-        ('', 'All'),
-        ('1-25', '1 - 25'),
-        ('26-50', '26 - 50'),
-        ('51-75', '51 - 75'),
-        ('76-100', '76 - 100')
-    ], default='')
+    price_range = RadioField('Price Range', choices=[('', 'All'),('1-25', '1-25'),('26-50', '26-50'),('51-75', '51-75'), ('76-100', '76-100')], default='')
 
 
 class Checkout(Form):

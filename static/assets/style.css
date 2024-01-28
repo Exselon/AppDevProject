@@ -12,6 +12,9 @@ body {
     color: black;
 }
 
+.bg{
+
+}
 
 
 /* Admin NavBar */
@@ -194,6 +197,7 @@ body{
     border-bottom-left-radius: 15px 15px;
     padding: 20px;
     margin: 20px;
+    background-color:white;
 }
 
 .banner{
@@ -217,10 +221,6 @@ body{
   line-height: 56px;
   color: #fff;
 }
-
-
-
-
 
 /*------ Login/Signup CSS ------*/
 .loginpg{
@@ -247,7 +247,7 @@ body{
   border-bottom-right-radius: 15px 15px;
  }
 
- .img{
+.img{
   border-top-left-radius: 15px 15px;
   border-bottom-left-radius: 15px 15px;
  }
@@ -270,3 +270,32 @@ body{
   border-radius: 0px;
   }
 
+/*------ product detail CSS ------*/
+.productdt{
+
+padding: 150px 0px;
+font-size: 16px;
+line-height: 1.8;
+font-weight: normal;
+
+}
+
+.boxpadding{
+   padding:30px 0px;
+   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+   border-top-right-radius: 15px 15px;
+   border-bottom-right-radius: 15px 15px;
+   border-top-left-radius: 15px 15px;
+   border-bottom-left-radius: 15px 15px;
+   background-color:white;
+}
+
+.productdt .detail{
+    padding:0px 30px;
+
+}
+.product-image {
+    max-width: 70%;
+    height: auto;
+    padding: 50px 0px;
+}
