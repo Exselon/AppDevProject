@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
 from User import DisplayUser
 from Cart import CartManager
+from info import InfoManager
 import plotly.express as px
+import stripe
+stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
+import json
 
 
 app = Flask(__name__)
@@ -96,6 +100,56 @@ def create_Cart():
     conn.close()
 
 create_Cart()
+
+
+def create_Order():
+    conn = sqlite3.connect('Order.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orders (
+            OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            product_id INTEGER,
+            quantity INTEGER,
+            size TEXT,
+            total_price REAL,  -- Assuming you want to store the total price for the order
+            order_date TEXT,   -- You can use DATETIME or TEXT for the order date
+            payment_status TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
+            FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+create_Order()
+
+
+def create_Info():
+    conn = sqlite3.connect('Info.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS info (
+        user_id INTEGER,
+        fname TEXT,
+        lname TEXT,
+        address BLOB,
+        email TEXT,
+        postalcode INTEGER,
+        nameoncard TEXT,
+        cardno INTEGER,
+        expirydate BLOB,
+        cvv INTEGER,
+        unitno BLOB
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+
+create_Info()
+
 
 # ---------------Code for Home---------------#
 @app.route('/')
@@ -383,18 +437,26 @@ def view_cart():
         product_manager = ProductManager()  # Replace with the actual class for managing product data
         product_data_list = []
 
+        total_price = 0
+
         for item in cart:
             product_id = item[2]  # Replace with the actual key or attribute name
             product = product_manager.get_product_by_id(product_id)
 
             if product:
                 product_data_list.append(product)
+                total_price += product.price * item[2]  # Assuming index 2 corresponds to quantity
             else:
                 print(f"Product with ID {product_id} not found in the product database.")
         # Now, product_data_list contains information about products in the cart
         product_manager.close_connection()
 
-        return render_template('cart.html',cart=cart, UserID=userid, product_data_list=product_data_list)
+        for item, product in zip(cart, product_data_list):
+            print(f"Quantity: {item[3]}, Price: {product.price}, Subtotal: {item[3] * product.price}")
+
+
+        return render_template('cart.html', cart=cart, UserID=userid, product_data_list=product_data_list, total_price=total_price)
+
 
     else:
         flash('You need to log in first.', 'warning')
@@ -411,20 +473,147 @@ def del_cart():
     cart_manager.close_connection()
     return redirect(url_for('view_cart'))
 
+@app.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    cart_manager = CartManager()
+    if request.method == 'POST':
+        cart_id = request.form.get('CartID')
+        print(cart_id)
+        action = request.form.get('action')
+
+        if cart_id and action:
+            cart_id = int(cart_id)
+            current_quantity = get_current_quantity(cart_id)
+
+            if action == 'increment':
+                new_quantity = current_quantity + 1
+            elif action == 'decrement' and current_quantity > 1:
+                new_quantity = current_quantity - 1
+            else:
+                # No valid action, do nothing
+                return redirect(url_for('cart'))
+
+            cart_manager.update_cart_quantity(cart_id, new_quantity)
+
+    return redirect(url_for('view_cart'))
+
+def get_current_quantity(cart_id):
+    conn = sqlite3.connect('Cart.db')
+    cursor = conn.cursor()
+
+    # Retrieve the current quantity from the database
+    cursor.execute('SELECT quantity FROM cart WHERE CartID = ?', (cart_id,))
+    result = cursor.fetchone()
+
+    conn.close()
+
+    if result:
+        return result[0]
+    else:
+        # Return 0 if the cart item is not found
+        return 0
 
 
+#<--------------------- Check Out code --------------------->
+# @app.route('/checkout')
+# def checkout():
+#     checkoutForm = CheckoutForm(request.form)
+#     if request.method == 'POST':
+#         fname = checkoutForm.fname.data
+#         lname = checkoutForm.lname.data
+#         address = checkoutForm.address.data
+#         email = checkoutForm.email.data
+#         postalcode = checkoutForm.postalcode.data
+#         nameoncard = checkoutForm.nameoncard.postalcode.data
+#         cardno = checkoutForm.cardno.data
+#         expirydate = checkoutForm.expirydate.data
+#         cvv = checkoutForm.cvv.data
+#         unitno = checkoutForm.unitno.data
+#
+#         info_manager = InfoManager()
+#         info_manager.add_info(fname, lname, address, email, postalcode, nameoncard, cardno, expirydate, cvv, unitno)
+#         info_manager.close_connection()
+#     return render_template('checkout.html')
 
-# <------------- Incomplete Cart code ------------------>
-# @app.route('/update_cart', methods=['POST'])
-# def update_cart():
-#     cart_id = request.form.get('CartID')
-#     quantity = int(request.form.get('quantity', 1))
-#     cart_manager = CartManager()
-#     cart_manager.update_cart(cart_id, quantity)
-#     cart_manager.close_connection()
-
-
-
+# @app.route('/checkout', methods=['GET'])
+# def checkout():
+#     cartmanager = CartManager()
+#     cart_item = cartmanager.get_all_cart()
+#
+#     total_amount = total_amount
+#     return render_template('checkout.html', cart_item=cart_item, total_price=total_amount)
+#
+#
+# @app.route('/process-payment', methods=['POST'])
+# def process_payment():
+#     # Get customer information from the form
+#     customer_name = request.form['name']
+#     customer_email = request.form['email']
+#
+#     # Create a Checkout Session on the server
+#     session = stripe.checkout.Session.create(
+#         payment_method_types=['card'],
+#
+#         line_items=[
+#             # Include the cart items here
+#             {
+#                 'price_data': {
+#                     'currency': 'usd',
+#                     'product_data': {
+#                         'name': item['product_name'],
+#                     },
+#                     'unit_amount': item['price'],
+#                 },
+#                 'quantity': item['quantity'],
+#             }
+#
+#             for item in cart_items
+#         ],
+#         mode='payment',
+#         success_url=request.url_root + 'success',
+#         cancel_url=request.url_root + 'cancel',
+#     )
+#
+#     # Update your database with the order details (cart_items, customer_name, customer_email, etc.)
+#     # ...
+#
+#     flash('Payment successful. Order placed!', 'success')
+#     return redirect(url_for('success'))
+#
+#
+# @app.route('/create-checkout-session', methods=['POST'])
+# def create_checkout_session():
+#     # Create a Checkout Session on the server
+#     session = stripe.checkout.Session.create(
+#         payment_method_types=['card'],
+#         line_items=[
+#             {
+#                 'price_data': {
+#                     'currency': 'usd',
+#                     'product_data': {
+#                         'name': 'Your Product',
+#                     },
+#                     'unit_amount': 1000,  # The price in cents
+#                 },
+#                 'quantity': 1,
+#             },
+#         ],
+#         mode='payment',
+#         success_url=request.url_root + 'success',
+#         cancel_url=request.url_root + 'cancel',
+#     )
+#
+#     return jsonify({'id': session.id})
+#
+#
+# @app.route('/success', methods=['GET'])
+# def success():
+#     # Update your database with the successful order details
+#     return "Payment successful. Order placed!"
+#
+# @app.route('/cancel', methods=['GET'])
+# def cancel():
+#     return "Payment canceled."
 
 
 if __name__ == '__main__':

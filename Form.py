@@ -41,9 +41,9 @@ class ProductFilter(Form):
     price_range = RadioField('Price Range', choices=[('', 'All'),('1-25', '1-25'),('26-50', '26-50'),('51-75', '51-75'), ('76-100', '76-100')], default='')
 
 
-class Checkout(Form):
-    firstname = StringField('firstname', [validators.InputRequired(), validators.DataRequired()])
-    lastname = StringField('lastname', [validators.InputRequired(), validators.DataRequired()])
+class CheckoutForm(Form):
+    fname = StringField('firstname', [validators.InputRequired(), validators.DataRequired()])
+    lname = StringField('lastname', [validators.InputRequired(), validators.DataRequired()])
     address = StringField('address', [validators.InputRequired(), validators.DataRequired()])
     email = EmailField('email', [validators.InputRequired("Please enter your email address"), validators.DataRequired(), validators.Email("Please enter your email address")])
     postalcode = IntegerField('postalcode', [validators.InputRequired(), validators.DataRequired(), validators.length(min=6, max=6)])

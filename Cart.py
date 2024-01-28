@@ -35,45 +35,34 @@ class CartManager:
         self.cursor.execute("DELETE FROM cart WHERE CartID = ?", (cartid,))
         self.conn.commit()
 
-    # <-------------- Incomplete Cart function --------------->
+    def update_cart_quantity(self, cart_id, new_quantity):
+        # Check if the cart item with the given cart_id exists
+        try:
+            self.cursor.execute('SELECT * FROM cart WHERE CartID = ?', (cart_id,))
+            cart_item = self.cursor.fetchone()
 
-    # def update_cart(self, cartid):
-    #     self.cursor.execute("""
-    #         UPDATE cart
-    #         SET quantity = ?
-    #         WHERE CartID = ?
-    #     """, (cartid))
-    #     self.conn.commit()
+            if cart_item:
+                # Update the quantity for the cart item
+                self.cursor.execute('UPDATE cart SET quantity = ? WHERE CartID = ?', (new_quantity, cart_id))
+                self.conn.commit()
+                print(f"Quantity updated for CartID {cart_id} to {new_quantity}")
+            else:
+                print(f"Cart item with CartID {cart_id} not found.")
+        finally:
+            self.conn.close()
 
+    def get_current_quantity(self, cart_id):
+        # Retrieve the current quantity from the database
+        self.cursor.execute('SELECT quantity FROM cart WHERE CartID = ?', (cart_id,))
+        result = self.cursor.fetchone()
 
+        self.conn.close()
 
-
-# <-------------- Maybe new database --------------->
-    # def get_cart_data(self, user_id):
-    #     self.cursor.execute('''
-    #         SELECT products.name, cart.quantity
-    #         FROM cart
-    #         JOIN products ON cart.Product_ID = "product.db".products.id
-    #         WHERE cart.user_id = ?
-    #     ''', (user_id,))
-    #     cart_data = self.cursor.fetchall()
-    #     return cart_data
-
-
-
-    # def get_cart_data(self, user_id):
-    #     self.cursor.execute('''
-    #         SELECT c.User_ID, c.Product_ID, c.quantity, c.size, p.name, p.image_path, p.description, p.price
-    #         FROM cart c
-    #         JOIN products p ON c.Product_ID = p.id
-    #         WHERE c.User_ID = ?
-    #     ''', (user_id,))
-    #     cart_data = self.cursor.fetchall()
-    #     return cart_data
-
-
-
-
+        if result:
+            return result[0]
+        else:
+            # Return 0 if the cart item is not found
+            return 0
 
 
     def close_connection(self):
