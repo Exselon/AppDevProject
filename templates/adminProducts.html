@@ -18,15 +18,15 @@
 
         <label for="category">category:</label>
         {% for category, label in form.category.choices %}
-                <label>
+                <br><label>
                     <input type="checkbox" name="category" value="{{ category }}"
                            {% if category in form.category.data %}checked{% endif %}>
                     {{ label }}
-                </label><br>
+                </label>
             {% endfor %}
 
 
-
+        <br>
         <label for="stock">stock:</label>
         {{ form.stock(class="form-control") }}
 
@@ -34,9 +34,17 @@
         {{ form.description(class="form-control") }}
 
         <label for="size">size:</label>
-        {{ form.size(class="form-control") }}
+
+        {% for size, label in form.size.choices %}
+                <br><label>
+                    <input type="checkbox" name="size" value="{{ size }}"
+                           {% if size in form.size.data %}checked{% endif %}>
+                    {{ label }}
+                </label>
+            {% endfor %}
 
 
+    <br>
         <input type="submit" value="Add Product">
     </form>
 </div>

@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,SelectField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
+from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
 
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150), validators.DataRequired()])
@@ -16,11 +16,10 @@ class ProductForm(Form):
     image = FileField('ImageURL', [validators.DataRequired()])
     name = StringField('Name', [validators.DataRequired()])
     price = FloatField('Price', [validators.DataRequired()])
-    category = SelectMultipleField('Category', choices=[('shoe', 'Shoe'), ('shirt', 'Shirt'), ('pants', 'Pants')])
-
+    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('shoe', 'Shoe'), ('others', 'Others')])
     stock = IntegerField('Stock', [validators.DataRequired()])
     description = TextAreaField('Description', [validators.DataRequired()])
-    size = SelectField('Size', choices=[('small', 'Small'), ('medium', 'Medium'), ('large', 'Large')])
+    size = SelectMultipleField('Size', choices=[('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
 
 class PromotionForm(Form):
     ID = StringField("ID",[validators.DataRequired()])

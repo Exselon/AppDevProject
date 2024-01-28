@@ -287,6 +287,7 @@ def adminProducts():
 
         #change add , for categroy
         categories_string = ', '.join(category)
+        size_string = ', '.join(size)
         # Handle image upload
         image_upload = request.files['image']
 
@@ -300,7 +301,7 @@ def adminProducts():
 
         # Save the product to the database
         product_manager = ProductManager()
-        product_manager.add_product(filename_only, name, price, categories_string, stock, description, size)
+        product_manager.add_product(filename_only, name, price, categories_string, stock, description, size_string)
         product_manager.close_connection()
 
 
