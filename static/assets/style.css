@@ -167,6 +167,45 @@ body{
 	.navbar .nav-item:hover .nav-link{   }
 	.navbar .nav-item:hover .dropdown-menu{ display: block; }
 }
+/*------ Footer CSS ------*/
+
+.footer{
+    border-top: 3px solid #008000;
+    color: #008000;
+    background-color:white;
+    padding-top:50px;
+}
+
+.copyright{
+    border-top:1px solid #008000;
+}
+
+.footer a{
+    color:green;
+    font-weight:bold;
+}
+.footer a:hover{
+    text-decoration:none;
+}
+
+.btn.btn-tertiary {
+    background-color: #008000;
+    color: white;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 20px;
+}
+
+.social li {
+    display: inline-block;
+    padding:0px 5px;
+    font-size:30px;
+}
+
+.social li a i{
+    width:auto;
+    height: 25px;
+}
 
 /*------ Product CSS ------*/
 .product-container {
