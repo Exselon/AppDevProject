@@ -1,12 +1,12 @@
 from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
 
 class userSignup(Form):
-    name = StringField('name', [validators.Length(min=1, max=150), validators.DataRequired()])
-    password = PasswordField('Password', [validators.Length(min=8), validators.DataRequired()])
-    cfmpassword = PasswordField('cfmPassword', [validators.Length(min=8), validators.DataRequired()])
-    number = IntegerField('Contact Number', [validators.Length(min=8, max=8), validators.DataRequired()])
-    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
-    dob = DateField('Date of Birth', [validators.DataRequired()], format='%Y-%m-%d')
+    name = StringField('name', [validators.Length(min=1, max=150)])
+    password = PasswordField('Password', [validators.Length(min=8)])
+    cfmpassword = PasswordField('cfmPassword', [validators.Length(min=8)])
+    number = IntegerField('Contact Number', [validators.Length(min=8, max=8)])
+    email = EmailField('Email', [validators.Email()])
+    dob = DateField('Date of Birth',  format='%Y-%m-%d')
 
 class userLogin(Form):
     username = StringField('username', [validators.DataRequired()])
