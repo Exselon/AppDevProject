@@ -1,12 +1,49 @@
 {% extends "adminBase.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-
-<div class="box">
+<style>
+    .card-body {
+      display: flex;
+      justify-content: space-between;
+    }
+    .card-body img {
+      width: 80%;
+      height: auto;
+    }
+</style>
+<div class="box" style="z-index: 1;">
 <h1 class="Header"> DashBoard </h1>
 </div>
 <div class="table">
     {{ plot_html|safe }}
+</div>
+<div class="container">
+    <div class="row">
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    Popular Item
+                    <img src="static/image/Shirt.jpeg" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    New item
+                    <img src="static/image/Shirt.jpeg" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    Limited Item
+                    <img src="static/image/Shirt.jpeg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
