@@ -1,49 +1,108 @@
 {% extends "base.html" %}
-{% block title %}Check Out{% endblock %}
+{% block title %}Library Loan System - Home{% endblock %}
 {% block content %}
+<header>Checkout</header>
 
-<header>Check Out</header>
+<h1>Checkout Page</h1>
 
 <body>
     <div class="container-fluid">
-        <form action="{{  url_for('checkout')  }}">
-            <label for="firstname">First name:</label>
-            {{ form.firstname(class="form-control") }}
-            
-            <label for="lastname">Last name:</label>
-            {{ form.lastname(class="form-control") }}
-            
-            <label for="email">Email:</label>
-            {{ form.email(class="form-control") }}
-            
-            <label for="address">Address:</label>
-            {{ form.address(class="form-control") }}
+        <div class="row">
+            <div class="col-8">
+                <form method="POST" id="payment-form" action="{{  url_for('process_order')  }}">
+                    <label for="fname">First name:</label>
+                    {{ form.firstname(class="form-control") }}
 
-            <label for="unitno">Unit Number:</label>
-            {{ form.unitno(class="form-control") }}
-            
-            <label for="postalcode">Postal Code:</label>
-            {{ form.postalcode(class="form-control") }}
-        </form>
+                    <label for="lname">Last name:</label>
+                    {{ form.lastname(class="form-control") }}
+
+                    <label for="email">Email:</label>
+                    {{ form.email(class="form-control") }}
+
+                    <label for="address">Address:</label>
+                    {{ form.address(class="form-control") }}
+
+                    <label for="unitno">Unit Number:</label>
+                    {{ form.unitno(class="form-control") }}
+
+                    <label for="postalcode">Postal Code:</label>
+                    {{ form.postalcode(class="form-control") }}
+
+                    <label for="nameoncard">Name on card:</label>
+                    {{ form.nameoncard(class="form-control") }}
+
+                    <label for="cardno">Card number:</label>
+                    {{ form.cardno(class="form-control") }}
+
+                    <label for="expirydate">Expiry Date:</label>
+                    {{ form.expirydate(class="form-control") }}
+
+                    <label for="cvv">CVV:</label>
+                    {{ form.cvv(class="form-control") }}
+
+                    <button type="submit">Place Order</button>
+                </form>
+            </div>
+        </div>
     </div>
 
 
-    <div class="container-fluid">
-        <form action="{{  url_for('checkout')  }}">
-            <label for="nameoncard">Name on card:</label>
-            {{ form.nameoncard(class="form-control") }}
 
-            <label for="cardno">Card number:</label>
-            {{ form.cardno(class="form-control") }}
 
-            <label for="expirydate">Expiry Date:</label>
-            {{ form.expirydate(class="form-control") }}
 
-            <label for="cvv">CVV:</label>
-            {{ form.cvv(class="form-control") }}
-        </form>
-    </div>
+
+
+
+<!--    <h1>Checkout Page</h1>-->
+
+<!--    <h2>Cart Items</h2>-->
+<!--    <ul>-->
+<!--        {% for item in cart_items %}-->
+<!--            <li>{{ item.product_name }} - ${{ item.price }} x {{ item.quantity }}</li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+
+<!--    <p>Total Amount: ${{ total_amount / 100 }}</p>-->
+
+<!--    <h2>Customer Information</h2>-->
+<!--    <form action="/process-payment" method="post">-->
+<!--        <label for="name">Name:</label>-->
+<!--        <input type="text" id="name" name="name" required><br>-->
+
+<!--        <label for="email">Email:</label>-->
+<!--        <input type="email" id="email" name="email" required><br>-->
+
+<!--        &lt;!&ndash; Add more fields as needed &ndash;&gt;-->
+
+<!--        <button id="checkout-button" type="submit">Proceed to Payment</button>-->
+<!--    </form>-->
+
+
+<!--    <script src="https://js.stripe.com/v3/"></script>-->
+<!--    <script>-->
+<!--        var stripe = Stripe('your_stripe_publishable_key');-->
+<!--        var checkoutButton = document.getElementById('checkout-button');-->
+
+<!--        checkoutButton.addEventListener('click', function () {-->
+<!--            // Call your server to create a Checkout Session-->
+<!--            fetch('/create-checkout-session', {-->
+<!--                method: 'POST',-->
+<!--            })-->
+<!--            .then(response => response.json())-->
+<!--            .then(session => {-->
+<!--                return stripe.redirectToCheckout({ sessionId: session.id });-->
+<!--            })-->
+<!--            .then(result => {-->
+<!--                if (result.error) {-->
+<!--                    alert(result.error.message);-->
+<!--                }-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error('Error:', error);-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+
 </body>
-
 
 {% endblock %}

@@ -7,11 +7,11 @@ from werkzeug.utils import secure_filename
 from Promotion import PromotionManager
 from User import DisplayUser
 from Cart import CartManager
-from info import InfoManager
+# from info import InfoManager
 import plotly.express as px
 import stripe
-stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
-import json
+# stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
+# import json
 
 
 app = Flask(__name__)
@@ -102,53 +102,53 @@ def create_Cart():
 create_Cart()
 
 
-def create_Order():
-    conn = sqlite3.connect('Order.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS orders (
-            OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            product_id INTEGER,
-            quantity INTEGER,
-            size TEXT,
-            total_price REAL,  -- Assuming you want to store the total price for the order
-            order_date TEXT,   -- You can use DATETIME or TEXT for the order date
-            payment_status TEXT,
-            FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
-            FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-create_Order()
-
-
-def create_Info():
-    conn = sqlite3.connect('Info.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS info (
-        user_id INTEGER,
-        fname TEXT,
-        lname TEXT,
-        address BLOB,
-        email TEXT,
-        postalcode INTEGER,
-        nameoncard TEXT,
-        cardno INTEGER,
-        expirydate BLOB,
-        cvv INTEGER,
-        unitno BLOB
-        )
-    ''')
-
-    conn.commit()
-    conn.close()
-
-
-create_Info()
+# def create_Order():
+#     conn = sqlite3.connect('Order.db')
+#     cursor = conn.cursor()
+#     cursor.execute('''
+#         CREATE TABLE IF NOT EXISTS orders (
+#             OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
+#             user_id INTEGER,
+#             product_id INTEGER,
+#             quantity INTEGER,
+#             size TEXT,
+#             total_price REAL,  -- Assuming you want to store the total price for the order
+#             order_date TEXT,   -- You can use DATETIME or TEXT for the order date
+#             payment_status TEXT,
+#             FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
+#             FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
+#         )
+#     ''')
+#     conn.commit()
+#     conn.close()
+#
+# create_Order()
+#
+#
+# def create_Info():
+#     conn = sqlite3.connect('Info.db')
+#     cursor = conn.cursor()
+#     cursor.execute('''
+#         CREATE TABLE IF NOT EXISTS info (
+#         user_id INTEGER,
+#         fname TEXT,
+#         lname TEXT,
+#         address BLOB,
+#         email TEXT,
+#         postalcode INTEGER,
+#         nameoncard TEXT,
+#         cardno INTEGER,
+#         expirydate BLOB,
+#         cvv INTEGER,
+#         unitno BLOB
+#         )
+#     ''')
+#
+#     conn.commit()
+#     conn.close()
+#
+#
+# create_Info()
 
 
 # ---------------Code for Home---------------#
