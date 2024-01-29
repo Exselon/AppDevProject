@@ -25,5 +25,9 @@ class DisplayUser:
         current_password = self.cursor.fetchone()
         return current_password
 
+    def update_password(self,new_password,user_id):
+        self.cursor.execute("UPDATE users SET Password = ? WHERE UserID = ?", (new_password, user_id))
+        self.conn.commit()
+
     def close_connection(self):
         self.conn.close()

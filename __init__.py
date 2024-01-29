@@ -280,22 +280,50 @@ def userdashboard():
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 #################INCOMPLETE#########################
-@app.route('/passwordchange', methods=['POST'])
+@app.route('/passwordchange', methods=['POST','GET'])
 def passwordchange():
     passwordchangeform = PasswordChange(request.form)
 
     if 'User_ID' in session:
-
-        UserID = session['User_ID']
-        password_change = DisplayUser()
-        current_password = password_change.get_password_by_id(UserID)
-        password_change.close_connection()
-
-        return render_template('passwordchange.html', current_password=current_password,UserId=session['User_ID'], form=passwordchangeform)
+        return render_template('passwordchange.html', form=passwordchangeform)
 
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
+
+@app.route('/passwordchange', methods=['POST'])
+def passwordchangebutton():
+    UserID = session.get('User_ID')
+    # UserID = session['User_ID']
+    password_change = DisplayUser()
+    current_password = password_change.get_password_by_id(UserID)
+    password_change.close_connection()
+
+    if request.method == 'POST':
+        CurrentPassword = passwordchange.CurrentPasswordField.data
+        NewPassword = passwordchange.NewPasswordField.data
+        ConfirmPassword = passwordchange.ConfirmPasswordField.data
+
+        if CurrentPassword == current_password:
+            if NewPassword == ConfirmPassword:
+                update_password = DisplayUser()
+                updatepassword = update_password.update_password(ConfirmPassword, UserID)
+                update_password.close_connection()
+            else:
+                flash('You need to log in first.', 'warning')
+                print("check cfm else")
+                return redirect(url_for('login'))
+        else:
+            flash('You need to log in first.', 'warning')
+            print("current password else")
+            return redirect(url_for('login'))
+
+        return render_template('passwordchange.html', form=passwordchange)
+    else:
+        flash('You need to log in first.', 'warning')
+        print("current qwewqqewqwe else")
+        return redirect(url_for('login'))
+
 
 #################code for del button on user profile#########################
 @app.route('/del_user', methods=['POST'])
