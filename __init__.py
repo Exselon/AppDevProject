@@ -439,13 +439,20 @@ def view_cart():
 
         total_price = 0
 
+        # total_price = 0   #initialize total proce
+
         for item in cart:
             product_id = item[2]  # Replace with the actual key or attribute name
             product = product_manager.get_product_by_id(product_id)
 
+            # product_id = item[1]
+            # product = product_manager.get_product_by_id(product_id)
+
             if product:
+                # product_data_list.append(product)
+                # total_price += product.price * item[2]
                 product_data_list.append(product)
-                total_price += product.price * item[2]  # Assuming index 2 corresponds to quantity
+                total_price += product.price * item[3]  # Assuming index 2 corresponds to quantity
             else:
                 print(f"Product with ID {product_id} not found in the product database.")
         # Now, product_data_list contains information about products in the cart
