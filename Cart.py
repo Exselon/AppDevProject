@@ -38,6 +38,10 @@ class CartManager:
     def update_cart_quantity(self, cart_id, new_quantity):
         # Check if the cart item with the given cart_id exists
         try:
+            if new_quantity < 1:
+                print(f"Validation error: Cannot decrement below 1 for CartID {cart_id}")
+                return
+
             self.cursor.execute('SELECT * FROM cart WHERE CartID = ?', (cart_id,))
             cart_item = self.cursor.fetchone()
 
