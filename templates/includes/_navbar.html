@@ -1,96 +1,60 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='image/Logo.png') }}" alt="Logo" class="logo"></a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarNav">
+		<div class="float-left">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/">New & Featured</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="/">Men</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/contactUs">Contact</a>
+			<li class="nav-item">
+                <a class="nav-link" href="/">Women</a>
             </li>
-
-            <li class="nav-item dropdown-menu-end">
-                <a class="nav-link" role="button" data-toggle="dropdown" href="/Product">
-                    Product
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right p-4 dropdown-category">
-
-					<div class="row text-center">
-						<div class="col">
-							<a class="nav-link" href="#">
-							<div class="product-category">
-							<img src="image1.jpg" alt="MenImg"><br>
-							<span>Men</span>
-                    		</div>
-							</a>
-						</div>
-						<div class="col">
-							<a class="nav-link" href="#">
-							<div class="product-category">
-							<img src="image1.jpg" alt="WomenImg"><br>
-							<span>Women</span>
-                    		</div>
-							</a>
-						</div>
-						<div class="col">
-							<a class="nav-link" href="#">
-							<div class="product-category">
-							<img src="image1.jpg" alt="KidsImg"><br>
-							<span>Kids</span>
-                    		</div>
-							</a>
-						</div>
-						<div class="col">
-							<a class="nav-link" href="#">
-							<div class="product-category">
-							<img src="image1.jpg" alt="shoesimg"><br>
-							<span>Shoes</span>
-                    		</div>
-							</a>
-						</div>
-						<div class="col">
-							<a class="nav-link" href="#">
-							<div class="product-category">
-							<img src="image1.jpg" alt="others"><br>
-							<span>others</span>
-                    		</div>
-							</a>
-						</div>
-					</div>
-                </div>
+			<li class="nav-item">
+                <a class="nav-link" href="/">Kids</a>
             </li>
+		</ul>
+		</div>
+
+		<ul class="navbar-nav ml-auto">
+
+			<li class="nav-item">
+				<a class="nav-link" href="#"><i class="bi bi-search"></i></a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link" href="/cart"><i class="bi bi-cart"></i></a>
+			</li>
 
             <li class="nav-item dropdown-login">
 
 				{% if 'User_ID' in session %}
 					{% if 'Role' in session and session['Role'] == 'customer' %}
-						<a class="nav-link" role="button" data-toggle="dropdown" href="/userdashboard">Profile</a>
+						<a class="nav-link" role="button" data-toggle="dropdown" href="/userdashboard"><i class="bi bi-person-fill"></i></a>
 					{% else %}
-						<a class="nav-link" role="button" data-toggle="dropdown" href="/admindashboard">Profile</a>
+						<a class="nav-link" role="button" data-toggle="dropdown" href="/admindashboard"><i class="bi bi-person-fill-gear"></i></a>
 					{% endif %}
 
 
 					<div class="dropdown-menu dropdown-menu-right p-4" >
 						<p>Welcome, {{ session['Username'] }}</p>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Setting</a>
+						<a class="dropdown-item" href="#"><i class="bi bi-gear"></i>Setting </a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#" onclick="confirmLogout()">Logout</a>
+						<a class="dropdown-item" href="#" onclick="confirmLogout()"> <i class="bi bi-box-arrow-right "></i> Logout</a>
 					</div>
 
 				{% else %}
 
 					<a class="nav-link" role="button" data-toggle="dropdown" href="/login">
-						Login
+						<i class="bi bi-person"></i>
 					</a>
 
 				{% endif %}

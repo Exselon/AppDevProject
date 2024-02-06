@@ -9,7 +9,7 @@ from User import DisplayUser
 from Cart import CartManager
 # from info import InfoManager
 import plotly.express as px
-import stripe
+#import stripe
 # stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
 # import json
 
