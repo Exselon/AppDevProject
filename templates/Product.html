@@ -20,11 +20,11 @@
                 <section id="filters">
                     <h5 class="text-center mb-3">Filters</h5>
                     <div class="dropdown-divider"></div>
-
+                    <form id="filterform" method="post" action="{{ url_for('Productpage') }}">
                     <!-- Section: Price -->
                     <section class="mb-1 mt-3">
                         <h6 class="font-weight-bold mb-3">Price</h6>
-                        <form id="priceForm" method="post" action="{{ url_for('Productpage') }}">
+
                         <div class="pl-4">
                             {% for radio in form.pricerange %}
                             <div class="form-check pl-3">
@@ -33,30 +33,30 @@
                             </div>
                             {% endfor %}
                         </div>
-                        </form>
+
                     </section><!-- Section: Price -->
 
                     <section class="mb-4">
                         <h6 class="font-weight-bold mb-3">Size</h6>
-                        <form id="categoryForm" method="post" action="{{ url_for('Productpage') }}">
+
                         <div class="form-check">
-                        {{ form.category_men(class="form-check-input", onchange="categoryForm()") }}
+                        {{ form.category_men(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_men.label }}</label>
                         </div>
                         <div class="form-check">
-                        {{ form.category_women(class="form-check-input", onchange="categoryForm()") }}
+                        {{ form.category_women(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_women.label }}</label>
                         </div>
                         <div class="form-check">
-                        {{ form.category_kids(class="form-check-input", onchange="categoryForm()") }}
+                        {{ form.category_kids(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_kids.label }}</label>
                         </div>
                         <div class="form-check">
-                        {{ form.category_shoes(class="form-check-input", onchange="categoryForm()") }}
+                        {{ form.category_shoes(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_shoes.label }}</label>
                         </div>
                         <div class="form-check">
-                        {{ form.category_others(class="form-check-input", onchange="categoryForm()") }}
+                        {{ form.category_others(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_others.label }}</label>
                         </div>
                         </form>
@@ -96,11 +96,7 @@
 
 <script>
         function submitForm() {
-            document.getElementById("priceForm").submit();
-        }
-
-        function categoryForm() {
-            document.getElementById("categoryForm").submit();
+            document.getElementById("filterform").submit();
         }
     </script>
 
