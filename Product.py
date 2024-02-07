@@ -38,12 +38,18 @@ class ProductManager:
         self.conn.commit()
 
     def get_products_by_category(self, category, price_range=None):
-        if price_range:
+        if category and price_range:
             query = "SELECT * FROM products WHERE category LIKE ? AND price BETWEEN ? AND ?"
             self.cursor.execute(query, ('%' + category + '%', price_range.split('-')[0], price_range.split('-')[1]))
-        else:
+        elif category:
             query = "SELECT * FROM products WHERE category LIKE ?"
             self.cursor.execute(query, ('%' + category + '%',))
+        elif price_range:
+            query = "SELECT * FROM products WHERE price BETWEEN ? AND ?"
+            self.cursor.execute(query, (price_range.split('-')[0], price_range.split('-')[1]))
+        else:
+            query = "SELECT * FROM products"
+            self.cursor.execute(query)
 
         products_data = self.cursor.fetchall()
         return [Product(*data) for data in products_data]
