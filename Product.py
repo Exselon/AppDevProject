@@ -37,7 +37,10 @@ class ProductManager:
             (image_path,name,price,category,stock,description,size))
         self.conn.commit()
 
-
+    def get_products_by_category(self, keyword):
+        self.cursor.execute("SELECT * FROM products WHERE category LIKE ?", ('%' + keyword + '%',))
+        products_data = self.cursor.fetchall()
+        return [Product(*data) for data in products_data]
 
     def close_connection(self):
         self.conn.close()

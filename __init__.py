@@ -243,13 +243,39 @@ def signup():
     return render_template('Signup.html', form=userSignupform)
 
 # ---------------Code for product---------------#
-@app.route('/Product')
+@app.route('/Product', methods=['GET', 'POST'])
 def Productpage():
     ProductFilterForm = ProductFilter(request.form)
     product_manager = ProductManager()
     products = product_manager.get_all_products()
-    product_manager.close_connection()
 
+    if request.method == 'POST':
+        selected_price = request.form.get('pricerange')
+
+        # Capture selected categories as a list
+        selected_categories = [key.split('_')[1] for key, value in request.form.items() if key.startswith('category_')]
+
+
+        print(f"Selected Price: {selected_price}")
+        print(f"Selected Categories: {selected_categories}")
+
+        if selected_categories:
+            # Debugging: Print the SQL query
+            keyword = selected_categories
+            query = f"SELECT * FROM products WHERE category LIKE '%{keyword}%'"
+            print(f"SQL Query: {query}")
+
+            # Filter products based on selected category
+            filtered_products = product_manager.get_products_by_category(selected_categories[0])
+        else:
+            # If no category is selected, display all products
+            return render_template('Product.html', products=products, form=ProductFilterForm)
+
+            # Use 'selected_price' and 'filtered_products' for rendering or any other logic
+        return render_template('Product.html', products=filtered_products, form=ProductFilterForm)
+
+
+    product_manager.close_connection()
     return render_template('Product.html', products=products, form=ProductFilterForm)
 
 @app.route('/product/<int:product_id>')
@@ -280,7 +306,7 @@ def userdashboard():
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 #################INCOMPLETE#########################
-@app.route('/passwordchange', methods=['POST','GET'])
+@app.route('/passwordchange', methods=['POST'])
 def passwordchange():
     passwordchangeform = PasswordChange(request.form)
 

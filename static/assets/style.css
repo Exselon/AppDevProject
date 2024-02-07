@@ -237,9 +237,6 @@ body {
 }
 
 /*------ Main Navbar ------*/
-.navbar-nav .nav-item.dropdown:hover .dropdown-menu {
-
-}
 
 .navbar{
     height: 90px;
