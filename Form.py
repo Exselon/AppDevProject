@@ -59,3 +59,13 @@ class CheckoutForm(Form):
     expirydate = MonthField('expirydate', [validators.InputRequired(), validators.DataRequired()], format='%m - %y')
     cvv = IntegerField('cvv', [validators.InputRequired(), validators.DataRequired, validators.length(min=3, max=4)])
     unitno = StringField('unitno', [validators.Optional(strip_whitespace=True)])
+
+class CreateUserForm(Form):
+    name = StringField('name', [validators.Length(min=1, max=150)])
+    password = PasswordField('Password', [validators.Length(min=8)])
+    cfmpassword = PasswordField('cfmPassword', [validators.Length(min=8)])
+    number = IntegerField('Contact Number', [validators.Length(min=8, max=8)])
+    email = EmailField('Email', [validators.Email()])
+    dob = DateField('Date of Birth',  format='%Y-%m-%d')
+
+

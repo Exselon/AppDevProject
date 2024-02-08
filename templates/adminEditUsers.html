@@ -43,10 +43,14 @@
         {% endfor %}
     </table>
 </div>
+<form method="post" action="{{ url_for('adminEditUsers') }}">
 
+
+    <input type="submit" value="Create User">
+</form>
 <script>
-    function confirmDelUser() {
-        return confirm('Confirm Delete?');
-	    }
+  function confirmDelUser() {
+    return confirm('Confirm Delete?');
+    }
 </script>
 {% endblock %}

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , CreateUserForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -448,7 +448,27 @@ def adminEditUsers():
     getUser = DisplayUser()
     displayuser = getUser.get_all_user()
     getUser.close_connection()
-    return render_template('adminEditUsers.html', displayuser = displayuser)
+
+    Create_UserForm = CreateUserForm()
+    if request.method == 'POST':
+        username = Create_UserForm.name.data
+        password = Create_UserForm.password.data
+        phone_number = Create_UserForm.number.data
+        email = Create_UserForm.email.data
+        date_of_birth = Create_UserForm.dob.data
+
+        conn = sqlite3.connect('Userdata.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth, Role)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (username, password, phone_number, email, date_of_birth, 'admin'))
+        conn.commit()
+        conn.close()
+    return render_template('adminEditUsers.html', Create_UserForm=Create_UserForm , displayuser = displayuser)
+
+
+
 
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
