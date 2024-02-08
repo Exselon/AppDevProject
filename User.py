@@ -10,7 +10,7 @@ class UserAccount:
         existing_number = self.cursor.fetchone()
         return existing_number is not None
 
-    def login(self, number):
+    def logincheck(self, number):
         self.cursor.execute('SELECT * FROM users WHERE PhoneNumber=?', (number,))
         user = self.cursor.fetchone()
         return user

@@ -57,6 +57,9 @@
 
                      <input type="submit" value="Register" class="form-control btn btn-primary rounded submit px-3">
                  </form>
+                {% if failure_message %}
+						<span style="color: red;">{{ failure_message }}</span>
+                {% endif %}
                 <br>
              <p class="text-center">Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
 		     </div>
@@ -108,11 +111,14 @@
         if (number === "" || number == null ) {
            usernameError.innerHTML = "Contact Number is required.";
         }
+        if (number.length !== 8){
+            usernameError.innerHTML = "Invalid Contact number only 8 digit.";
+        }
         if (dob === "") {
             dobError.innerHTML = "Date of birth is required.";
         }
 
-         if (name === "" || password === "" || repeat_password === "" || password != repeat_password || email === "" || number === "" || dob === "") {
+         if (name === "" || password === "" || repeat_password === "" || password != repeat_password || email === "" || number === "" || dob === "" ||number.length !== 8) {
                     return false;
                     print("false");
          }

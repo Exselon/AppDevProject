@@ -177,12 +177,13 @@ def login():
         password = userLoginform.password.data
 
         user_login = UserAccount()
-        userdata = user_login.login(number)
+        userdata = user_login.logincheck(number)
         user_login.close_connection()
 
         if userdata and check_password_hash(userdata[2], password):
             session['User_ID'] = userdata[0]
             session['Username'] = userdata[1]
+            session['hashedPW'] = userdata[2]
             session['Role'] = userdata[6]
 
             if session['Role'] == "customer":
@@ -218,7 +219,8 @@ def signup():
         dob = userSignupform.dob.data
 
         if user_account.number_exists(number):
-            flash('Username already exists. Please choose a different username.', 'danger')
+            failure_message = "*Contact Number already exist*"
+            return render_template('Signup.html', form=userSignupform, failure_message=failure_message)
 
         else:
             #hash code
@@ -228,7 +230,6 @@ def signup():
             user_account.register_user(username, hashed_password, number, email, dob)
             user_account.close_connection()
 
-            #flash('Registration successful. Please log in.', 'success')
             return redirect(url_for('login'))
 
     return render_template('Signup.html', form=userSignupform)
@@ -305,20 +306,13 @@ def userdashboard():
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
+
+
 #################INCOMPLETE#########################
-@app.route('/passwordchange', methods=['POST'])
+@app.route('/passwordchange', methods=['GET', 'POST'])
 def passwordchange():
+
     passwordchangeform = PasswordChange(request.form)
-
-    if 'User_ID' in session:
-        return render_template('passwordchange.html', form=passwordchangeform)
-
-    else:
-        flash('You need to log in first.', 'warning')
-        return redirect(url_for('login'))
-
-@app.route('/passwordchange', methods=['POST'])
-def passwordchangebutton():
     UserID = session.get('User_ID')
     # UserID = session['User_ID']
     password_change = DisplayUser()
@@ -330,25 +324,26 @@ def passwordchangebutton():
         NewPassword = passwordchange.NewPasswordField.data
         ConfirmPassword = passwordchange.ConfirmPasswordField.data
 
-        if CurrentPassword == current_password:
+        # use this code cos i hashed the pw
+        # this is to check the current password match the hashed pw
+        if check_password_hash(session['hashedPW'], CurrentPassword):
+        # code to check password same as cfm pw
+            #if true then this will load
             if NewPassword == ConfirmPassword:
-                update_password = DisplayUser()
-                updatepassword = update_password.update_password(ConfirmPassword, UserID)
-                update_password.close_connection()
-            else:
-                flash('You need to log in first.', 'warning')
-                print("check cfm else")
-                return redirect(url_for('login'))
-        else:
-            flash('You need to log in first.', 'warning')
-            print("current password else")
-            return redirect(url_for('login'))
 
-        return render_template('passwordchange.html', form=passwordchange)
-    else:
-        flash('You need to log in first.', 'warning')
-        print("current qwewqqewqwe else")
-        return redirect(url_for('login'))
+                hashed_password = generate_password_hash(ConfirmPassword, method='pbkdf2:sha256')
+                update_password = DisplayUser()
+                update_password.update_password(hashed_password, UserID)
+                update_password.close_connection()
+                #put alert to inform user that pw is updated
+            else:
+                #pw dont match
+                return render_template('passwordchange.html', form=passwordchangeform)
+        else:
+        # hashed pw not same
+            return render_template('passwordchange.html', form=passwordchangeform)
+
+    return render_template('passwordchange.html', form=passwordchangeform)
 
 
 #################code for del button on user profile#########################
