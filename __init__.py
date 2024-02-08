@@ -4,8 +4,9 @@ import os
 from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash, generate_password_hash
 from Promotion import PromotionManager
-from User import DisplayUser
+from User import DisplayUser,UserAccount
 from Cart import CartManager
 # from info import InfoManager
 import plotly.express as px
@@ -160,18 +161,10 @@ def home():
 def contact_us():
     return render_template('contactUs.html')
 
-# ---------------check for username---------------#
-def username_exists(username):
-    conn = sqlite3.connect('Userdata.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE Username=?', (username,))
-    existing_user = cursor.fetchone()
-    conn.close()
-    return existing_user is not None
-
 # ---------------Check file upload name---------------#
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
 
 # ---------------Check for login---------------#
 @app.route('/login', methods=['GET', 'POST'])
@@ -180,22 +173,17 @@ def login():
     login_failure_message = None
 
     if request.method == 'POST':
-        username = userLoginform.username.data # using contact number as username
+        number = userLoginform.username.data # using contact number as username
         password = userLoginform.password.data
 
-        # Check if the username and password match
-        conn = sqlite3.connect('Userdata.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE PhoneNumber=? AND password=?', (username, password))
+        user_login = UserAccount()
+        userdata = user_login.login(number)
+        user_login.close_connection()
 
-        user = cursor.fetchone()
-        conn.close()
-
-        if user:
-            session['User_ID'] = user[0]
-            session['Username'] = user[1]
-            session['Role'] = user[6]
-            flash('Login successful!', 'success')
+        if userdata and check_password_hash(userdata[2], password):
+            session['User_ID'] = userdata[0]
+            session['Username'] = userdata[1]
+            session['Role'] = userdata[6]
 
             if session['Role'] == "customer":
                 print("customer")
@@ -214,10 +202,13 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     userSignupform = userSignup(request.form)
+    user_account = UserAccount()
+
     if request.method == 'POST':
 
         username = userSignupform.name.data.lower()
@@ -226,21 +217,22 @@ def signup():
         email = userSignupform.email.data
         dob = userSignupform.dob.data
 
-        if username_exists(username):
+        if user_account.number_exists(number):
             flash('Username already exists. Please choose a different username.', 'danger')
+
         else:
+            #hash code
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-            conn = sqlite3.connect('Userdata.db')
-            cursor = conn.cursor()
-            cursor.execute(
-                'INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?)',
-                (username, password, number, email, dob))
-            conn.commit()
-            conn.close()
-            flash('Registration successful. Please log in.', 'success')
+            user_account = UserAccount()
+            user_account.register_user(username, hashed_password, number, email, dob)
+            user_account.close_connection()
 
-        return redirect(url_for('login'))
+            #flash('Registration successful. Please log in.', 'success')
+            return redirect(url_for('login'))
+
     return render_template('Signup.html', form=userSignupform)
+
 
 # ---------------Code for product---------------#
 @app.route('/Product', methods=['GET', 'POST'])
@@ -250,6 +242,11 @@ def Productpage():
     products = product_manager.get_all_products()
 
     if request.method == 'POST':
+
+        if request.form.get('reset_button'):
+            # Reset Btn
+            return render_template('Product.html', products=products, form=ProductFilterForm)
+
         selected_price = request.form.get('pricerange')
 
         # Capture selected categories as a list
@@ -279,7 +276,6 @@ def Productpage():
 
     product_manager.close_connection()
     return render_template('Product.html', products=products, form=ProductFilterForm)
-
 
 
 @app.route('/product/<int:product_id>')

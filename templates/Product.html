@@ -37,7 +37,7 @@
                     </section><!-- Section: Price -->
 
                     <section class="mb-4">
-                        <h6 class="font-weight-bold mb-3">Size</h6>
+                        <h6 class="font-weight-bold mb-3">Category</h6>
 
                         <div class="form-check">
                         {{ form.category_men(class="form-check-input", onchange="submitForm()") }}
@@ -59,12 +59,13 @@
                         {{ form.category_others(class="form-check-input", onchange="submitForm()") }}
                         <label class="form-check-label">{{ form.category_others.label }}</label>
                         </div>
-                        </form>
                     </section><!-- Section: category -->
 
+                </form>
                         <div class="dropdown-divider"></div>
-                    <div class="text-center"><button type="submit" class="btn btn-primary w-100">Filter</button></div>
-
+                <form method="POST" action="/Product">
+                    <div class="text-center"><input type="submit" name="reset_button" value="Reset" class="btn btn-primary w-100"></div>
+                </form>
 
                 </section>
 

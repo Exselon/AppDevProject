@@ -1,5 +1,27 @@
 import sqlite3
 
+class UserAccount:
+    def __init__(self, db="UserData.db"):
+        self.conn = sqlite3.connect(db)
+        self.cursor = self.conn.cursor()
+
+    def number_exists(self, number):
+        self.cursor.execute('SELECT * FROM users WHERE PhoneNumber=?', (number,))
+        existing_number = self.cursor.fetchone()
+        return existing_number is not None
+
+    def login(self, number):
+        self.cursor.execute('SELECT * FROM users WHERE PhoneNumber=?', (number,))
+        user = self.cursor.fetchone()
+        return user
+
+    def register_user(self, username, password, number, email, dob):
+        self.cursor.execute('INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?)',(username, password, number, email, dob,))
+        self.conn.commit()
+
+    def close_connection(self):
+        self.conn.close()
+
 class DisplayUser:
     def __init__(self, db="UserData.db"):
         self.conn = sqlite3.connect(db)
