@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
+from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,SelectField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
 
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150)])
@@ -46,8 +46,6 @@ class ProductFilter(Form):
         ('100-999', '$100++')
     ])
 
-
-
 class CheckoutForm(Form):
     fname = StringField('firstname', [validators.InputRequired(), validators.DataRequired()])
     lname = StringField('lastname', [validators.InputRequired(), validators.DataRequired()])
@@ -67,5 +65,17 @@ class CreateUserForm(Form):
     number = IntegerField('Contact Number', [validators.Length(min=8, max=8)])
     email = EmailField('Email', [validators.Email()])
     dob = DateField('Date of Birth',  format='%Y-%m-%d')
+
+class ContactForm(Form):
+    name = StringField('Name', [validators.Length(min=1, max=150)])
+    email = EmailField('Email', [validators.Email()])
+    enquiry = TextAreaField('Enquiry ')
+    subject_choices = [('general', 'General Inquiry'),
+                       ('support', 'Technical Support'),
+                       ('sales', 'Sales Inquiry'),
+                        ('others', 'Others')]
+    subject = SelectField('Subject', choices=subject_choices)
+
+
 
 

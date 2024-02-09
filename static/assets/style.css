@@ -464,3 +464,13 @@ font-weight: normal;
     height: auto;
     padding: 50px 0px;
 }
+
+/*------ Contact CSS ------*/
+
+.contactpg{
+    padding: 40px 100px;
+}
+
+#enquiry{
+    height:150px;
+}

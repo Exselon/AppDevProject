@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , CreateUserForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , CreateUserForm,ContactForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
+from Contact import ContactManager
 # from info import InfoManager
 import plotly.express as px
 #import stripe
@@ -28,6 +29,7 @@ def before_request():
     if not session_cleared:
         session.clear()
         session_cleared = True
+
 # ---------------CODE FOR DB---------------#
 
 def create_Userdata():
@@ -102,6 +104,25 @@ def create_Cart():
 
 create_Cart()
 
+def create_Contact():
+    conn = sqlite3.connect('Contact.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Contact (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Name TEXT,
+            Email TEXT,
+            Subject TEXT,
+            Enquiry TEXT,
+            Status TEXT,
+            ResolveID INTEGER,
+            Resolveby TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+create_Contact()
 
 # def create_Order():
 #     conn = sqlite3.connect('Order.db')
@@ -157,9 +178,25 @@ create_Cart()
 def home():
     return render_template('home.html')
 
-@app.route('/contactUs')
+@app.route('/contactUs', methods=['GET', 'POST'])
 def contact_us():
-    return render_template('contactUs.html')
+    contactform = ContactForm(request.form)
+
+    if request.method == 'POST':
+        name = contactform.name.data
+        email = contactform.email.data
+        subject = contactform.subject.data
+        msg = contactform.enquiry.data
+        status = "open"
+        resolveid = ""
+        resolveby = ""
+
+        newEnquiry = ContactManager()
+        newEnquiry.Create_Enquiry(name,email,subject,msg,status,resolveid,resolveby)
+        newEnquiry.close_connection()
+
+    return render_template('contactUs.html', form=contactform)
+
 
 # ---------------Check file upload name---------------#
 def allowed_file(filename):
