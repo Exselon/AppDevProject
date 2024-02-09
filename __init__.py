@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , CreateUserForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -449,13 +449,18 @@ def adminEditUsers():
     displayuser = getUser.get_all_user()
     getUser.close_connection()
 
-    Create_UserForm = CreateUserForm()
+    return render_template('adminEditUsers.html' , displayuser = displayuser)
+
+@app.route('/adminCreateUsers',methods=['GET','POST'])
+
+def adminCreateUsers():
+    user_signup = userSignup()
     if request.method == 'POST':
-        username = Create_UserForm.name.data
-        password = Create_UserForm.password.data
-        phone_number = Create_UserForm.number.data
-        email = Create_UserForm.email.data
-        date_of_birth = Create_UserForm.dob.data
+        username = user_signup.name.data
+        password = user_signup.password.data
+        phone_number = user_signup.number.data
+        email = user_signup.email.data
+        date_of_birth = user_signup.dob.data
 
         conn = sqlite3.connect('Userdata.db')
         cursor = conn.cursor()
@@ -465,7 +470,7 @@ def adminEditUsers():
         ''', (username, password, phone_number, email, date_of_birth, 'admin'))
         conn.commit()
         conn.close()
-    return render_template('adminEditUsers.html', Create_UserForm=Create_UserForm , displayuser = displayuser)
+        return render_template('adminEditUsers.html', user_signup=user_signup)
 
 
 

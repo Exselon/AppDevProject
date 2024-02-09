@@ -43,10 +43,45 @@
         {% endfor %}
     </table>
 </div>
-<form method="post" action="{{ url_for('adminEditUsers') }}">
+<form method="post" action="{{ url_for('adminCreateUsers') }}" onsubmit="return validateForm()">
 
+    <div class="form-group mb-3">
+        <label for="dName">Display Name:</label>
+        {{ form.name(class="form-control") }}
+    </div>
+    <div id="dnameError" style="color: red;"></div>
 
-    <input type="submit" value="Create User">
+    <div class="form-group mb-3">
+        <label for="password">Password:</label>
+        {{ form.password(class="form-control") }}
+    </div>
+    <div id="passwordError" style="color: red;"></div>
+
+    <div class="form-group mb-3">
+        <label for="password">Repeat password:</label>
+        {{ form.cfmpassword(class="form-control") }}
+    </div>
+    <div id="cfmpasswordError" style="color: red;"></div>
+
+    <div class="form-group mb-3">
+        <label for="email">Email:</label>
+        {{ form.email(class="form-control") }}
+    </div>
+    <div id="emailError" style="color: red;"></div>
+
+    <div class="form-group mb-3">
+        <label for="username">Contact Number:</label>
+        {{ form.number(class="form-control") }}
+    </div>
+    <div id="usernameError" style="color: red;"></div>
+
+    <div class="form-group mb-3">
+        <label for="Dob">Date of birth:</label>
+        {{ form.dob(class="form-control") }}
+    </div>
+    <div id="dobError" style="color: red;"></div>
+
+    <input type="submit" value="Register" class="form-control btn btn-primary rounded submit px-3">
 </form>
 <script>
   function confirmDelUser() {
