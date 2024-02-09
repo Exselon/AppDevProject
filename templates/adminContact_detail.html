@@ -1,0 +1,100 @@
+{% extends "adminBase.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<style>
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+    table td{
+        vertical-align: middle !important;
+    }
+
+    label{
+        font-weight:bold;
+    }
+
+    .enquirybox{
+        padding: 0px 100px;
+    }
+
+    .enquirybox .col-6{
+        padding: 15px 15px;
+    }
+
+</style>
+<div class="box">
+<h1 class="Header"> Edit Users </h1>
+</div>
+<div class="table">
+<h1>Contact Detail</h1>
+
+    <div class="row enquirybox">
+        {% for row in contact %}
+        <div class="col-6">
+            <label>Name</label>
+            <input type="text" value="{{ row[1] }}" class="form-control" readonly>
+        </div>
+
+        <div class="col-6">
+            <label>Email</label>
+            <input type="text" value="{{ row[2] }}" class="form-control" readonly>
+        </div>
+
+        <div class="col-6">
+            <label>Subject</label>
+            <input type="text" value="{{ row[3] }}" class="form-control" readonly>
+        </div>
+
+        <div class="col-6">
+            <label>Status</label>
+            <input type="text" value="{{ row[5] }}" class="form-control" readonly>
+        </div>
+
+        <div class="col-12">
+            <label>Enquiry</label>
+            <textarea class="form-control" readonly>{{ row[4] }}</textarea>
+        </div>
+
+        <div class="col-6">
+            <label>Resolve ID</label>
+            <input type="text" value="{{ row[6] }}" class="form-control" readonly>
+        </div>
+
+        <div class="col-6">
+            <label>Resolved by</label>
+            <input type="text" value="{{ row[7] }}" class="form-control" readonly>
+
+        </div>
+
+        <div class="col-6">
+            <a href="/adminContact"  class="form-control">Back</a>
+        </div>
+
+        <div class="col-6">
+            <form method="post" action="{{ url_for('updated_enquiry_status', contact_id=row[0]) }}">
+                {% if row[5] != 'closed' %}
+                    <input type="submit" value="Mark as resolved" class="form-control" onclick="return confirmstatus()">
+                {% else %}
+                    <input type="button" value="Status Closed" class="form-control" disabled>
+                {% endif %}
+            </form>
+        </div>
+        
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<script>
+
+    function confirmstatus() {
+    return confirm('Are you sure you want to Mark as resolve?');
+    }
+
+</script>
+{% endblock %}

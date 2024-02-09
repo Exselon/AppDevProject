@@ -5,49 +5,146 @@
 <div class="box">
 <h1 class="Header"> Products </h1>
 </div>
-<div class="table">
-    <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data">
+<div class="table admingpdpg">
+    <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
         <label for="Image">Image:</label>
         {{ form.image(class="form-control") }}
+        <div id="imageError" style="color: red;"></div>
 
         <label for="name">name:</label>
         {{ form.name(class="form-control") }}
-
-        <label for="price">price:</label>
-        {{ form.price(class="form-control") }}
-
-        <label for="category">category:</label>
-        {% for category, label in form.category.choices %}
-                <br><label>
-                    <input type="checkbox" name="category" value="{{ category }}"
-                           {% if category in form.category.data %}checked{% endif %}>
-                    {{ label }}
-                </label>
-            {% endfor %}
+        <div id="nameError" style="color: red;"></div>
 
 
-        <br>
-        <label for="stock">stock:</label>
-        {{ form.stock(class="form-control") }}
+        <div class="row">
+            <div class="col-6">
+                <label for="price">price:</label>
+                {{ form.price(class="form-control") }}
+                <div id="priceError" style="color: red;"></div>
+            </div>
+            <div class="col-6">
+                <label for="stock">stock:</label>
+                {{ form.stock(class="form-control") }}
+                <div id="stockError" style="color: red;"></div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+
+                <label for="category">category:</label>
+                {% for category, label in form.category.choices %}
+
+                        <br><label>
+                            <input type="checkbox" name="category" value="{{ category }}"
+                                   {% if category in form.category.data %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                <div id="categoryError" style="color: red;"></div>
+
+            </div>
+            <div class="col-6">
+
+                <label for="size">size:</label>
+                {% for size, label in form.size.choices %}
+                        <br><label>
+                            <input type="checkbox" name="size" value="{{ size }}"
+                                   {% if size in form.size.data %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                <div id="sizeError" style="color: red;"></div>
+
+            </div>
+        </div>
 
         <label for="description">description:</label>
         {{ form.description(class="form-control") }}
-
-        <label for="size">size:</label>
-
-        {% for size, label in form.size.choices %}
-                <br><label>
-                    <input type="checkbox" name="size" value="{{ size }}"
-                           {% if size in form.size.data %}checked{% endif %}>
-                    {{ label }}
-                </label>
-            {% endfor %}
+        <div id="descriptionError" style="color: red;"></div><br>
 
 
-    <br>
         <input type="submit" value="Add Product">
     </form>
 </div>
 
+<script>
 
+
+        function validateForm() {
+
+            imagecheck = false;
+
+            // Reset error messages
+            document.getElementById('imageError').innerHTML = '';
+            document.getElementById('priceError').innerHTML = '';
+            document.getElementById('categoryError').innerHTML = '';
+            document.getElementById('stockError').innerHTML = '';
+            document.getElementById('descriptionError').innerHTML = '';
+            document.getElementById('sizeError').innerHTML = '';
+
+            // Image validation
+            var imageInput = document.getElementById('image');
+            var allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (imageInput.files.length > 0) {
+            var fileName = imageInput.files[0].name;
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (!allowedExtensions.includes(fileExtension)) {
+                    document.getElementById('imageError').innerHTML = 'Invalid file type. Please upload an image file (jpg, jpeg, png, gif).';
+                }
+                else {
+                    imageCheck = true;  // Set to true if validation passes
+                }
+            }
+            else {
+                document.getElementById('imageError').innerHTML = 'Please select an image.';
+            }
+
+            var nameInput = document.getElementById('name');
+            if (nameInput.value.trim() === '') {
+                document.getElementById('nameError').innerHTML = 'Please enter a name.';
+            }
+
+            // Price validation
+            var priceInput = document.getElementById('price');
+            if (isNaN(priceInput.value) || priceInput.value === '') {
+                document.getElementById('priceError').innerHTML = 'Please enter a valid number for the price.';
+            }
+
+            // Category validation
+            var categoryCheckboxes = document.querySelectorAll('input[name="category"]:checked');
+            if (categoryCheckboxes.length === 0) {
+                document.getElementById('categoryError').innerHTML = 'Please select at least one category.';
+            }
+
+            // Stock validation
+            var stockInput = document.getElementById('stock');
+            if (!Number.isInteger(Number(stockInput.value)) || stockInput.value === '') {
+                document.getElementById('stockError').innerHTML = 'Please enter a valid integer for the stock.';
+            }
+
+            // Description validation
+            var descriptionInput = document.getElementById('description');
+            if (descriptionInput.value.trim() === '') {
+                document.getElementById('descriptionError').innerHTML = 'Please enter a description.';
+            }
+
+            // Size validation
+            var sizeCheckboxes = document.querySelectorAll('input[name="size"]:checked');
+            if (sizeCheckboxes.length === 0) {
+                document.getElementById('sizeError').innerHTML = 'Please select at least one size.';
+            }
+
+            if (imageCheck = false || isNaN(priceInput.value) || priceInput.value === '' || categoryCheckboxes.length === 0 ||!Number.isInteger(Number(stockInput.value)) || descriptionInput.value.trim() === '' || sizeCheckboxes.length === 0 || nameInput.value.trim() === '') {
+                    return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    </script>
 {% endblock %}

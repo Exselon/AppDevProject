@@ -2,12 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import os
 from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , CreateUserForm,ContactForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
+from Contact import ContactManager
 # from info import InfoManager
 import plotly.express as px
 #import stripe
@@ -28,6 +30,7 @@ def before_request():
     if not session_cleared:
         session.clear()
         session_cleared = True
+
 # ---------------CODE FOR DB---------------#
 
 def create_Userdata():
@@ -102,6 +105,25 @@ def create_Cart():
 
 create_Cart()
 
+def create_Contact():
+    conn = sqlite3.connect('Contact.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Contact (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Name TEXT,
+            Email TEXT,
+            Subject TEXT,
+            Enquiry TEXT,
+            Status TEXT,
+            ResolveID INTEGER,
+            Resolveby TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+create_Contact()
 
 # def create_Order():
 #     conn = sqlite3.connect('Order.db')
@@ -157,9 +179,25 @@ create_Cart()
 def home():
     return render_template('home.html')
 
-@app.route('/contactUs')
+@app.route('/contactUs', methods=['GET', 'POST'])
 def contact_us():
-    return render_template('contactUs.html')
+    contactform = ContactForm(request.form)
+
+    if request.method == 'POST':
+        name = contactform.name.data
+        email = contactform.email.data
+        subject = contactform.subject.data
+        msg = contactform.enquiry.data
+        status = "open"
+        resolveid = ""
+        resolveby = ""
+
+        newEnquiry = ContactManager()
+        newEnquiry.Create_Enquiry(name,email,subject,msg,status,resolveid,resolveby)
+        newEnquiry.close_connection()
+
+    return render_template('contactUs.html', form=contactform)
+
 
 # ---------------Check file upload name---------------#
 def allowed_file(filename):
@@ -399,17 +437,16 @@ def adminProducts():
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image_upload.save(image_path)
 
-        # Extract just the filename without the path
-        filename_only = os.path.basename(image_path)
+            # Extract just the filename without the path
+            filename_only = os.path.basename(image_path)
 
-        # Save the product to the database
-        product_manager = ProductManager()
-        product_manager.add_product(filename_only, name, price, categories_string, stock, description, size_string)
-        product_manager.close_connection()
+            # Save the product to the database
+            product_manager = ProductManager()
+            product_manager.add_product(filename_only, name, price, categories_string, stock, description, size_string)
+            product_manager.close_connection()
 
+            return redirect(url_for('Productpage'))
 
-
-        return redirect(url_for('Productpage'))
     return render_template('adminProducts.html', form=productForm)
 
 # Code for Promotions
@@ -473,8 +510,6 @@ def adminCreateUsers():
         return render_template('adminEditUsers.html', user_signup=user_signup)
 
 
-
-
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
     user_id = request.form.get('UserID')
@@ -483,6 +518,50 @@ def delete_user():
     User_manager.del_user(user_id)
     User_manager.close_connection()
     return redirect(url_for('adminEditUsers'))
+
+
+@app.route('/adminContact')
+def admin_contact():
+
+    Viewcontact = ContactManager()
+    allContact = Viewcontact.get_all_enquiry()
+    Viewcontact.close_connection()
+    return render_template("adminContact.html", contact=allContact)
+
+
+@app.route('/adminContact/<int:contact_id>', methods=['GET','POST'])
+def admin_view_contact_detail(contact_id):
+
+    if 'User_ID' in session:
+
+        getcontact = ContactManager()
+        contactEnquiry = getcontact.get_enquiry_by_id(contact_id)
+        getcontact.close_connection()
+
+        return render_template("adminContact_detail.html", contact=contactEnquiry)
+
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+
+@app.route('/updated_enquiry_status/<int:contact_id>', methods=['POST'])
+def updated_enquiry_status(contact_id):
+
+    if 'User_ID' in session:
+
+        if request.method == 'POST':
+            adminid = session['User_ID']
+            adminname = session['Username']
+
+            updatecontact = ContactManager()
+            updatecontact.updated_status(adminid, adminname, contact_id)
+            updatecontact.close_connection()
+            return redirect(url_for('admin_contact'))
+
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+
 
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):

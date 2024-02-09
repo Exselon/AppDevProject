@@ -1,0 +1,52 @@
+{% extends "adminBase.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<style>
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+    table td{
+        vertical-align: middle !important;
+    }
+</style>
+<div class="box">
+<h1 class="Header"> Edit Users </h1>
+</div>
+
+<div class="table">
+    <table class="dbtable">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Resolver ID</th>
+            <th>Resolver Name</th>
+            <th>View Enquiry</th>
+        </tr>
+        {% for enquiry in contact %}
+        <tr>
+            <td>{{ enquiry[0] }}</td>
+            <td>{{ enquiry[1] }}</td>
+            <td>{{ enquiry[2] }}</td>
+            <td>{{ enquiry[3] }}</td>
+            <td>{{ enquiry[5] }}</td>
+            <td>{{ enquiry[6] }}</td>
+            <td>{{ enquiry[7] }}</td>
+            <td class="delete">
+                <form method="post" action="{{ url_for('admin_view_contact_detail', contact_id=enquiry[0]) }}">
+                    <div class="text-center">
+                        <button type="submit" class="form-control">View</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

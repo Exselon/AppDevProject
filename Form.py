@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
+from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,SelectField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
 
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150)])
@@ -13,13 +13,13 @@ class userLogin(Form):
     password = PasswordField('password', [validators.DataRequired()])
 
 class ProductForm(Form):
-    image = FileField('ImageURL', [validators.DataRequired()])
-    name = StringField('Name', [validators.DataRequired()])
-    price = FloatField('Price', [validators.DataRequired()])
-    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('shoe', 'Shoe'), ('others', 'Others')])
-    stock = IntegerField('Stock', [validators.DataRequired()])
-    description = TextAreaField('Description', [validators.DataRequired()])
-    size = SelectMultipleField('Size', choices=[('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
+    image = FileField('ImageURL')
+    name = StringField('Name')
+    price = FloatField('Price')
+    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('others', 'Others')])
+    stock = IntegerField('Stock')
+    description = TextAreaField('Description')
+    size = SelectMultipleField('Size', choices=[('Freesize', 'Free size'),('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
 
 class PromotionForm(Form):
     ID = StringField("ID",[validators.DataRequired()])
@@ -36,7 +36,6 @@ class ProductFilter(Form):
     category_men = BooleanField('Men')
     category_women = BooleanField('Women')
     category_kids = BooleanField('Kids')
-    category_shoes = BooleanField('Shoes')
     category_others = BooleanField('Others')
     pricerange = RadioField('Price', choices=[
         ('1-25', '$1 ~ $25'),
@@ -45,8 +44,6 @@ class ProductFilter(Form):
         ('76-100', '$76 ~ $100'),
         ('100-999', '$100++')
     ])
-
-
 
 class CheckoutForm(Form):
     fname = StringField('firstname', [validators.InputRequired(), validators.DataRequired()])
@@ -59,6 +56,18 @@ class CheckoutForm(Form):
     expirydate = MonthField('expirydate', [validators.InputRequired(), validators.DataRequired()], format='%m - %y')
     cvv = IntegerField('cvv', [validators.InputRequired(), validators.DataRequired, validators.length(min=3, max=4)])
     unitno = StringField('unitno', [validators.Optional(strip_whitespace=True)])
+
+
+
+class ContactForm(Form):
+    name = StringField('Name', [validators.Length(min=1, max=150)])
+    email = EmailField('Email', [validators.Email()])
+    enquiry = TextAreaField('Enquiry ')
+    subject_choices = [('general', 'General Inquiry'),
+                       ('support', 'Technical Support'),
+                       ('sales', 'Sales Inquiry'),
+                        ('others', 'Others')]
+    subject = SelectField('Subject', choices=subject_choices)
 
 
 
