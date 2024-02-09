@@ -486,28 +486,30 @@ def adminEditUsers():
     displayuser = getUser.get_all_user()
     getUser.close_connection()
 
-    return render_template('adminEditUsers.html' , displayuser = displayuser)
-
-@app.route('/adminCreateUsers',methods=['GET','POST'])
-
-def adminCreateUsers():
-    user_signup = userSignup()
+    sign_up = userSignup()
     if request.method == 'POST':
-        username = user_signup.name.data
-        password = user_signup.password.data
-        phone_number = user_signup.number.data
-        email = user_signup.email.data
-        date_of_birth = user_signup.dob.data
+        # username = sign_up.name.data
+        # password = sign_up.password.data
+        # number = sign_up.number.data
+        # email = sign_up.email.data
+        # dob = sign_up.dob.data
+        # print(username)
+        # print(password)
+        # print(number)
+        # print(email)
+        # print(dob)
+        #
+        # conn = sqlite3.connect('Userdata.db')
+        # cursor = conn.cursor()
+        # cursor.execute('''
+        #     INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth, Role)
+        #     VALUES (?, ?, ?, ?, ?, ?)
+        # ''', (username, password, number, email, dob, 'admin'))
+        # conn.commit()
+        # conn.close()
+        print('test')
 
-        conn = sqlite3.connect('Userdata.db')
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth, Role)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (username, password, phone_number, email, date_of_birth, 'admin'))
-        conn.commit()
-        conn.close()
-        return render_template('adminEditUsers.html', user_signup=user_signup)
+    return render_template('adminEditUsers.html' , displayuser = displayuser , form=sign_up)
 
 
 @app.route('/delete_user', methods=['POST'])

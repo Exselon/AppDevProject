@@ -43,7 +43,7 @@
         {% endfor %}
     </table>
 </div>
-<form method="post" action="{{ url_for('adminCreateUsers') }}" onsubmit="return validateForm()">
+<form method="post" action="{{ url_for('adminEditUsers') }}">
 
     <div class="form-group mb-3">
         <label for="dName">Display Name:</label>
@@ -81,7 +81,7 @@
     </div>
     <div id="dobError" style="color: red;"></div>
 
-    <input type="submit" value="Register" class="form-control btn btn-primary rounded submit px-3">
+    <input type="submit" value="Create User" class="form-control btn btn-primary rounded submit px-3">
 </form>
 <script>
   function confirmDelUser() {
