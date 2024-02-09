@@ -1,8 +1,44 @@
 {% extends "base.html" %}
 {% block title %}Library Loan System - Home{% endblock %}
 {% block content %}
-<script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-<div class="elfsight-app-e4305951-a479-420d-9170-79729d6fd94d" data-elfsight-app-lazy></div>
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <a href="/Product"><img class="bannerimage img-fluid" src="{{ url_for('static', filename='image/bannerimage1.jpg') }}" alt="First slide"></a>
+        <div class="carousel-caption d-none d-md-block">
+          <h2 style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; font-size: 2.5em; font-weight: bold;">New & Featured</h2>
+          <p>Check out our latest clothing made from recycled materials</p>
+        </div>
+    </div>
+    <div class="carousel-item">
+      <a href="/Product"><img class="bannerimage img-fluid" src="{{ url_for('static', filename='image/bannerimage3.jpg') }}" alt="Second slide"></a>
+        <div class="carousel-caption d-none d-md-block">
+          <h2 style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; font-size: 2.5em; font-weight: bold;" >Men</h2>
+          <p>Check out our Men collection made from recycled materials</p>
+        </div>
+    </div>
+    <div class="carousel-item">
+      <a href="/Product"><img class="bannerimage img-fluid" src="{{ url_for('static', filename='image/bannerimage2.jpg') }}" alt="Third slide"></a>
+      <div class="carousel-caption d-none d-md-block">
+          <h2 style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; font-size: 2.5em; font-weight: bold;">Women</h2>
+          <p>Check out our Women collection made from recycled materials</p>
+      </div>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
 <h1 class="display-4">Home</h1>
 <p>index page!</p>
 <p>test</p>

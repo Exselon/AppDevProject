@@ -481,4 +481,7 @@ font-weight: normal;
 
 }
 
-
+.bannerimage {
+    height: 950px;
+    width:100%;
+}
