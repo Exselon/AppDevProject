@@ -5,9 +5,8 @@
 <div class="box">
 <h1 class="Header"> Products </h1>
 </div>
-<div class="table">
+<div class="table admingpdpg">
     <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
-
         <label for="Image">Image:</label>
         {{ form.image(class="form-control") }}
         <div id="imageError" style="color: red;"></div>
@@ -16,43 +15,56 @@
         {{ form.name(class="form-control") }}
         <div id="nameError" style="color: red;"></div>
 
-        <label for="price">price:</label>
-        {{ form.price(class="form-control") }}
-        <div id="priceError" style="color: red;"></div>
 
-        <label for="category">category:</label>
-        {% for category, label in form.category.choices %}
+        <div class="row">
+            <div class="col-6">
+                <label for="price">price:</label>
+                {{ form.price(class="form-control") }}
+                <div id="priceError" style="color: red;"></div>
+            </div>
+            <div class="col-6">
+                <label for="stock">stock:</label>
+                {{ form.stock(class="form-control") }}
+                <div id="stockError" style="color: red;"></div>
 
+            </div>
+        </div>
 
-                <br><label>
-                    <input type="checkbox" name="category" value="{{ category }}"
-                           {% if category in form.category.data %}checked{% endif %}>
-                    {{ label }}
-                </label>
-            {% endfor %}
-        <div id="categoryError" style="color: red;"></div>
+        <div class="row">
+            <div class="col-6">
 
-        <br>
-        <label for="stock">stock:</label>
-        {{ form.stock(class="form-control") }}
-        <div id="stockError" style="color: red;"></div>
+                <label for="category">category:</label>
+                {% for category, label in form.category.choices %}
+
+                        <br><label>
+                            <input type="checkbox" name="category" value="{{ category }}"
+                                   {% if category in form.category.data %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                <div id="categoryError" style="color: red;"></div>
+
+            </div>
+            <div class="col-6">
+
+                <label for="size">size:</label>
+                {% for size, label in form.size.choices %}
+                        <br><label>
+                            <input type="checkbox" name="size" value="{{ size }}"
+                                   {% if size in form.size.data %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                <div id="sizeError" style="color: red;"></div>
+
+            </div>
+        </div>
 
         <label for="description">description:</label>
         {{ form.description(class="form-control") }}
-        <div id="descriptionError" style="color: red;"></div>
+        <div id="descriptionError" style="color: red;"></div><br>
 
-        <label for="size">size:</label>
 
-        {% for size, label in form.size.choices %}
-                <br><label>
-                    <input type="checkbox" name="size" value="{{ size }}"
-                           {% if size in form.size.data %}checked{% endif %}>
-                    {{ label }}
-                </label>
-            {% endfor %}
-        <div id="sizeError" style="color: red;"></div>
-
-    <br>
         <input type="submit" value="Add Product">
     </form>
 </div>

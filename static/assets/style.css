@@ -474,3 +474,11 @@ font-weight: normal;
 #enquiry{
     height:150px;
 }
+
+/*------ admin product CSS ------*/
+.admingpdpg label{
+    font-weight:bold;
+
+}
+
+

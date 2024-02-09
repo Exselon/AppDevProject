@@ -504,8 +504,6 @@ def adminEditUsers():
     return render_template('adminEditUsers.html', Create_UserForm=Create_UserForm , displayuser = displayuser)
 
 
-
-
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
     user_id = request.form.get('UserID')
@@ -514,6 +512,50 @@ def delete_user():
     User_manager.del_user(user_id)
     User_manager.close_connection()
     return redirect(url_for('adminEditUsers'))
+
+
+@app.route('/adminContact')
+def admin_contact():
+
+    Viewcontact = ContactManager()
+    allContact = Viewcontact.get_all_enquiry()
+    Viewcontact.close_connection()
+    return render_template("adminContact.html", contact=allContact)
+
+
+@app.route('/adminContact/<int:contact_id>', methods=['GET','POST'])
+def admin_view_contact_detail(contact_id):
+
+    if 'User_ID' in session:
+
+        getcontact = ContactManager()
+        contactEnquiry = getcontact.get_enquiry_by_id(contact_id)
+        getcontact.close_connection()
+
+        return render_template("adminContact_detail.html", contact=contactEnquiry)
+
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+
+@app.route('/updated_enquiry_status/<int:contact_id>', methods=['POST'])
+def updated_enquiry_status(contact_id):
+
+    if 'User_ID' in session:
+
+        if request.method == 'POST':
+            adminid = session['User_ID']
+            adminname = session['Username']
+
+            updatecontact = ContactManager()
+            updatecontact.updated_status(adminid, adminname, contact_id)
+            updatecontact.close_connection()
+            return redirect(url_for('admin_contact'))
+
+    else:
+        flash('You need to log in first.', 'warning')
+        return redirect(url_for('login'))
+
 
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
