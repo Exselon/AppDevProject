@@ -436,17 +436,16 @@ def adminProducts():
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image_upload.save(image_path)
 
-        # Extract just the filename without the path
-        filename_only = os.path.basename(image_path)
+            # Extract just the filename without the path
+            filename_only = os.path.basename(image_path)
 
-        # Save the product to the database
-        product_manager = ProductManager()
-        product_manager.add_product(filename_only, name, price, categories_string, stock, description, size_string)
-        product_manager.close_connection()
+            # Save the product to the database
+            product_manager = ProductManager()
+            product_manager.add_product(filename_only, name, price, categories_string, stock, description, size_string)
+            product_manager.close_connection()
 
+            return redirect(url_for('Productpage'))
 
-
-        return redirect(url_for('Productpage'))
     return render_template('adminProducts.html', form=productForm)
 
 # Code for Promotions

@@ -13,13 +13,13 @@ class userLogin(Form):
     password = PasswordField('password', [validators.DataRequired()])
 
 class ProductForm(Form):
-    image = FileField('ImageURL', [validators.DataRequired()])
-    name = StringField('Name', [validators.DataRequired()])
-    price = FloatField('Price', [validators.DataRequired()])
-    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('shoe', 'Shoe'), ('others', 'Others')])
-    stock = IntegerField('Stock', [validators.DataRequired()])
-    description = TextAreaField('Description', [validators.DataRequired()])
-    size = SelectMultipleField('Size', choices=[('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
+    image = FileField('ImageURL')
+    name = StringField('Name')
+    price = FloatField('Price')
+    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('others', 'Others')])
+    stock = IntegerField('Stock')
+    description = TextAreaField('Description')
+    size = SelectMultipleField('Size', choices=[('Freesize', 'Free size'),('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
 
 class PromotionForm(Form):
     ID = StringField("ID",[validators.DataRequired()])
@@ -36,7 +36,6 @@ class ProductFilter(Form):
     category_men = BooleanField('Men')
     category_women = BooleanField('Women')
     category_kids = BooleanField('Kids')
-    category_shoes = BooleanField('Shoes')
     category_others = BooleanField('Others')
     pricerange = RadioField('Price', choices=[
         ('1-25', '$1 ~ $25'),
