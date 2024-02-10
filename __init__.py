@@ -13,15 +13,15 @@ from Contact import ContactManager
 import plotly.express as px
 import pandas as pd
 import io
-#import stripe
-# stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
-# import json
-
+import stripe
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
+
+stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
+stripe_publishable_key = 'pk_test_51OdTteBzJLH01t0MKNrsG9H6v7YVEtRf5JZtalicClnYsR7y8CxjHPniuiuqpZYxYMCBw95cTG2YdWYlVBvCsZIp00DNnocI5x'
 
 # ---------------Clear Session when load---------------#
 
@@ -650,8 +650,6 @@ def view_cart():
             # product = product_manager.get_product_by_id(product_id)
 
             if product:
-                # product_data_list.append(product)
-                # total_price += product.price * item[2]
                 product_data_list.append(product)
                 total_price += product.price * item[3]  # Assuming index 2 corresponds to quantity
             else:
@@ -722,105 +720,81 @@ def get_current_quantity(cart_id):
 
 
 #<--------------------- Check Out code --------------------->
-# @app.route('/checkout')
-# def checkout():
-#     checkoutForm = CheckoutForm(request.form)
-#     if request.method == 'POST':
-#         fname = checkoutForm.fname.data
-#         lname = checkoutForm.lname.data
-#         address = checkoutForm.address.data
-#         email = checkoutForm.email.data
-#         postalcode = checkoutForm.postalcode.data
-#         nameoncard = checkoutForm.nameoncard.postalcode.data
-#         cardno = checkoutForm.cardno.data
-#         expirydate = checkoutForm.expirydate.data
-#         cvv = checkoutForm.cvv.data
-#         unitno = checkoutForm.unitno.data
-#
-#         info_manager = InfoManager()
-#         info_manager.add_info(fname, lname, address, email, postalcode, nameoncard, cardno, expirydate, cvv, unitno)
-#         info_manager.close_connection()
-#     return render_template('checkout.html')
 
-# @app.route('/checkout', methods=['GET'])
+# @app.route('/checkout', methods=['POST'])
 # def checkout():
+#     # Retrieve user information from session
+#     user_id = session.get('User_ID')
+#
+#     # selected_items = request.form.getlist('selected_items[]')
+#
+#     # Calculate total price
 #     cartmanager = CartManager()
-#     cart_item = cartmanager.get_all_cart()
+#     cart = cartmanager.get_cart_by_id(user_id)
+#     cartmanager.close_connection()
 #
-#     total_amount = total_amount
-#     return render_template('checkout.html', cart_item=cart_item, total_price=total_amount)
+#     product_manager = ProductManager()
+#     total_price = 0
 #
+#     for item in cart:
+#         product_id = item[2]
+#         product = product_manager.get_product_by_id(product_id)
 #
-# @app.route('/process-payment', methods=['POST'])
-# def process_payment():
-#     # Get customer information from the form
-#     customer_name = request.form['name']
-#     customer_email = request.form['email']
+#         # if selected_items:
+#         if product:
+#             total_price += int(product.price * item[3])  # Assuming index 2 corresponds to quantity
+#         else:
+#             print(f"Product with ID {product_id} not found in the product database.")
 #
-#     # Create a Checkout Session on the server
-#     session = stripe.checkout.Session.create(
-#         payment_method_types=['card'],
+#     # Create a Stripe PaymentIntent
+#     try:
+#         intent = stripe.PaymentIntent.create(
+#             amount=int(total_price * 100),  # amount in cents
+#             currency='sgd',
+#             metadata={'integration_check': 'accept_a_payment'},
+#         )
+#     except stripe.error.StripeError as e:
+#         # Handle Stripe errors
+#         print(e)
+#         return redirect(url_for('view_cart'))
 #
-#         line_items=[
-#             # Include the cart items here
-#             {
-#                 'price_data': {
-#                     'currency': 'usd',
-#                     'product_data': {
-#                         'name': item['product_name'],
-#                     },
-#                     'unit_amount': item['price'],
-#                 },
-#                 'quantity': item['quantity'],
-#             }
+#     return render_template('checkout.html', client_secret=intent.client_secret, total_price=total_price)
+
+# @app.route('/checkout_confirmation', methods=['POST'])
+# def checkout_confirmation():
+#     # Confirm payment and update database
+#     print("Payment confirmed!")
+#     # Update database with order details
+#     # Send confirmation email to user
+#     return redirect(url_for('checkout_success'))
 #
-#             for item in cart_items
-#         ],
-#         mode='payment',
-#         success_url=request.url_root + 'success',
-#         cancel_url=request.url_root + 'cancel',
-#     )
-#
-#     # Update your database with the order details (cart_items, customer_name, customer_email, etc.)
-#     # ...
-#
-#     flash('Payment successful. Order placed!', 'success')
-#     return redirect(url_for('success'))
-#
-#
-# @app.route('/create-checkout-session', methods=['POST'])
-# def create_checkout_session():
-#     # Create a Checkout Session on the server
-#     session = stripe.checkout.Session.create(
-#         payment_method_types=['card'],
-#         line_items=[
-#             {
-#                 'price_data': {
-#                     'currency': 'usd',
-#                     'product_data': {
-#                         'name': 'Your Product',
-#                     },
-#                     'unit_amount': 1000,  # The price in cents
-#                 },
-#                 'quantity': 1,
-#             },
-#         ],
-#         mode='payment',
-#         success_url=request.url_root + 'success',
-#         cancel_url=request.url_root + 'cancel',
-#     )
-#
-#     return jsonify({'id': session.id})
-#
-#
-# @app.route('/success', methods=['GET'])
-# def success():
-#     # Update your database with the successful order details
-#     return "Payment successful. Order placed!"
-#
-# @app.route('/cancel', methods=['GET'])
-# def cancel():
-#     return "Payment canceled."
+# @app.route('/checkout_success')
+# def checkout_success():
+#     return render_template('checkout_success.html')
+
+
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    selected_item_ids = request.form.getlist('selected_items[]')
+    print(selected_item_ids)
+
+    # Fetch detailed information about the selected items from the database
+    product_manager = ProductManager()
+    total_price = 0
+
+    selected_items = []
+    for item in selected_item_ids:
+        print(item)
+    #     product = product_manager.get_product_by_id(product_id)
+    #
+    #     if product:
+    #         selected_items.append(product)
+    #         total_price += int(product.price * item[3])  # Assuming index 2 corresponds to quantity
+    #     else:
+    #         print(f"Product with ID {product_id} not found in the product database.")
+    #
+    # # Render the checkout page with the selected items
+    # return render_template('checkout.html', selected_items=selected_items)
 
 
 @app.route('/adminDownloads')
@@ -862,6 +836,46 @@ def download_Userdata():
     return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
 
 
+
+    # lname = checkoutform.lname.data
+    # fname = checkoutform.fname.data
+    # address = checkoutform.address.data
+    # email = checkoutform.email.data
+    # postalcode = checkoutform.postalcode.data
+    # nameoncard = checkoutform.nameoncard.data
+    # cardno = checkoutform.cardno.data
+    # expirydate = checkoutform.expirydate.data
+    # cvv = checkoutform.cvv.data
+    # unitno = checkoutform.unitno.data
+
+
+@app.route('/process_payment', methods=['POST'])
+def process_payment():
+    # Get the form data
+    shipping_address = request.form['shipping_address']
+    email = request.form['email']
+    # You may retrieve more form fields as needed for shipping information
+
+    # Charge the customer using Stripe
+    try:
+        # Create a payment intent with the total amount
+        intent = stripe.PaymentIntent.create(
+            amount=1000,  # Adjust this amount dynamically based on the total price
+            currency='usd',
+            description='Example charge',
+            receipt_email=email,  # Send receipt to the customer's email
+        )
+
+        # If payment is successful, update the database, and redirect to a confirmation page
+        # Here, you can update your database with the purchased items and shipping information
+        # For now, let's assume the payment was successful
+        # Update the session to track the successful payment
+        session['payment_successful'] = True
+
+        return redirect('/confirmation')
+    except stripe.error.StripeError as e:
+        # Handle Stripe errors
+        return render_template('error.html', error=str(e))
 
 if __name__ == '__main__':
     app.run()
