@@ -2,9 +2,8 @@
 {% block title %}Admin{% endblock %}
 {% block content %}
 
-<div class="box">
 <h1 class="Header"> Products </h1>
-</div>
+<hr>
 <div class="table admingpdpg">
     <form method="post" action="{{ url_for('adminProducts') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
         <label for="Image">Image:</label>

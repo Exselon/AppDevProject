@@ -1,32 +1,64 @@
- <div class="sidebar" style="overflow-x: hidden;
-">
-     <div class="item">
-         <img class="Logo" src="{{ url_for('static', filename='image/Logo.png') }}">
-     </div>
-     <hr class="Line">
-     <div class="item">
-         <div class="text"><a class="sideNav-item active" href="/adminDashboard">Dashboard</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminOrder">Orders</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminProducts">Products</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminPromotions">Promotions</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminEditUsers">Users</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminContact">Enquiry List</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a class="sideNav-item" href="/adminDownloads">Downloads</a></div>
-     </div>
-     <div class="item">
-         <div class="text"><a role="button" href="#" onclick="Logout()">Logout</a>
+
+
+
+<div class="sidebar" style="overflow-x: hidden;">
+     <ul>
+              <li>
+         <div class="item">
+            <img class="Logo" src="{{ url_for('static', filename='image/Logo.png') }}">
+        </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item active" href="/adminDashboard">Dashboard</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item" href="/adminOrder">Orders</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item" href="/adminProducts">Products</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item" href="/adminPromotions">Promotions</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item" href="/adminEditUsers">Users</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+            <div class="text"><a class="sideNav-item" href="/adminContact">Enquiry List</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+             <div class="text"><a class="sideNav-item" href="/adminDownloads">Downloads</a></div>
+         </div>
+     </li>
+     <li>
+         <div class="item">
+            <div class="text"><a role="button" href="#" onclick="Logout()">Logout</a></div>
+         </div>
+     </li>
+     </ul>
+
+
+
+
+
+
+
+
+
+
              <script>
      function Logout() {
 		if (confirm('Are you sure you want to logout?')) {
@@ -34,8 +66,6 @@
 		}
 	}
              </script>
-         </div>
-     </div>
-
  </div>
+
 
