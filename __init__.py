@@ -9,10 +9,10 @@ from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
 from Contact import ContactManager
-import pandas as pd
-import io
 # from info import InfoManager
 import plotly.express as px
+import pandas as pd
+import io
 #import stripe
 # stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
 # import json
@@ -488,28 +488,21 @@ def adminEditUsers():
     displayuser = getUser.get_all_user()
     getUser.close_connection()
 
-    sign_up = userSignup()
+    sign_up = userSignup(request.form)
     if request.method == 'POST':
-        # username = sign_up.name.data
-        # password = sign_up.password.data
-        # number = sign_up.number.data
-        # email = sign_up.email.data
-        # dob = sign_up.dob.data
-        # print(username)
-        # print(password)
-        # print(number)
-        # print(email)
-        # print(dob)
-        #
-        # conn = sqlite3.connect('Userdata.db')
-        # cursor = conn.cursor()
-        # cursor.execute('''
-        #     INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth, Role)
-        #     VALUES (?, ?, ?, ?, ?, ?)
-        # ''', (username, password, number, email, dob, 'admin'))
-        # conn.commit()
-        # conn.close()
-        print('test')
+        username = sign_up.name.data
+        password = sign_up.password.data
+        number = sign_up.number.data
+        email = sign_up.email.data
+        dob = sign_up.dob.data
+        role = 'admin'
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        createadmin = UserAccount()
+        createadmin.create_admin(username,hashed_password,number,email,dob,role)
+        createadmin.close_connection()
+        return redirect(url_for('adminEditUsers'))
+
 
     return render_template('adminEditUsers.html' , displayuser = displayuser , form=sign_up)
 
@@ -781,6 +774,7 @@ def get_current_quantity(cart_id):
 
 @app.route('/adminDownloads')
 def adminDownloads():
+
     return render_template('adminDownloads.html')
 
 
@@ -794,7 +788,7 @@ def download_Productdata():
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     data.to_excel(writer, index=False)
-    writer.save()
+    writer.close()
 
     output.seek(0)
 
@@ -810,11 +804,13 @@ def download_Userdata():
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     data.to_excel(writer, index=False)
-    writer.save()
+    writer.close()
 
     output.seek(0)
 
     return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
+
+
 
 if __name__ == '__main__':
     app.run()
