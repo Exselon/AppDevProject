@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template , send_file
 import sqlite3
 import os
 from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , ContactForm
@@ -9,6 +9,8 @@ from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
 from Contact import ContactManager
+import pandas as pd
+import io
 # from info import InfoManager
 import plotly.express as px
 #import stripe
@@ -618,7 +620,6 @@ def view_cart():
 
         return render_template('cart.html', cart=cart, UserID=userid, product_data_list=product_data_list, total_price=total_price)
 
-
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
@@ -782,5 +783,38 @@ def adminDownloads():
     return render_template('adminDownloads.html')
 
 
+@app.route('/downloadProductData')
+def download_Productdata():
+    conn = sqlite3.connect('Product.db ')
+
+    query = "SELECT * FROM products"
+    data = pd.read_sql(query, conn)
+
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    data.to_excel(writer, index=False)
+    writer.save()
+
+    output.seek(0)
+
+    return send_file(output, as_attachment=True, download_name='ProductList.xlsx' )
+
+@app.route('/downloadUserData')
+def download_Userdata():
+    conn = sqlite3.connect('Userdata.db')
+
+    query = "SELECT * FROM users"
+    data = pd.read_sql(query, conn)
+
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    data.to_excel(writer, index=False)
+    writer.save()
+
+    output.seek(0)
+
+    return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
+
 if __name__ == '__main__':
     app.run()
+
