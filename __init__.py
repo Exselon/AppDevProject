@@ -777,5 +777,10 @@ def get_current_quantity(cart_id):
 #     return "Payment canceled."
 
 
+@app.route('/adminDownloads')
+def adminDownloads():
+    return render_template('adminDownloads.html')
+
+
 if __name__ == '__main__':
     app.run()
