@@ -84,6 +84,7 @@ a, a:hover, a:focus {
     background: #32373d;
     color: #fff;
     transition: all 0.3s;
+    position: fixed;
     height: 100vh;
 }
 
