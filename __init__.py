@@ -327,6 +327,7 @@ def men_category():
     men_products = product_manager.get_products_by_category('men')
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
+    ProductFilterForm.category_men.data = True
     return render_template('Product.html', products=men_products, category='Men',form=ProductFilterForm)
 
 
@@ -336,6 +337,7 @@ def women_category():
     women_products = product_manager.get_products_by_category('women')
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
+    ProductFilterForm.category_women.data = True
     return render_template('Product.html', products=women_products, category='Women',form=ProductFilterForm)
 
 
@@ -345,6 +347,7 @@ def kids_category():
     kids_products = product_manager.get_products_by_category('kids')
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
+    ProductFilterForm.category_kids.data = True
     return render_template('Product.html', products=kids_products, category='Kids',form=ProductFilterForm)
 
 
