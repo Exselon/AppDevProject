@@ -1,0 +1,68 @@
+{% extends "adminBase.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<style xmlns="http://www.w3.org/1999/html">
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+    .delete{
+    width:3%;
+    height:10%;
+    }
+
+    .test{
+        max-width: 200px;
+    }
+    table td{
+        vertical-align: middle !important;
+    }
+</style>
+
+<h1 class="Header"> View Products </h1>
+<hr>
+
+<div class="table">
+    <table class="dbtable">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Description</th>
+            <th>Size</th>
+            <th>Del</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td><img src="{{ url_for('static', filename='image/' + product.image_path) }}" class="test" alt="product.image_path"></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.size }}</td>
+            <td class="delete">
+                <form method="post" action="{{ url_for('admin_View_Products') }}">
+                    <input type="hidden" name="id" value="{{ product.id }}">
+                    <button type="submit" onclick="return confirmdelProduct()">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <script>
+        function confirmdelProduct() {
+            return confirm('Confirm Delete {{ product.name }} ?');
+            }
+        </script>
+        {% endfor %}
+
+    </table>
+</div>
+
+
+
+
+{% endblock %}
