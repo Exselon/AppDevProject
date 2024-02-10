@@ -9,8 +9,6 @@ from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
 from Contact import ContactManager
-import pandas as pd
-import io
 # from info import InfoManager
 import plotly.express as px
 import pandas as pd
@@ -788,7 +786,7 @@ def download_Productdata():
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     data.to_excel(writer, index=False)
-    writer.save()
+    writer.close()
 
     output.seek(0)
 
@@ -804,7 +802,7 @@ def download_Userdata():
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     data.to_excel(writer, index=False)
-    writer.save()
+    writer.close()
 
     output.seek(0)
 
