@@ -18,6 +18,7 @@ import io
 # import json
 
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
