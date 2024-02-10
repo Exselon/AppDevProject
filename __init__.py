@@ -451,6 +451,25 @@ def adminProducts():
 
     return render_template('adminProducts.html', form=productForm)
 
+
+@app.route('/adminViewProducts', methods=['GET', 'POST'])
+def admin_View_Products():
+
+    product_manager = ProductManager()
+    products = product_manager.get_all_products()
+    product_manager.close_connection()
+
+    if request.method == 'POST':
+        product_id = request.form.get('id')
+
+        product_manager = ProductManager()
+        product_manager.del_product(product_id)
+        product_manager.close_connection()
+
+        return redirect(url_for('admin_View_Products'))
+
+    return render_template('adminViewProduct.html', products=products)
+
 # Code for Promotions
 @app.route('/adminPromotions', methods=['GET', 'POST'])
 def adminPromotions():
