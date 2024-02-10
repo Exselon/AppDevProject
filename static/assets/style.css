@@ -74,9 +74,6 @@ body {
 
 
 
-a, a:hover, a:focus {
-
-}
 
 .sidebar {
     min-width: 250px;
@@ -191,7 +188,7 @@ ul {
     padding: 20px;
 }
 
-.Logo {
+.adminLogo {
     width: 100%;
     height: auto;
     padding: 20px;
@@ -582,4 +579,8 @@ font-weight: normal;
 .bannerimage {
     height: 850px;
     width:100%;
+}
+
+.dwldheader{
+    padding: 15px;
 }
