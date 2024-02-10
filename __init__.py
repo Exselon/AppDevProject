@@ -278,7 +278,9 @@ def signup():
 # ---------------Code for product---------------#
 @app.route('/Product', methods=['GET', 'POST'])
 def Productpage():
+
     ProductFilterForm = ProductFilter(request.form)
+
     product_manager = ProductManager()
     products = product_manager.get_all_products()
 
@@ -317,6 +319,33 @@ def Productpage():
 
     product_manager.close_connection()
     return render_template('Product.html', products=products, form=ProductFilterForm)
+
+
+@app.route('/category/men')
+def men_category():
+    product_manager = ProductManager()
+    men_products = product_manager.get_products_by_category('men')
+    product_manager.close_connection()
+    ProductFilterForm = ProductFilter(request.form)
+    return render_template('Product.html', products=men_products, category='Men',form=ProductFilterForm)
+
+
+@app.route('/category/women')
+def women_category():
+    product_manager = ProductManager()
+    women_products = product_manager.get_products_by_category('women')
+    product_manager.close_connection()
+    ProductFilterForm = ProductFilter(request.form)
+    return render_template('Product.html', products=women_products, category='Women',form=ProductFilterForm)
+
+
+@app.route('/category/kids')
+def kids_category():
+    product_manager = ProductManager()
+    kids_products = product_manager.get_products_by_category('kids')
+    product_manager.close_connection()
+    ProductFilterForm = ProductFilter(request.form)
+    return render_template('Product.html', products=kids_products, category='Kids',form=ProductFilterForm)
 
 
 @app.route('/product/<int:product_id>')

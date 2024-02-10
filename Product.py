@@ -50,5 +50,9 @@ class ProductManager:
         products_data = self.cursor.fetchall()
         return [Product(*data) for data in products_data]
 
+    def del_product(self,ID):
+        self.cursor.execute('DELETE FROM products WHERE ProductID=?', (ID,))
+        self.conn.commit()
+
     def close_connection(self):
         self.conn.close()
