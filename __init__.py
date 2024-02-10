@@ -495,9 +495,10 @@ def adminEditUsers():
         email = sign_up.email.data
         dob = sign_up.dob.data
         role = 'admin'
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         createadmin = UserAccount()
-        createadmin.create_admin(username,password,number,email,dob,role)
+        createadmin.create_admin(username,hashed_password,number,email,dob,role)
         createadmin.close_connection()
         return redirect(url_for('adminEditUsers'))
 
