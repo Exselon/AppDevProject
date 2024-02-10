@@ -778,23 +778,43 @@ def checkout():
     selected_item_ids = request.form.getlist('selected_items[]')
     print(selected_item_ids)
 
-    # Fetch detailed information about the selected items from the database
-    product_manager = ProductManager()
+    selected_items = []
     total_price = 0
 
-    selected_items = []
-    for item in selected_item_ids:
-        print(item)
-    #     product = product_manager.get_product_by_id(product_id)
-    #
-    #     if product:
-    #         selected_items.append(product)
-    #         total_price += int(product.price * item[3])  # Assuming index 2 corresponds to quantity
-    #     else:
-    #         print(f"Product with ID {product_id} not found in the product database.")
-    #
-    # # Render the checkout page with the selected items
-    # return render_template('checkout.html', selected_items=selected_items)
+    for cart_id in selected_item_ids:
+        cartmanager = CartManager()
+        cart_item = cartmanager.get_cart_item_by_id(cart_id)
+        cartmanager.close_connection()
+
+        if cart_item:
+            #selected_items.append(cart_item)
+            product_manager = ProductManager()
+            product = product_manager.get_product_by_id(
+                cart_item[2])  # Assuming index 2 is the product_id in the cart_item
+            product_manager.close_connection()
+
+            if product:
+                selected_items.append({
+                    'CartID': cart_item[0],
+                    'Product': product,
+                    'Quantity': cart_item[3],
+                    'Subtotal': cart_item[3] * product.price
+                })
+                total_price += cart_item[3] * product.price
+            else:
+                print(f"Product with ID {cart_item[2]} not found in the product database.")
+        else:
+            print(f"Cart item with ID {cart_id} not found in the cart database.")
+
+            # Now, selected_items contains information about the selected items from the cart
+        for item in selected_items:
+            print(
+                f"CartID: {item['CartID']}, Product: {item['Product'].name}, Quantity: {item['Quantity']}, Price: {item['Product'].price}, Subtotal: {item['Subtotal']}")
+
+    return "test"
+    # Add any additional logic for the checkout process
+
+    #return render_template('checkout.html', selected_items=selected_items)
 
 
 @app.route('/adminDownloads')
