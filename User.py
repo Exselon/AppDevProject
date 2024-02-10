@@ -19,6 +19,10 @@ class UserAccount:
         self.cursor.execute('INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?)',(username, password, number, email, dob,))
         self.conn.commit()
 
+    def create_admin(self, username, password, number, email, dob,role):
+        self.cursor.execute('INSERT INTO users (Username, Password, PhoneNumber, Email, DateOfBirth,Role) VALUES (?, ?, ?, ?, ?,?)',(username, password, number, email, dob,role))
+        self.conn.commit()
+
     def close_connection(self):
         self.conn.close()
 
