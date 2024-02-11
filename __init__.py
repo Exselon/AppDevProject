@@ -392,9 +392,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchange.CurrentPasswordField.data
-        NewPassword = passwordchange.NewPasswordField.data
-        ConfirmPassword = passwordchange.ConfirmPasswordField.data
+        CurrentPassword = passwordchangeform.CurrentPasswordField.data
+        NewPassword = passwordchangeform.NewPasswordField.data
+        ConfirmPassword = passwordchangeform.ConfirmPasswordField.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw
@@ -407,7 +407,9 @@ def passwordchange():
                 update_password = DisplayUser()
                 update_password.update_password(hashed_password, UserID)
                 update_password.close_connection()
-                #put alert to inform user that pw is updated
+                flash('Your password has been changed successfully', 'success')
+                print('changed')
+                return redirect(url_for('passwordchange'))
             else:
                 #pw dont match
                 return render_template('passwordchange.html', form=passwordchangeform)
