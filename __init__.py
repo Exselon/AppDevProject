@@ -20,9 +20,14 @@ import requests
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
+
 #recaptcha api
 RECAPTCHA_SITE_KEY = '6LeQyW4pAAAAAOWNyXcX1G-3UfTy63yjWp5mwiPK'
 RECAPTCHA_SECRET_KEY = '6LeQyW4pAAAAACgnyB-xTbxBuIENP9CS_TfaQWA8'
+
+#SMTP api
+SENDINBLUE_API_KEY = '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'
+SENDINBLUE_API_URL = 'https://api.sendinblue.com/v3/smtp/email'
 
 stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
 stripe_publishable_key = 'pk_test_51OdTteBzJLH01t0MKNrsG9H6v7YVEtRf5JZtalicClnYsR7y8CxjHPniuiuqpZYxYMCBw95cTG2YdWYlVBvCsZIp00DNnocI5x'
@@ -36,6 +41,40 @@ def before_request():
     if not session_cleared:
         session.clear()
         session_cleared = True
+
+# ---------------Code For reCAPTCHA---------------#
+# Function to verify reCAPTCHA response
+def verify_recaptcha(recaptcha_response):
+    data = {
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response,
+    }
+    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+    result = response.json()
+    return result['success']
+
+
+# ---------------Code For SMTP---------------#
+def send_email(sender, recipient, subject, html_body):
+    headers = {
+        'Content-Type': 'application/json',
+        'api-key': SENDINBLUE_API_KEY,
+    }
+
+    data = {
+        'sender': {'email': sender},
+        'to': [{'email': recipient}],
+        'subject': subject,
+        'htmlContent': html_body,
+    }
+
+    try:
+        response = requests.post(SENDINBLUE_API_URL, json=data, headers=headers)
+        response.raise_for_status()
+        print("Email sent successfully. Response:", response.json())
+    except requests.exceptions.RequestException as e:
+        print("Error sending email:", e)
+        print("API Response:", e.response.text)
 
 # ---------------CODE FOR DB---------------#
 
@@ -202,6 +241,26 @@ def contact_us():
         newEnquiry.Create_Enquiry(name,email,subject,msg,status,resolveid,resolveby)
         newEnquiry.close_connection()
 
+        email_subject = f"Thank You for Your Inquiry: {subject}"
+        email_html_body = f"""<p>Dear {name},</p>
+
+        <p>Thank you for reaching out to us. We have received your inquiry regarding {subject}.</p>
+        <p>Our team will review your message and get back to you as soon as possible.</p>
+
+        <p><strong>Inquiry Details:</strong></p>
+        <p><strong>Subject:</strong> {subject}</p>
+        <p><strong>Message:</strong> {msg}</p>
+
+        <p>If you have any further questions or need immediate assistance, please feel free to contact us.</p>
+
+        <p>Best regards,<br>
+        Eco-Wear Management</p>
+        """
+
+        # Send the formal email
+        send_email('contact@ecowear.com', email, email_subject, email_html_body)
+        return redirect(url_for('contact_us', success=True))
+
     return render_template('contactUs.html', form=contactform)
 
 
@@ -246,18 +305,6 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('home'))
-
-# ---------------Code For reCAPTCHA---------------#
-# Function to verify reCAPTCHA response
-def verify_recaptcha(recaptcha_response):
-    data = {
-        'secret': RECAPTCHA_SECRET_KEY,
-        'response': recaptcha_response,
-    }
-    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-    result = response.json()
-    return result['success']
-
 
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
