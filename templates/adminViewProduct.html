@@ -1,7 +1,7 @@
 {% extends "adminBase.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-<style xmlns="http://www.w3.org/1999/html">
+<style>
     table, th, td {
   border: 1px solid;
     }
@@ -48,7 +48,7 @@
             <td class="delete">
                 <form method="post" action="{{ url_for('admin_View_Products') }}">
                     <input type="hidden" name="id" value="{{ product.id }}">
-                    <button type="submit" onclick="return confirmdelProduct()">Delete</button>
+                    <button type="submit" class="form-control" onclick="return confirmdelProduct()">Delete</button>
                 </form>
             </td>
         </tr>
