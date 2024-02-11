@@ -55,6 +55,12 @@ class CartManager:
         finally:
             self.conn.close()
 
+    def get_cart_item_by_id(self, cart_id):
+        self.cursor.execute("SELECT * FROM cart WHERE CartID = ?",(cart_id,))
+        cart_item = self.cursor.fetchone()
+
+        return cart_item
+
     def get_current_quantity(self, cart_id):
         # Retrieve the current quantity from the database
         self.cursor.execute('SELECT quantity FROM cart WHERE CartID = ?', (cart_id,))

@@ -14,11 +14,20 @@ import plotly.express as px
 import pandas as pd
 import io
 import stripe
+import requests
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
+
+#recaptcha api
+RECAPTCHA_SITE_KEY = '6LeQyW4pAAAAAOWNyXcX1G-3UfTy63yjWp5mwiPK'
+RECAPTCHA_SECRET_KEY = '6LeQyW4pAAAAACgnyB-xTbxBuIENP9CS_TfaQWA8'
+
+#SMTP api
+SENDINBLUE_API_KEY = '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'
+SENDINBLUE_API_URL = 'https://api.sendinblue.com/v3/smtp/email'
 
 stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
 stripe_publishable_key = 'pk_test_51OdTteBzJLH01t0MKNrsG9H6v7YVEtRf5JZtalicClnYsR7y8CxjHPniuiuqpZYxYMCBw95cTG2YdWYlVBvCsZIp00DNnocI5x'
@@ -32,6 +41,40 @@ def before_request():
     if not session_cleared:
         session.clear()
         session_cleared = True
+
+# ---------------Code For reCAPTCHA---------------#
+# Function to verify reCAPTCHA response
+def verify_recaptcha(recaptcha_response):
+    data = {
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response,
+    }
+    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+    result = response.json()
+    return result['success']
+
+
+# ---------------Code For SMTP---------------#
+def send_email(sender, recipient, subject, html_body):
+    headers = {
+        'Content-Type': 'application/json',
+        'api-key': SENDINBLUE_API_KEY,
+    }
+
+    data = {
+        'sender': {'email': sender},
+        'to': [{'email': recipient}],
+        'subject': subject,
+        'htmlContent': html_body,
+    }
+
+    try:
+        response = requests.post(SENDINBLUE_API_URL, json=data, headers=headers)
+        response.raise_for_status()
+        print("Email sent successfully. Response:", response.json())
+    except requests.exceptions.RequestException as e:
+        print("Error sending email:", e)
+        print("API Response:", e.response.text)
 
 # ---------------CODE FOR DB---------------#
 
@@ -198,6 +241,26 @@ def contact_us():
         newEnquiry.Create_Enquiry(name,email,subject,msg,status,resolveid,resolveby)
         newEnquiry.close_connection()
 
+        email_subject = f"Thank You for Your Inquiry: {subject}"
+        email_html_body = f"""<p>Dear {name},</p>
+
+        <p>Thank you for reaching out to us. We have received your inquiry regarding {subject}.</p>
+        <p>Our team will review your message and get back to you as soon as possible.</p>
+
+        <p><strong>Inquiry Details:</strong></p>
+        <p><strong>Subject:</strong> {subject}</p>
+        <p><strong>Message:</strong> {msg}</p>
+
+        <p>If you have any further questions or need immediate assistance, please feel free to contact us.</p>
+
+        <p>Best regards,<br>
+        Eco-Wear Management</p>
+        """
+
+        # Send the formal email
+        send_email('contact@ecowear.com', email, email_subject, email_html_body)
+        return redirect(url_for('contact_us', success=True))
+
     return render_template('contactUs.html', form=contactform)
 
 
@@ -243,7 +306,6 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -251,6 +313,10 @@ def signup():
     user_account = UserAccount()
 
     if request.method == 'POST':
+
+        recaptcha_response = request.form['g-recaptcha-response']
+        if not verify_recaptcha(recaptcha_response):
+            return render_template('Signup.html', form=userSignupform, recaptcha_error="Please complete the reCAPTCHA verification.")
 
         username = userSignupform.name.data.lower()
         password = userSignupform.password.data
@@ -272,7 +338,7 @@ def signup():
 
             return redirect(url_for('login'))
 
-    return render_template('Signup.html', form=userSignupform)
+    return render_template('Signup.html', form=userSignupform, site_key=RECAPTCHA_SITE_KEY)
 
 
 # ---------------Code for product---------------#
@@ -392,9 +458,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchangeform.CurrentPasswordField.data
-        NewPassword = passwordchangeform.NewPasswordField.data
-        ConfirmPassword = passwordchangeform.ConfirmPasswordField.data
+        CurrentPassword = passwordchangeform.CurrentPassword.data
+        NewPassword = passwordchangeform.NewPassword.data
+        ConfirmPassword = passwordchangeform.ConfirmPassword.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw
@@ -780,23 +846,43 @@ def checkout():
     selected_item_ids = request.form.getlist('selected_items[]')
     print(selected_item_ids)
 
-    # Fetch detailed information about the selected items from the database
-    product_manager = ProductManager()
+    selected_items = []
     total_price = 0
 
-    selected_items = []
-    for item in selected_item_ids:
-        print(item)
-    #     product = product_manager.get_product_by_id(product_id)
-    #
-    #     if product:
-    #         selected_items.append(product)
-    #         total_price += int(product.price * item[3])  # Assuming index 2 corresponds to quantity
-    #     else:
-    #         print(f"Product with ID {product_id} not found in the product database.")
-    #
-    # # Render the checkout page with the selected items
-    # return render_template('checkout.html', selected_items=selected_items)
+    for cart_id in selected_item_ids:
+        cartmanager = CartManager()
+        cart_item = cartmanager.get_cart_item_by_id(cart_id)
+        cartmanager.close_connection()
+
+        if cart_item:
+            #selected_items.append(cart_item)
+            product_manager = ProductManager()
+            product = product_manager.get_product_by_id(
+                cart_item[2])  # Assuming index 2 is the product_id in the cart_item
+            product_manager.close_connection()
+
+            if product:
+                selected_items.append({
+                    'CartID': cart_item[0],
+                    'Product': product,
+                    'Quantity': cart_item[3],
+                    'Subtotal': cart_item[3] * product.price
+                })
+                total_price += cart_item[3] * product.price
+            else:
+                print(f"Product with ID {cart_item[2]} not found in the product database.")
+        else:
+            print(f"Cart item with ID {cart_id} not found in the cart database.")
+
+            # Now, selected_items contains information about the selected items from the cart
+        for item in selected_items:
+            print(
+                f"CartID: {item['CartID']}, Product: {item['Product'].name}, Quantity: {item['Quantity']}, Price: {item['Product'].price}, Subtotal: {item['Subtotal']}")
+
+    return "test"
+    # Add any additional logic for the checkout process
+
+    #return render_template('checkout.html', selected_items=selected_items)
 
 
 @app.route('/adminDownloads')
