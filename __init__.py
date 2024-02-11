@@ -14,11 +14,15 @@ import plotly.express as px
 import pandas as pd
 import io
 import stripe
+import requests
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/image'
+#recaptcha api
+RECAPTCHA_SITE_KEY = '6LeQyW4pAAAAAOWNyXcX1G-3UfTy63yjWp5mwiPK'
+RECAPTCHA_SECRET_KEY = '6LeQyW4pAAAAACgnyB-xTbxBuIENP9CS_TfaQWA8'
 
 stripe.api_key = "sk_test_51OdTteBzJLH01t0Myv424qrnRDEOHP461k6PUoqXAhYq7P7NsnBCApYGdAxXe0FJsVhjCbGBzXdVrUV6D4RFRyrr00Hn7m5zPx"
 stripe_publishable_key = 'pk_test_51OdTteBzJLH01t0MKNrsG9H6v7YVEtRf5JZtalicClnYsR7y8CxjHPniuiuqpZYxYMCBw95cTG2YdWYlVBvCsZIp00DNnocI5x'
@@ -243,6 +247,17 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+# ---------------Code For reCAPTCHA---------------#
+# Function to verify reCAPTCHA response
+def verify_recaptcha(recaptcha_response):
+    data = {
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response,
+    }
+    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+    result = response.json()
+    return result['success']
+
 
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
@@ -251,6 +266,10 @@ def signup():
     user_account = UserAccount()
 
     if request.method == 'POST':
+
+        recaptcha_response = request.form['g-recaptcha-response']
+        if not verify_recaptcha(recaptcha_response):
+            return render_template('Signup.html', form=userSignupform, recaptcha_error="Please complete the reCAPTCHA verification.")
 
         username = userSignupform.name.data.lower()
         password = userSignupform.password.data
@@ -272,7 +291,7 @@ def signup():
 
             return redirect(url_for('login'))
 
-    return render_template('Signup.html', form=userSignupform)
+    return render_template('Signup.html', form=userSignupform, site_key=RECAPTCHA_SITE_KEY)
 
 
 # ---------------Code for product---------------#
@@ -392,9 +411,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchange.CurrentPasswordField.data
-        NewPassword = passwordchange.NewPasswordField.data
-        ConfirmPassword = passwordchange.ConfirmPasswordField.data
+        CurrentPassword = passwordchangeform.CurrentPassword.data
+        NewPassword = passwordchangeform.NewPassword.data
+        ConfirmPassword = passwordchangeform.ConfirmPassword.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw

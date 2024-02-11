@@ -55,8 +55,13 @@
                 </div>
                 <div id="dobError" style="color: red;"></div>
 
+                <div class="form-group mb-3 pb-3 pt-3">
+                    <div class="g-recaptcha" data-sitekey="{{ site_key }}"></div>
+                </div>
+                <div id="recaptchaError" style="color: red;"></div>
+
                      <input type="submit" value="Register" class="form-control btn btn-primary rounded submit px-3">
-                 </form>
+                </form>
                 {% if failure_message %}
 						<span style="color: red;">{{ failure_message }}</span>
                 {% endif %}
@@ -73,7 +78,7 @@
 
 <script>
     function validateForm() {
-        var name= document.getElementById('name').value;
+        var name = document.getElementById('name').value;
         var password = document.getElementById('password').value;
         var repeat_password = document.getElementById('cfmpassword').value;
         var email = document.getElementById('email').value;
@@ -86,6 +91,7 @@
         var emailError = document.getElementById('emailError');
         var dnameError = document.getElementById('dnameError');
         var dobError = document.getElementById('dobError');
+        var recaptchaError = document.getElementById('recaptchaError');
 
         usernameError.innerHTML = "";
         passwordError.innerHTML = "";
@@ -93,8 +99,14 @@
         emailError.innerHTML = "";
         dnameError.innerHTML = "";
         dobError.innerHTML = "";
+        recaptchaError.innerHTML = "";
 
-
+        // Validate reCAPTCHA
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (recaptchaResponse.length === 0) {
+            recaptchaError.innerHTML = "Please complete the reCAPTCHA verification.";
+            return false;
+        }
 
         if (name === "") {
             dnameError.innerHTML = "Name is required.";
@@ -102,31 +114,27 @@
         if (password === "") {
             passwordError.innerHTML = "Password is required.";
         }
-        if (repeat_password === "" || password != repeat_password) {
-            cfmpasswordError.innerHTML = "Confirm password is required.";
+        if (repeat_password === "" || password !== repeat_password) {
+            cfmpasswordError.innerHTML = "Confirm password is required and must match the password.";
         }
         if (email === "") {
             emailError.innerHTML = "Email is required.";
         }
-        if (number === "" || number == null ) {
-           usernameError.innerHTML = "Contact Number is required.";
+        if (number === "" || number === null) {
+            usernameError.innerHTML = "Contact Number is required.";
         }
-        if (number.length !== 8){
-            usernameError.innerHTML = "Invalid Contact number only 8 digit.";
+        if (number.length !== 8) {
+            usernameError.innerHTML = "Invalid Contact number, must be 8 digits.";
         }
         if (dob === "") {
             dobError.innerHTML = "Date of birth is required.";
         }
 
-         if (name === "" || password === "" || repeat_password === "" || password != repeat_password || email === "" || number === "" || dob === "" ||number.length !== 8) {
-                    return false;
-                    print("false");
-         }
-         else
-         {
+        if (name === "" || password === "" || repeat_password === "" || password !== repeat_password || email === "" || number === "" || dob === "" || number.length !== 8) {
+            return false;
+        } else {
             return true;
         }
-
     }
 </script>
 
