@@ -1,5 +1,5 @@
-from wtforms import Form, StringField, PasswordField,DateField, validators,IntegerField,SelectField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
-
+from wtforms import Form, SubmitField, StringField, PasswordField,DateField, validators,IntegerField,SelectField,FloatField,TextAreaField,FileField,SelectMultipleField,BooleanField,RadioField,EmailField, MonthField
+from wtforms.validators import DataRequired, Email, Length, Optional
 class userSignup(Form):
     name = StringField('name', [validators.Length(min=1, max=150)])
     password = PasswordField('Password', [validators.Length(min=8)])
@@ -46,16 +46,17 @@ class ProductFilter(Form):
     ])
 
 class CheckoutForm(Form):
-    fname = StringField('firstname', [validators.InputRequired(), validators.DataRequired()])
-    lname = StringField('lastname', [validators.InputRequired(), validators.DataRequired()])
-    address = StringField('address', [validators.InputRequired(), validators.DataRequired()])
-    email = EmailField('email', [validators.InputRequired("Please enter your email address"), validators.DataRequired(), validators.Email("Please enter your email address")])
-    postalcode = IntegerField('postalcode', [validators.InputRequired(), validators.DataRequired(), validators.length(min=6, max=6)])
-    nameoncard = StringField('nameoncard', [validators.InputRequired(), validators.DataRequired()])
-    cardno = IntegerField('cardno', [validators.InputRequired(), validators.DataRequired(), validators.length(min=16, max=16)])
-    expirydate = MonthField('expirydate', [validators.InputRequired(), validators.DataRequired()], format='%m - %y')
-    cvv = IntegerField('cvv', [validators.InputRequired(), validators.DataRequired, validators.length(min=3, max=4)])
+    fname = StringField('firstname', [validators.DataRequired()])
+    lname = StringField('lastname', [validators.DataRequired()])
+    address = StringField('address', [validators.DataRequired()])
+    email = EmailField(validators.DataRequired("Please enter your email address"), [validators.Email("Please enter your email address")])
+    postalcode = IntegerField('postalcode', [validators.DataRequired(), validators.length(min=6, max=6)])
     unitno = StringField('unitno', [validators.Optional(strip_whitespace=True)])
+    submit = SubmitField('Pay Now')
+    # nameoncard = StringField('nameoncard', [validators.InputRequired(), validators.DataRequired()])
+    # cardno = IntegerField('cardno', [validators.InputRequired(), validators.DataRequired(), validators.length(min=16, max=16)])
+    # expirydate = MonthField('expirydate', [validators.InputRequired(), validators.DataRequired()], format='%m - %y')
+    # cvv = IntegerField('cvv', [validators.InputRequired(), validators.DataRequired, validators.length(min=3, max=4)])
 
 
 

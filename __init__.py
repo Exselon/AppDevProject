@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template , send_file
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, before_render_template, send_file
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , ContactForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm, ContactForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,7 +9,7 @@ from Promotion import PromotionManager
 from User import DisplayUser,UserAccount
 from Cart import CartManager
 from Contact import ContactManager
-# from info import InfoManager
+from Order import OrderManager
 import plotly.express as px
 import pandas as pd
 import io
@@ -170,53 +170,27 @@ def create_Contact():
 
 create_Contact()
 
-# def create_Order():
-#     conn = sqlite3.connect('Order.db')
-#     cursor = conn.cursor()
-#     cursor.execute('''
-#         CREATE TABLE IF NOT EXISTS orders (
-#             OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
-#             user_id INTEGER,
-#             product_id INTEGER,
-#             quantity INTEGER,
-#             size TEXT,
-#             total_price REAL,  -- Assuming you want to store the total price for the order
-#             order_date TEXT,   -- You can use DATETIME or TEXT for the order date
-#             payment_status TEXT,
-#             FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
-#             FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
-#         )
-#     ''')
-#     conn.commit()
-#     conn.close()
+def create_Order():
+    conn = sqlite3.connect('Order.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orders (
+            OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
+            UserID INTEGER,
+            ProductID INTEGER,
+            Quantity INTEGER,
+            Size TEXT,
+            OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- You can use DATETIME or TEXT for the order date
+            FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
+            FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+create_Order()
 #
-# create_Order()
-#
-#
-# def create_Info():
-#     conn = sqlite3.connect('Info.db')
-#     cursor = conn.cursor()
-#     cursor.execute('''
-#         CREATE TABLE IF NOT EXISTS info (
-#         user_id INTEGER,
-#         fname TEXT,
-#         lname TEXT,
-#         address BLOB,
-#         email TEXT,
-#         postalcode INTEGER,
-#         nameoncard TEXT,
-#         cardno INTEGER,
-#         expirydate BLOB,
-#         cvv INTEGER,
-#         unitno BLOB
-#         )
-#     ''')
-#
-#     conn.commit()
-#     conn.close()
-#
-#
-# create_Info()
+
 
 
 # ---------------Code for Home---------------#
@@ -310,6 +284,7 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -342,7 +317,7 @@ def signup():
 
             return redirect(url_for('login'))
 
-    return render_template('Signup.html', form=userSignupform, site_key=RECAPTCHA_SITE_KEY)
+    return render_template('Signup.html', form=userSignupform)
 
 
 # ---------------Code for product---------------#
@@ -462,9 +437,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchangeform.CurrentPassword.data
-        NewPassword = passwordchangeform.NewPassword.data
-        ConfirmPassword = passwordchangeform.ConfirmPassword.data
+        CurrentPassword = passwordchange.CurrentPasswordField.data
+        NewPassword = passwordchange.NewPasswordField.data
+        ConfirmPassword = passwordchange.ConfirmPasswordField.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw
@@ -477,9 +452,7 @@ def passwordchange():
                 update_password = DisplayUser()
                 update_password.update_password(hashed_password, UserID)
                 update_password.close_connection()
-                flash('Your password has been changed successfully', 'success')
-                print('changed')
-                return redirect(url_for('passwordchange'))
+                #put alert to inform user that pw is updated
             else:
                 #pw dont match
                 return render_template('passwordchange.html', form=passwordchangeform)
@@ -790,107 +763,6 @@ def get_current_quantity(cart_id):
         # Return 0 if the cart item is not found
         return 0
 
-
-#<--------------------- Check Out code --------------------->
-
-# @app.route('/checkout', methods=['POST'])
-# def checkout():
-#     # Retrieve user information from session
-#     user_id = session.get('User_ID')
-#
-#     # selected_items = request.form.getlist('selected_items[]')
-#
-#     # Calculate total price
-#     cartmanager = CartManager()
-#     cart = cartmanager.get_cart_by_id(user_id)
-#     cartmanager.close_connection()
-#
-#     product_manager = ProductManager()
-#     total_price = 0
-#
-#     for item in cart:
-#         product_id = item[2]
-#         product = product_manager.get_product_by_id(product_id)
-#
-#         # if selected_items:
-#         if product:
-#             total_price += int(product.price * item[3])  # Assuming index 2 corresponds to quantity
-#         else:
-#             print(f"Product with ID {product_id} not found in the product database.")
-#
-#     # Create a Stripe PaymentIntent
-#     try:
-#         intent = stripe.PaymentIntent.create(
-#             amount=int(total_price * 100),  # amount in cents
-#             currency='sgd',
-#             metadata={'integration_check': 'accept_a_payment'},
-#         )
-#     except stripe.error.StripeError as e:
-#         # Handle Stripe errors
-#         print(e)
-#         return redirect(url_for('view_cart'))
-#
-#     return render_template('checkout.html', client_secret=intent.client_secret, total_price=total_price)
-
-# @app.route('/checkout_confirmation', methods=['POST'])
-# def checkout_confirmation():
-#     # Confirm payment and update database
-#     print("Payment confirmed!")
-#     # Update database with order details
-#     # Send confirmation email to user
-#     return redirect(url_for('checkout_success'))
-#
-# @app.route('/checkout_success')
-# def checkout_success():
-#     return render_template('checkout_success.html')
-
-
-@app.route('/checkout', methods=['POST'])
-def checkout():
-    selected_item_ids = request.form.getlist('selected_items[]')
-    print(selected_item_ids)
-
-    selected_items = []
-    total_price = 0  # Initialize total_price here
-    added_cart_ids = set()  # Keep track of already added CartIDs
-
-    for cart_id in selected_item_ids:
-        if cart_id in added_cart_ids:
-            continue  # Skip if the CartID has already been added
-
-        cartmanager = CartManager()
-        cart_item = cartmanager.get_cart_item_by_id(cart_id)
-        cartmanager.close_connection()
-
-        if cart_item:
-            product_manager = ProductManager()
-            product = product_manager.get_product_by_id(cart_item[2])  # Assuming index 2 is the product_id in the cart_item
-            product_manager.close_connection()
-
-            if product:
-                selected_items.append({
-                    'CartID': cart_item[0],
-                    'Product': product,
-                    'Quantity': cart_item[3],
-                    'Subtotal': cart_item[3] * product.price
-                })
-                total_price += cart_item[3] * product.price
-                added_cart_ids.add(cart_id)  # Mark the CartID as added
-            else:
-                print(f"Product with ID {cart_item[2]} not found in the product database.")
-        else:
-            print(f"Cart item with ID {cart_id} not found in the cart database.")
-
-    # Now, selected_items contains information about the selected items from the cart
-    for item in selected_items:
-        print(f"CartID: {item['CartID']}, Product: {item['Product'].name}, Quantity: {item['Quantity']}, Price: {item['Product'].price}, Subtotal: {item['Subtotal']}")
-
-    return "test"
-    # Add any additional logic for the checkout process
-
-    #return render_template('checkout.html', selected_items=selected_items)
-
-
 @app.route('/adminDownloads')
 def adminDownloads():
 
@@ -930,46 +802,135 @@ def download_Userdata():
     return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
 
 
+#<--------------------- Check Out code --------------------->
 
-    # lname = checkoutform.lname.data
-    # fname = checkoutform.fname.data
-    # address = checkoutform.address.data
-    # email = checkoutform.email.data
-    # postalcode = checkoutform.postalcode.data
-    # nameoncard = checkoutform.nameoncard.data
-    # cardno = checkoutform.cardno.data
-    # expirydate = checkoutform.expirydate.data
-    # cvv = checkoutform.cvv.data
-    # unitno = checkoutform.unitno.data
+@app.route('/checkout', methods=['POST', 'GET'])
+def checkout():
+    if request.method == 'POST':
+        selected_item_ids = request.form.getlist('selected_items[]')
+        session['selected_item_ids'] = selected_item_ids
+        return redirect(url_for('checkout'))
+
+    selected_item_ids = session.get('selected_item_ids', [])
+    selected_items = []
+    total_price = 0
+
+    for cart_id in selected_item_ids:
+        cartmanager = CartManager()
+        cart_item = cartmanager.get_cart_item_by_id(cart_id)
+        cartmanager.close_connection()
+
+        if cart_item:
+            product_manager = ProductManager()
+            product = product_manager.get_product_by_id(cart_item[2])
+            product_manager.close_connection()
+
+            if product:
+                selected_items.append({
+                    'CartID': cart_item[0],
+                    'Product': product,
+                    'Quantity': cart_item[3],
+                    'Subtotal': cart_item[3] * product.price
+                })
+                total_price += cart_item[3] * product.price
+            else:
+                print(f"Product with ID {cart_item[2]} not found in the product database.")
+        else:
+            print(f"Cart item with ID {cart_id} not found in the cart database.")
+
+    return render_template('checkout.html', selected_items=selected_items, total_price=total_price)
 
 
-@app.route('/process_payment', methods=['POST'])
+@app.route('/process_payment', methods=['GET', 'POST'])
 def process_payment():
-    # Get the form data
-    shipping_address = request.form['shipping_address']
-    email = request.form['email']
-    # You may retrieve more form fields as needed for shipping information
+    selected_item_ids = session.get('selected_item_ids', [])
+    total_price = request.args.get('total_price')
 
-    # Charge the customer using Stripe
-    try:
-        # Create a payment intent with the total amount
-        intent = stripe.PaymentIntent.create(
-            amount=1000,  # Adjust this amount dynamically based on the total price
-            currency='usd',
-            description='Example charge',
-            receipt_email=email,  # Send receipt to the customer's email
-        )
+    if not selected_item_ids:
+        flash('No items selected for payment.', 'error')
+        return redirect(url_for('checkout'))
 
-        # If payment is successful, update the database, and redirect to a confirmation page
-        # Here, you can update your database with the purchased items and shipping information
-        # For now, let's assume the payment was successful
-        # Update the session to track the successful payment
-        session['payment_successful'] = True
+    selected_items = []
+    for cart_id in selected_item_ids:
+        cartmanager = CartManager()
+        cart_item = cartmanager.get_cart_item_by_id(cart_id)
+        cartmanager.close_connection()
 
-        return redirect('/confirmation')
-    except stripe.error.StripeError as e:
-        # Handle Stripe errors
-        return render_template('error.html', error=str(e))
+        if cart_item:
+            product_manager = ProductManager()
+            product = product_manager.get_product_by_id(cart_item[2])
+            product_manager.close_connection()
+
+            if product:
+                selected_items.append({
+                    'CartID': cart_item[0],
+                    'Product': product,
+                    'Quantity': cart_item[3],
+                    'Subtotal': cart_item[3] * product.price
+                })
+            else:
+                print(f"Product with ID {cart_item[2]} not found in the product database.")
+        else:
+            print(f"Cart item with ID {cart_id} not found in the cart database.")
+
+    # Create a Stripe Checkout Session
+    line_items = []
+    for item in selected_items:
+        line_items.append({
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': item['Product'].name,
+                    # You can add more product details here if needed
+                },
+                'unit_amount': int(item['Product'].price * 100),  # Amount in cents
+            },
+            'quantity': item['Quantity'],
+        })
+
+    stripe_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=line_items,
+        mode='payment',
+        success_url=url_for('payment_success', _external=True),
+        cancel_url=url_for('payment_cancel', _external=True),
+    )
+
+    return redirect(stripe_session.url, code=303)  # Redirect to Stripe Checkout page
+
+@app.route('/payment_success')
+def payment_success():
+    selected_item_ids = session.get('selected_item_ids', [])
+
+    if not selected_item_ids:
+        flash('No items selected for payment.', 'error')
+        return redirect(url_for('checkout'))
+
+    # Insert selected items into the order database
+    ordermanager = OrderManager()
+    for cart_id in selected_item_ids:
+        cartmanager = CartManager()
+        cart_item = cartmanager.get_cart_item_by_id(cart_id)
+        cartmanager.close_connection()
+
+        if cart_item:
+            # Assuming your order database schema is similar to cart items
+            ordermanager.insert_order_item(cart_item)
+            # Remove selected items from the cart database
+            cartmanager = CartManager()
+            cartmanager.remove_cart_item_by_id(cart_id)
+            cartmanager.close_connection()
+
+    # Clear the session after successful payment
+    session.pop('selected_item_ids', None)
+
+    return render_template('payment_success.html')
+    return render_template('payment_success.html')
+
+@app.route('/payment_cancel')  # Define the payment cancel endpoint
+def payment_cancel():
+    return render_template('payment_cancel.html')
+
 
 if __name__ == '__main__':
     app.run()
