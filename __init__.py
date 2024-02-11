@@ -229,6 +229,11 @@ def contact_us():
     contactform = ContactForm(request.form)
 
     if request.method == 'POST':
+
+        recaptcha_response = request.form['g-recaptcha-response']
+        if not verify_recaptcha(recaptcha_response):
+            return render_template('contactUs.html', form=contactform, site_key=RECAPTCHA_SITE_KEY)
+
         name = contactform.name.data
         email = contactform.email.data
         subject = contactform.subject.data
@@ -247,7 +252,6 @@ def contact_us():
         <p>Thank you for reaching out to us. We have received your inquiry regarding {subject}.</p>
         <p>Our team will review your message and get back to you as soon as possible.</p>
 
-        <p><strong>Inquiry Details:</strong></p>
         <p><strong>Subject:</strong> {subject}</p>
         <p><strong>Message:</strong> {msg}</p>
 
@@ -261,7 +265,7 @@ def contact_us():
         send_email('contact@ecowear.com', email, email_subject, email_html_body)
         return redirect(url_for('contact_us', success=True))
 
-    return render_template('contactUs.html', form=contactform)
+    return render_template('contactUs.html', form=contactform, site_key=RECAPTCHA_SITE_KEY)
 
 
 # ---------------Check file upload name---------------#
@@ -316,7 +320,7 @@ def signup():
 
         recaptcha_response = request.form['g-recaptcha-response']
         if not verify_recaptcha(recaptcha_response):
-            return render_template('Signup.html', form=userSignupform, recaptcha_error="Please complete the reCAPTCHA verification.")
+            return render_template('Signup.html', form=userSignupform, site_key=RECAPTCHA_SITE_KEY)
 
         username = userSignupform.name.data.lower()
         password = userSignupform.password.data
@@ -847,18 +851,20 @@ def checkout():
     print(selected_item_ids)
 
     selected_items = []
-    total_price = 0
+    total_price = 0  # Initialize total_price here
+    added_cart_ids = set()  # Keep track of already added CartIDs
 
     for cart_id in selected_item_ids:
+        if cart_id in added_cart_ids:
+            continue  # Skip if the CartID has already been added
+
         cartmanager = CartManager()
         cart_item = cartmanager.get_cart_item_by_id(cart_id)
         cartmanager.close_connection()
 
         if cart_item:
-            #selected_items.append(cart_item)
             product_manager = ProductManager()
-            product = product_manager.get_product_by_id(
-                cart_item[2])  # Assuming index 2 is the product_id in the cart_item
+            product = product_manager.get_product_by_id(cart_item[2])  # Assuming index 2 is the product_id in the cart_item
             product_manager.close_connection()
 
             if product:
@@ -869,15 +875,15 @@ def checkout():
                     'Subtotal': cart_item[3] * product.price
                 })
                 total_price += cart_item[3] * product.price
+                added_cart_ids.add(cart_id)  # Mark the CartID as added
             else:
                 print(f"Product with ID {cart_item[2]} not found in the product database.")
         else:
             print(f"Cart item with ID {cart_id} not found in the cart database.")
 
-            # Now, selected_items contains information about the selected items from the cart
-        for item in selected_items:
-            print(
-                f"CartID: {item['CartID']}, Product: {item['Product'].name}, Quantity: {item['Quantity']}, Price: {item['Product'].price}, Subtotal: {item['Subtotal']}")
+    # Now, selected_items contains information about the selected items from the cart
+    for item in selected_items:
+        print(f"CartID: {item['CartID']}, Product: {item['Product'].name}, Quantity: {item['Quantity']}, Price: {item['Product'].price}, Subtotal: {item['Subtotal']}")
 
     return "test"
     # Add any additional logic for the checkout process
