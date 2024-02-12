@@ -557,7 +557,6 @@ def del_user():
 
 def adminDashboard():
     if 'User_ID' in session:
-        try:
 
             product_sales_graph = create_product_sales_graph()
             graph_html = product_sales_graph.to_html(full_html=False)
@@ -589,14 +588,6 @@ def adminDashboard():
             events = calendar_API()
 
             return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], graph_html=graph_html, events=events , products=products, top_items=top_items)
-
-        except RequestException as e:
-            flash('Network error occurred. Please try again later.', 'error')
-            return redirect(url_for('login'))
-
-        except Exception as e:
-            flash('An error occurred. Please try again later.', 'error')
-            return redirect(url_for('login'))
 
     else:
         flash('You need to log in first.', 'warning')
