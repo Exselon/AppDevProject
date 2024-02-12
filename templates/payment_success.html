@@ -2,7 +2,24 @@
 {% block title %}Library Loan System - Home{% endblock %}
 {% block content %}
 
-<h1>Payment Successful!</h1>
-    <p>Thank you for your purchase.</p>
+<h1>Payment Success/h1>
+    <p>Dear {{ customer_name }},</p>
+
+    <p>Thank you for your purchase!</p>
+
+    <p>Here is a summary of your order:</p>
+    <ul>
+        {% for item in order_items %}
+        <li>{{ item['product_name'] }} - Quantity: {{ item['quantity'] }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>Total amount: ${{ total_price }}</p>
+
+    <p>If you have any questions or concerns, feel free to contact us.</p>
+
+    <p>Best regards,<br>
+    Your Company</p>
     <a href="/">Return to Home</a>
+    <a href="/Product">Continue Shopping</a>
 {% endblock %}

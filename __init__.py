@@ -852,6 +852,7 @@ def checkout():
 
             if product:
                 selected_items.append({
+                    'image': product.image_path,
                     'CartID': cart_item[0],
                     'Product': product,
                     'Quantity': cart_item[3],
@@ -898,6 +899,24 @@ def process_payment():
         else:
             print(f"Cart item with ID {cart_id} not found in the cart database.")
 
+    user_name = request.form.get('name')
+    user_email = request.form.get('email')  # Retrieve user's email from the form
+    user_address = request.form.get('address')
+    user_postalcode = request.form.get('postalcode')
+    user_unitno = request.form.get('unitno')
+
+    # Assuming you want to store this user information in the order database
+    order_info = {
+        'name': user_name,
+        'email': user_email,
+        'address': user_address,
+        'postalcode': user_postalcode,
+        'unitno': user_unitno
+    }
+
+    # Store the order information in the session for later use
+    session['order_info'] = order_info
+
     # Create a Stripe Checkout Session
     line_items = []
     for item in selected_items:
@@ -923,6 +942,7 @@ def process_payment():
 
     return redirect(stripe_session.url, code=303)  # Redirect to Stripe Checkout page
 
+
 @app.route('/payment_success')
 def payment_success():
     selected_item_ids = session.get('selected_item_ids', [])
@@ -933,6 +953,7 @@ def payment_success():
 
     # Insert selected items into the order database
     ordermanager = OrderManager()
+    order_items = []
     for cart_id in selected_item_ids:
         cartmanager = CartManager()
         cart_item = cartmanager.get_cart_item_by_id(cart_id)
@@ -941,19 +962,76 @@ def payment_success():
         if cart_item:
             # Assuming your order database schema is similar to cart items
             ordermanager.insert_order_item(cart_item)
+            order_items.append(cart_item)
             # Remove selected items from the cart database
             cartmanager = CartManager()
             cartmanager.remove_cart_item_by_id(cart_id)
             cartmanager.close_connection()
+
 
     # Clear the session after successful payment
     session.pop('selected_item_ids', None)
 
     return render_template('payment_success.html')
 
+
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
 def payment_cancel():
     return render_template('payment_cancel.html')
+#
+# @app.route('/webhook/stripe', methods=['POST'])
+# def stripe_webhook():
+#     payload = request.get_json()
+#
+#     # Check if the event type is payment_intent.succeeded
+#     if payload['type'] == 'payment_intent.succeeded':
+#         # Extract relevant data from the payload
+#         email = payload['data']['object']['charges']['data'][0]['billing_details']['email']
+#         # Extract other relevant data such as order ID, customer ID, etc.
+#         # Assuming you have order ID in the payload or can fetch it from your database
+#
+#         # Fetch order items from the database based on order ID
+#         order_id = payload['data']['object']['metadata']['order_id']  # Assuming order ID is stored in metadata
+#
+#         # Connect to the SQLite database
+#         conn = sqlite3.connect('your_database.db')
+#         cursor = conn.cursor()
+#
+#         # Query the database for order items associated with the given order ID
+#         cursor.execute("SELECT * FROM order_items WHERE order_id = ?", (order_id,))
+#         order_items = cursor.fetchall()
+#
+#         # Close the database connection
+#         conn.close()
+#
+#         # Format the fetched order items into a suitable format (list of dictionaries)
+#         formatted_order_items = [{'name': item[1], 'quantity': item[2]} for item in order_items]
+#
+#         # Compose email message
+#         email_data = {
+#             'to': email,
+#             'from': 'burner69213@gmail.com',
+#             'subject': 'Your Order Confirmation',
+#             'html': render_template('order_email.html', order_items=formatted_order_items)
+#         }
+#
+#         # Send email using Brevo API
+#         headers = {
+#             'Content-Type': 'application/json',
+#             'Authorization': 'Bearer ' + os.environ.get('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')
+#         }
+#         response = requests.post('https://api.brevo.co/v1/emails', json=email_data, headers=headers)
+#
+#         if response.status_code == 200:
+#             print('Email sent successfully!')
+#             return jsonify({'success': True}), 200
+#         else:
+#             print('Error sending email:', response.text)
+#             return jsonify({'error': 'Error sending email'}), 500
+#
+#     return jsonify({'success': True}), 200
+
+
 
 @app.route('/Calendar_API')
 def google_login_callback():
