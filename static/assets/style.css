@@ -211,7 +211,8 @@ ul {
 /*------ User Profile CSS ------*/
 
 .profile-card{
-    padding-bottom: 5%;
+    margin-bottom: 5%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -220,12 +221,13 @@ ul {
 }
 
 .profile-card-body {
-  background-color: ##CECACA;
+  background-color: #CECACA;
 }
 
 .User-Header{
     margin-top: 40px;
-    margin-left: 400px;
+    margin-left: 20px;
+    font-size: 50px
 }
 
 .profile{
@@ -290,10 +292,10 @@ ul {
 }
 
 .Password-change-button{
-     padding: 10px 20px; /* Adjust padding as needed */
-     background-color: #007bff; /* Blue background color */
-     color: white; /* Text color */
-     border: none; /* No border */
+     padding: 10px 20px;
+     background-color: #007bff;
+     color: white;
+     border: none;
      cursor: pointer;
 }
 
@@ -302,15 +304,83 @@ ul {
 }
 
 .Delete-Account{
-      padding: 10px 20px; /* Adjust padding as needed */
-      background-color: #dc3545; /* Red background color */
-      color: white; /* Text color */
-      border: none; /* No border */
+      padding: 10px 20px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
       cursor: pointer;
 }
 
 .Delete-Account:hover {
      opacity: 0.8;
+}
+
+/*------ Change Password Page CSS ------*/
+
+.passwordcard{
+    margin-bottom: 5%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.PasswordChangeHeader{
+    margin-top: 40px;
+    margin-left: 45px;
+}
+
+.Password-Change-Form{
+    padding-top: 50px
+}
+
+.form-control{
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.Password-Change1{
+
+}
+
+.Password-Change2{
+
+}
+
+.Password-Change3{
+
+}
+
+.Password-Button{
+    margin-bottom: 50px;
+}
+
+.Password-Button:hover{
+
+}
+
+/*------ Reset Password Page ------*/
+
+.reset-password-card{
+    margin-bottom: 25%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: right;
+}
+
+.reset-password-header{
+  margin: 10px 0;
+}
+
+.reset-password-body{
+  margin: 10px 0;
+}
+
+.Reset-Password-Button{
+     padding: 10px 20px;
+     background-color: #007bff;
+     color: white;
+     border: none;
+     cursor: pointer;
 }
 
 /*------ Change Password Page CSS ------*/

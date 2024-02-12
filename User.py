@@ -59,5 +59,10 @@ class DisplayUser:
         self.cursor.execute("UPDATE users SET Password = ? WHERE email = ?", (random_new_password, email))
         self.conn.commit()
 
+    def check_email(self, email):
+        self.cursor.execute("SELECT Email FROM Users WHERE Email = ?", (email,))
+        returnemail = self.cursor.fetchone()
+        return returnemail
+
     def close_connection(self):
         self.conn.close()

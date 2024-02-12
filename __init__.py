@@ -495,36 +495,49 @@ def forgetpassword():
     ForgetPasswordEmailForm = ForgetPasswordEmail(request.form)
 
     if request.method == 'POST':
-
-        random_new_password = generate_random_string()
-        print(random_new_password)
-
-        hashed_password = generate_password_hash(random_new_password, method='pbkdf2:sha256')
-
         # fetch email from user input
-        Email = ForgetPasswordEmail.EmailForResetField.data
+        UserEmail = ForgetPasswordEmailForm.Email.data
 
+        checkemail = DisplayUser()
+        checkuseremail = checkemail.check_email(UserEmail)
 
-        forget_password = DisplayUser()
-        update_random_password = forget_password.update_password_by_email(random_new_password, Email)
+        if checkuseremail is not None:
+            print("Email exists in the database. Continue with the process.")
 
-        flash('Your password has been successfully reset. Please check your email for further instructions')
+            random_new_password = generate_random_string()
+            print(random_new_password)
 
-        email_subject = "Password Reset"
-        email_html_body = """<p>Dear User,</p>
-        
-        <p>Your password has been successfully reset. Your new password can be found below</p>
-        <p>You may change your password in your profile page.</p>
-        <p>{hashed_password}</p>
-        
-        """
+            hashed_password = generate_password_hash(random_new_password, method='pbkdf2:sha256')
 
-        send_email('contact@cowear.com', Email, email_subject, email_html_body)
+            print(hashed_password, 'this is hashed pw')
+            print(ForgetPasswordEmail.Email)
 
-        print('Password has been reset')
-        return redirect(url_for('login'))
-    else:
-        None
+            print(UserEmail)
+
+            forget_password = DisplayUser()
+            update_random_password = forget_password.update_password_by_email(hashed_password, UserEmail)
+
+            flash('Your password has been successfully reset. Please check your email for further instructions')
+
+            email_subject = "Password Reset"
+            email_html_body = f"""<p>Dear User,</p>
+
+                    <p>Your password has been successfully reset. Your new password can be found below</p>
+                    <p>You may change your password in your profile page.</p>
+                    <p>{random_new_password}</p>
+
+                     <p>If you have any further questions or need immediate assistance, please feel free to contact us.</p>
+                    """
+
+            send_email('contact@cowear.com', UserEmail, email_subject, email_html_body)
+
+            print('Password has been reset')
+            return redirect(url_for('login'))
+        else:
+            print("Error: Email does not exist in the database.")
+            email_failure_message = "*This Email does not exist.*"
+
+            return render_template('resetpassword.html', form=ForgetPasswordEmailForm, email_failure_message=email_failure_message)
 
 
     return render_template('resetpassword.html', form=ForgetPasswordEmailForm)
