@@ -15,8 +15,18 @@ import pandas as pd
 import io
 import stripe
 import requests
-from datetime import datetime
+import os.path
+import datetime
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+import tkinter as tk
 
+
+
+SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -480,10 +490,15 @@ def adminDashboard():
         fig = px.line(data, x='Months', y='Total Sold/ Month', title='Product Sales')
 
         plot_html = fig.to_html(full_html=False)
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html)
+
+        events = calendar_API()
+
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html, events=events)
+
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
+
 
 
 @app.route('/adminOrder')
@@ -929,6 +944,39 @@ def payment_success():
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
 def payment_cancel():
     return render_template('payment_cancel.html')
+
+@app.route('/calendarAPI')
+def calendar_API():
+    creds = None
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open("token.json", "w") as token:
+            token.write(creds.to_json())
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        now = datetime.datetime.utcnow().isoformat() + "Z"
+        events_result = service.events().list(
+            calendarId="primary",
+            timeMin=now,
+            maxResults=10,
+            singleEvents=True,
+            orderBy="startTime",
+        ).execute()
+        events = events_result.get("items", [])
+        print(events)
+        return events
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
+
+
 
 if __name__ == '__main__':
     app.run()
