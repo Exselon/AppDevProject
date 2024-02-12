@@ -16,7 +16,7 @@ class ProductForm(Form):
     image = FileField('ImageURL')
     name = StringField('Name')
     price = FloatField('Price')
-    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('women', 'Women'), ('kids', 'Kids'), ('others', 'Others')])
+    category = SelectMultipleField('Category', choices=[('men', 'Men'), ('woman', 'Women'), ('kids', 'Kids'), ('others', 'Others')])
     stock = IntegerField('Stock')
     description = TextAreaField('Description')
     size = SelectMultipleField('Size', choices=[('Freesize', 'Free size'),('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
@@ -37,7 +37,7 @@ class ForgetPasswordEmail(Form):
 
 class ProductFilter(Form):
     category_men = BooleanField('Men')
-    category_women = BooleanField('Women')
+    category_woman = BooleanField('Women')
     category_kids = BooleanField('Kids')
     category_others = BooleanField('Others')
     pricerange = RadioField('Price', choices=[

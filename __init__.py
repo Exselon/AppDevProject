@@ -347,21 +347,16 @@ def signup():
 # ---------------Code for product---------------#
 @app.route('/Product', methods=['GET', 'POST'])
 def Productpage():
-
     ProductFilterForm = ProductFilter(request.form)
-
     product_manager = ProductManager()
     products = product_manager.get_all_products()
 
     if request.method == 'POST':
-
         if request.form.get('reset_button'):
-            # Reset Btn
+            # If the reset button is clicked, reload the page with the original set of products
             return render_template('Product.html', products=products, form=ProductFilterForm)
 
         selected_price = request.form.get('pricerange')
-
-        # Capture selected categories as a list
         selected_categories = [key.split('_')[1] for key, value in request.form.items() if key.startswith('category_')]
 
         print(f"Selected Price: {selected_price}")
@@ -369,21 +364,21 @@ def Productpage():
 
         if selected_categories:
             # Debugging: Print the SQL query
-            keyword = selected_categories[0]
-            query = f"SELECT * FROM products WHERE category LIKE '%{keyword}%'"
+            category_conditions = " OR ".join([f"category LIKE ?" for category in selected_categories])
+            category_conditions_params = [f"%{category}%" for category in selected_categories]
+            query = f"SELECT * FROM products WHERE ({category_conditions}) AND price BETWEEN ? AND ?"
             print(f"SQL Query: {query}")
 
-            # Filter products based on selected category and price
-            filtered_products = product_manager.get_products_by_category(keyword, selected_price)
+            # Filter products based on selected categories and price
+            filtered_products = product_manager.get_products_by_category(selected_price, category_conditions, category_conditions_params)
         else:
-            # If no category is selected, still apply the price filter
+            # No categories selected, filter by price only
             query = "SELECT * FROM products WHERE price BETWEEN ? AND ?"
             print(f"SQL Query: {query}")
 
             # Filter products based on price only
-            filtered_products = product_manager.get_products_by_category(None, selected_price)
+            filtered_products = product_manager.get_products_by_category(selected_price)
 
-        # Use 'selected_price' and 'filtered_products' for rendering or any other logic
         return render_template('Product.html', products=filtered_products, form=ProductFilterForm)
 
     product_manager.close_connection()

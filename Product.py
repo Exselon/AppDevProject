@@ -37,15 +37,23 @@ class ProductManager:
             (image_path,name,price,category,stock,description,size))
         self.conn.commit()
 
-    def get_products_by_category(self, category, price_range=None):
-        if category and price_range:
-            self.cursor.execute("SELECT * FROM products WHERE category LIKE ? AND price BETWEEN ? AND ?", ('%' + category + '%', price_range.split('-')[0], price_range.split('-')[1]))
-        elif category:
-            self.cursor.execute("SELECT * FROM products WHERE category LIKE ?", ('%' + category + '%',))
+    def get_products_by_category(self, price_range=None, category_conditions=None, category_conditions_params=None):
+        if category_conditions and price_range:
+            query = f"SELECT * FROM products WHERE {category_conditions} AND price BETWEEN ? AND ?"
+            params = category_conditions_params + [price_range.split('-')[0], price_range.split('-')[1]]
+            self.cursor.execute(query, tuple(params))
+        elif category_conditions:
+            query = f"SELECT * FROM products WHERE {category_conditions}"
+            if category_conditions_params:
+                self.cursor.execute(query, tuple(category_conditions_params))
+            else:
+                self.cursor.execute(query)
         elif price_range:
-            self.cursor.execute("SELECT * FROM products WHERE price BETWEEN ? AND ?", (price_range.split('-')[0], price_range.split('-')[1]))
+            query = "SELECT * FROM products WHERE price BETWEEN ? AND ?"
+            self.cursor.execute(query, (price_range.split('-')[0], price_range.split('-')[1]))
         else:
-            self.cursor.execute("SELECT * FROM products")
+            query = "SELECT * FROM products"
+            self.cursor.execute(query)
 
         products_data = self.cursor.fetchall()
         return [Product(*data) for data in products_data]
