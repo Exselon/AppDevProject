@@ -22,7 +22,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.exceptions import RefreshError
-
+import random
 
 from googleapiclient.errors import HttpError
 import tkinter as tk
@@ -208,7 +208,16 @@ create_Order()
 # ---------------Code for Home---------------#
 @app.route('/')
 def home():
-    return render_template('home.html')
+    product_manager = ProductManager()
+
+    all_products = product_manager.get_all_products()
+    # Use a seed for the random number generator to ensure consistency
+    random.seed(41)  # You can use any integer as the seed
+    random.shuffle(all_products)
+    products = all_products[:4]
+
+    product_manager.close_connection()
+    return render_template('home.html', products=products)
 
 @app.route('/contactUs', methods=['GET', 'POST'])
 def contact_us():
