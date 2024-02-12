@@ -1,6 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Library Loan System - Home{% endblock %}
 {% block content %}
+<style>
+.advertisement {
+ width: 500px;
+ border: 1px solid #ccc;
+ padding: 10px;
+ text-align: center;
+}
+
+.advertisement a {
+ color: #333;
+ text-decoration: none;
+ margin-right: 10px;
+}
+
+.advertisement a:hover {
+ text-decoration: underline;
+}
+.card-body {
+ display: flex;
+ justify-content: space-between;
+}
+.card-body img {
+ width: 350px;
+ height: 400px;
+}
+</style>
 <!--<script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>-->
 <!--<div class="elfsight-app-e4305951-a479-420d-9170-79729d6fd94d" data-elfsight-app-lazy></div>-->
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -40,6 +66,33 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+</div>
+
+<div class="container col-10">
+    <h2 style="text-align: center; padding-top: 50px;">New & Featured Collection</h2>
+    <div class="row">
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <img src="" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <img src="" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="image-container col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <img src="" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <h1 class="display-4">Home</h1>
 <p>index page!</p>

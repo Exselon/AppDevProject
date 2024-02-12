@@ -10,6 +10,28 @@
       width: 80%;
       height: auto;
     }
+    table {
+    border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    /* Additional styling for specific columns */
+    .date {
+        width: 100px; /* Adjust width as needed */
+    }
+
+    .time {
+        width: 80px; /* Adjust width as needed */
+    }
+
+    .summary {
+        width: 300px; /* Adjust width as needed */
+    }
 </style>
 <h1 class="Header"> DashBoard </h1>
 <hr>
@@ -45,6 +67,25 @@
     </div>
 </div>
 
+<div class="Calendar API">
+    <h1>Upcoming Events</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.start.dateTime.split(' ')[0] }}</td>
+                <td>{{ event.summary }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 
 {% endblock %}
