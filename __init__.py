@@ -10,7 +10,7 @@ from User import DisplayUser,UserAccount
 from Cart import CartManager
 from Contact import ContactManager
 from Order import OrderManager
-import plotly.express as px
+import plotly.graph_objs as go
 import pandas as pd
 import io
 import stripe
@@ -540,13 +540,13 @@ def del_user():
     return redirect(url_for('login'))
 
 @app.route('/adminDashboard')
+
 def adminDashboard():
     if 'User_ID' in session:
-        data = {'Months': ['January', 'February', 'March', 'May','April','June','July','August','September', 'October','November','December'], 'Total Sold/ Month': [12, 5, 8, 9, 11, 15,7, 19, 11, 13 ,7 ,8]}
 
-        fig = px.line(data, x='Months', y='Total Sold/ Month', title='Product Sales')
+        product_sales_graph = create_product_sales_graph()
+        graph_html = product_sales_graph.to_html(full_html=False)
 
-        plot_html = fig.to_html(full_html=False)
 
         product_manager = ProductManager()
 
@@ -558,9 +558,22 @@ def adminDashboard():
 
         product_manager.close_connection()
 
+        conn = sqlite3.connect('Order.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT ProductID, SUM(Quantity) AS TotalQuantity
+            FROM orders
+            GROUP BY ProductID
+            ORDER BY TotalQuantity DESC
+            LIMIT 3
+        ''')
+        top_items = cursor.fetchall()
+        conn.close()
+
+
         events = calendar_API()
 
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html, events=events , products=products)
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], graph_html=graph_html, events=events , products=products, top_items=top_items)
 
     else:
         flash('You need to log in first.', 'warning')
@@ -569,6 +582,28 @@ def get_auth_url():
     flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
     auth_url, _ = flow.authorization_url(prompt='consent')
     return auth_url
+
+def fetch_order_data():
+    conn = sqlite3.connect('Order.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT ProductID, SUM(Quantity) FROM orders GROUP BY ProductID")
+    data = cursor.fetchall()
+    conn.close()
+    return data
+
+
+def create_product_sales_graph():
+    order_data = fetch_order_data()
+
+    product_ids = [row[0] for row in order_data]
+    quantities = [row[1] for row in order_data]
+
+    fig = go.Figure(data=go.Bar(x=product_ids, y=quantities))
+    fig.update_layout(title='Product Sales',
+                      xaxis_title='Product ID',
+                      yaxis_title='Total Quantity Sold')
+
+    return fig
 
 
 

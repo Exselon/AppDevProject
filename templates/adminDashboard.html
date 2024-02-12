@@ -36,9 +36,24 @@
 <h1 class="Header"> DashBoard </h1>
 <hr>
 <div class="table">
-    {{ plot_html|safe }}
+    <h1>Product Sales Graph</h1>
+    <div id="product_sales_graph">
+        {{ graph_html | safe }}
+    </div>
 </div>
-<h1 style="text-align: center; padding-top: 50px;">Popular items</h1>
+
+
+<div>
+    <h2>Top 3 Popular Items</h2>
+    <ul>
+        {% for item in top_items %}
+        <li>Product ID: {{ item[0] }}, Total Quantity: {{ item[1] }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<h1 style="text-align: center; padding-top: 50px;">New items</h1>
 <div class="product-container">
     {% for product in products %}
         <a href="{{ url_for('display_product', product_id=product.id) }}">
