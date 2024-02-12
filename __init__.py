@@ -609,7 +609,15 @@ def create_product_sales_graph():
 
 @app.route('/adminOrder')
 def adminOrder():
-    return render_template('adminOrder.html')
+    conn = sqlite3.connect('Order.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM orders")
+    orders = cursor.fetchall()
+    conn.close()
+    return render_template('adminOrder.html', orders=orders)
+
+
+
 
 @app.route('/adminProducts', methods=['GET', 'POST'])
 def adminProducts():
@@ -925,6 +933,22 @@ def download_Userdata():
     output.seek(0)
 
     return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
+
+@app.route('/downloadPromotionData')
+def download_Promotiondata():
+    conn = sqlite3.connect('Promotion.db')
+
+    query = "SELECT * FROM promotions"
+    data = pd.read_sql(query, conn)
+
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    data.to_excel(writer, index=False)
+    writer.close()
+
+    output.seek(0)
+
+    return send_file(output, as_attachment=True, download_name='Promotion_List.xlsx' )
 
 
 #<--------------------- Check Out code --------------------->
