@@ -88,19 +88,17 @@
                 {% for i in range(cart|length) %}
                 {% if i < product_data_list|length %}
                 <div class="item-container">
-                    <img src="{{ url_for('static', filename='image/' + product_data_list[i].image_path) }}" alt="Product Image" class="product-image">
-                    <div class="product-details">
-                        <h5>{{ product_data_list[i].name }}</h5>
-                        <div class="quantity-size-price">
-                            <div class="quantity">
-                                <h6>Quantity:</h6>
-                                <form method="POST" action="{{ url_for('update_quantity') }}">
-                                    <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
-                                    <button class="btn btn-secondary btn-sm" type="submit" name="action" value="decrement">-</button>
-                                    <span>{{ cart[i][3] }}</span>
-                                    <button class="btn btn-secondary btn-sm" type="submit" name="action" value="increment">+</button>
-                                </form>
-                            </div>
+                <img src="{{ url_for('static', filename='image/' + product_data_list[i].image_path) }}" alt="Product Image" class="product-image">
+                <div class="product-details">
+                    <h5>{{ product_data_list[i].name }}</h5>
+                    <div class="quantity-size-price">
+                        <div class="quantity">
+                            <h6>Quantity:</h6>
+                            <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
+                            <button class="btn btn-secondary btn-sm decrement-btn" data-id="{{ cart[i][0] }}" type="button">-</button>
+                            <span class="quantity-value">{{ cart[i][3] }}</span>
+                            <button class="btn btn-secondary btn-sm increment-btn" data-id="{{ cart[i][0] }}" type="button">+</button>
+                        </div>
                             <div class="size">
                                 <h6>Size:</h6>
                                 <span>{{ cart[i][4] }}</span>
@@ -138,4 +136,54 @@
         </div>
     </div>
 </form>
+
+
+<script>
+    // JavaScript to handle quantity update
+    document.querySelectorAll('.increment-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var cartId = this.getAttribute('data-id');
+            var quantitySpan = this.parentNode.querySelector('.quantity-value');
+            var currentQuantity = parseInt(quantitySpan.textContent);
+            quantitySpan.textContent = currentQuantity + 1;
+            updateQuantity(cartId, currentQuantity + 1); // Call the function to update quantity
+        });
+    });
+
+    document.querySelectorAll('.decrement-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var cartId = this.getAttribute('data-id');
+            var quantitySpan = this.parentNode.querySelector('.quantity-value');
+            var currentQuantity = parseInt(quantitySpan.textContent);
+            if (currentQuantity > 1) {
+                quantitySpan.textContent = currentQuantity - 1;
+                updateQuantity(cartId, currentQuantity - 1); // Call the function to update quantity
+            }
+        });
+    });
+
+    function updateQuantity(cartId, newQuantity) {
+    // Send AJAX request to update quantity in the database
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/update_quantity', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                // Update quantity displayed on the webpage
+                var quantitySpan = document.querySelector('.quantity-value[data-id="' + cartId + '"]');
+                if (quantitySpan) {
+                    quantitySpan.textContent = newQuantity;
+                }
+            } else {
+                // Handle error if updating quantity fails
+                console.error('Failed to update quantity');
+            }
+        }
+    };
+    xhr.send('CartID=' + encodeURIComponent(cartId) + '&Quantity=' + encodeURIComponent(newQuantity));
+}
+</script>
+
 {% endblock %}

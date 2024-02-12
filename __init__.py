@@ -807,45 +807,49 @@ def del_cart():
     cart_manager.close_connection()
     return redirect(url_for('view_cart'))
 
+
 @app.route('/update_quantity', methods=['POST'])
 def update_quantity():
-    cart_manager = CartManager()
     if request.method == 'POST':
         cart_id = request.form.get('CartID')
-        print(cart_id)
-        action = request.form.get('action')
+        new_quantity = request.form.get('Quantity')
 
-        if cart_id and action:
-            cart_id = int(cart_id)
-            current_quantity = get_current_quantity(cart_id)
+        if cart_id and new_quantity:
+            try:
+                # Convert to integer if needed
+                cart_id = int(cart_id)
+                new_quantity = int(new_quantity)
 
-            if action == 'increment':
-                new_quantity = current_quantity + 1
-            elif action == 'decrement' and current_quantity > 1:
-                new_quantity = current_quantity - 1
-            else:
-                # No valid action, do nothing
-                return redirect(url_for('cart'))
+                # Update quantity in the database
+                success = update_quantity_in_database(cart_id, new_quantity)
 
-            cart_manager.update_cart_quantity(cart_id, new_quantity)
+                if success:
+                    return jsonify({'success': True})
+                else:
+                    return jsonify({'success': False, 'message': 'Failed to update quantity in database'})
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})  # Return error message
 
-    return redirect(url_for('view_cart'))
+    # Return failure response if something goes wrong
+    return jsonify({'success': False, 'message': 'Invalid request parameters'})
 
-def get_current_quantity(cart_id):
-    conn = sqlite3.connect('Cart.db')
-    cursor = conn.cursor()
 
-    # Retrieve the current quantity from the database
-    cursor.execute('SELECT quantity FROM cart WHERE CartID = ?', (cart_id,))
-    result = cursor.fetchone()
+def update_quantity_in_database(cart_id, new_quantity):
+    try:
+        conn = sqlite3.connect('Cart.db')
+        cursor = conn.cursor()
 
-    conn.close()
+        # Execute SQL UPDATE statement to update quantity
+        cursor.execute('UPDATE cart SET quantity = ? WHERE CartID = ?', (new_quantity, cart_id))
 
-    if result:
-        return result[0]
-    else:
-        # Return 0 if the cart item is not found
-        return 0
+        # Commit the transaction and close the connection
+        conn.commit()
+        conn.close()
+
+        return True  # Return True on success
+    except Exception as e:
+        print("Error updating quantity:", e)
+        return False  # Return False on failure
 
 
 # <---------------------admin thing------------------------->
@@ -1033,12 +1037,89 @@ def payment_success():
     # Clear the session after successful payment
     session.pop('selected_item_ids', None)
 
-    return render_template('payment_success.html')
+    # Fetch the user's email from the order_info stored in the session
+    order_info = session.get('order_info')
+    if order_info:
+        user_email = order_info.get('email')
+        if user_email:
+            # Prepare email content
+            email_subject = 'Your Order Confirmation'
+            email_content = render_template('order_confirmation_email.html', order_items=order_items)
+
+            # Send the email
+            send_email('sender@example.com', user_email, email_subject, email_content)
+
+            return render_template('payment_success.html', user_email=user_email)
+
+    # If user's email is not available, redirect to checkout page
+    flash('Failed to send order confirmation email. Please contact support.', 'error')
+    return redirect(url_for('checkout'))
 
 
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
 def payment_cancel():
     return render_template('payment_cancel.html')
+
+
+#------------------EMAIL------------------------
+
+# def fetch_product_info(product_id):
+#     conn = sqlite3.connect('Product.db')
+#     cursor = conn.cursor()
+#
+#     # Fetch product information based on the product_id
+#     cursor.execute('SELECT name, price FROM products WHERE ProductID = ?', (product_id,))
+#     product_info = cursor.fetchone()
+#
+#     conn.close()
+#
+#     if product_info:
+#         product_name, product_price = product_info
+#         return {'name': product_name, 'price': product_price}
+#     else:
+#         return None
+# @app.route('/send_email')
+# def trigger_send_email():
+#     # Fetch order data from SQLite3 database
+#     conn = sqlite3.connect('Order.db')
+#     cursor = conn.cursor()
+#     cursor.execute('SELECT product_id, quantity FROM orders')
+#     rows = cursor.fetchall()
+#     conn.close()
+#
+#     # Prepare email content
+#     email_content = "Hello,<br><br>Here is your order details:<br><br>"
+#     total_price = 0
+#     for row in rows:
+#         product_id = row[0]
+#         quantity = row[1]
+#
+#         # Fetch product information
+#         product_info = fetch_product_info(product_id)
+#         if product_info:
+#             product_name = product_info['name']
+#             product_price = product_info['price']
+#             total_product_price = quantity * product_price
+#             total_price += total_product_price
+#
+#             # Add product details to email content
+#             email_content += f"Product: {product_name}, Quantity: {quantity}, Total Price: {total_product_price}<br>"
+#
+#     # Add total price to email content
+#     email_content += f"<br>Total Price: {total_price}"
+#
+#     # Send the email
+#     recipient_email = 'contact@ecowear.com'
+#     email_subject = 'Your Order Details'
+#     response = send_email('sender@example.com', recipient_email, email_subject, email_content)
+#
+#     if response:
+#         return "Email sent!"
+#     else:
+#         return "Failed to send email."
+
+
+
 #
 # @app.route('/webhook/stripe', methods=['POST'])
 # def stripe_webhook():
