@@ -24,9 +24,11 @@
         margin-top: 10px;
         margin-right: 10px;
     }
+
+
 </script>
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <div class="card">
@@ -34,15 +36,6 @@
                     <h1 class="card-title text-center mb-4">Payment Success</h1>
 
                     <p class="card-text">Thank you for your purchase!</p>
-
-                    <p class="card-text">Here is a summary of your order:</p>
-                    <ul class="list-group">
-                        {% for item in order_items %}
-                        <li class="list-group-item">{{ item['product_name'] }} - Quantity: {{ item['quantity'] }}</li>
-                        {% endfor %}
-                    </ul>
-
-                    <p class="card-text mt-3">Total amount: ${{ total_price }}</p>
 
                     <p class="card-text">If you have any questions or concerns, feel free to contact us.</p>
 

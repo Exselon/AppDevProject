@@ -80,6 +80,10 @@
         margin-left: 5px;
         margin-right: 20px;
     }
+
+    .hidden {
+        display: none;
+    }
 </style>
 
 <header>
@@ -114,6 +118,7 @@
                             <div class="price">
                                 <h6>Price:</h6>
                                 <span>${{ product_data_list[i].price }}</span>
+                                <button class="hidden">Hidden Button</button>
                             </div>
                             <div class="delete">
                                 <form method="POST" action="{{ url_for('del_cart') }}">

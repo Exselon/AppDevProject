@@ -1100,8 +1100,8 @@ def payment_success():
 
     # Insert selected items into the order database
     ordermanager = OrderManager()
-    order_items = []
     for cart_id in selected_item_ids:
+        print(cart_id)
         cartmanager = CartManager()
         cart_item = cartmanager.get_cart_item_by_id(cart_id)
         cartmanager.close_connection()
@@ -1109,33 +1109,15 @@ def payment_success():
         if cart_item:
             # Assuming your order database schema is similar to cart items
             ordermanager.insert_order_item(cart_item)
-            order_items.append(cart_item)
             # Remove selected items from the cart database
             cartmanager = CartManager()
             cartmanager.remove_cart_item_by_id(cart_id)
             cartmanager.close_connection()
 
-
     # Clear the session after successful payment
     session.pop('selected_item_ids', None)
 
-    # Fetch the user's email from the order_info stored in the session
-    order_info = session.get('order_info')
-    if order_info:
-        user_email = order_info.get('email')
-        if user_email:
-            # Prepare email content
-            email_subject = 'Your Order Confirmation'
-            email_content = render_template('order_confirmation_email.html', order_items=order_items)
-
-            # Send the email
-            send_email('sender@example.com', user_email, email_subject, email_content)
-
-            return render_template('payment_success.html', user_email=user_email)
-
-    # If user's email is not available, redirect to checkout page
-    flash('Failed to send order confirmation email. Please contact support.', 'error')
-    return redirect(url_for('checkout'))
+    return render_template('payment_success.html')
 
 
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
