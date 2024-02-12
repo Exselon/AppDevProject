@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Library Loan System - Home{% endblock %}
+{% block title %}Eco-Wear Signup{% endblock %}
 {% block content %}
 
 <div class="container loginpg ">
@@ -128,12 +128,6 @@
         }
         if (dob === "") {
             dobError.innerHTML = "Date of birth is required.";
-        }
-
-        if (name === "" || password === "" || repeat_password === "" || password !== repeat_password || email === "" || number === "" || dob === "" || number.length !== 8) {
-            return false;
-        } else {
-            return true;
         }
     }
 </script>

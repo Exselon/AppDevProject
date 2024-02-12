@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} {{ product.name }} - Product Details {% endblock %}
+{% block title %}Eco-Wear {{ product.name }} {% endblock %}
 
 {% block content %}
 
@@ -19,9 +19,13 @@
 
             <h3 class="pt-3">{{ product.name }}</h3>
             <h4 class="float-right"> ${{ product.price }}</h4><br><br>
-            <p class="pb-5">{{ product.description }}</p>
+            {% for line in product.description.split('\n') %}
+                <div>{{ line }}</div>
+            {% endfor %}
 
-            <div class="dropdown-divider pb-5"></div>
+            <br>
+            <div class="dropdown-divider"></div>
+            <br>
                 <!-- Add more details as needed -->
                 <!-- display the size options -->
                 <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">

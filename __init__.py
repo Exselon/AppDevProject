@@ -21,12 +21,17 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from google.auth.exceptions import RefreshError
+import random
+
 from googleapiclient.errors import HttpError
 import tkinter as tk
 
 
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -135,7 +140,7 @@ def create_Promotion():
         CREATE TABLE IF NOT EXISTS promotions (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            discount REAL,
+            discount TEXT,
             description TEXT
         )
     ''')
@@ -203,7 +208,16 @@ create_Order()
 # ---------------Code for Home---------------#
 @app.route('/')
 def home():
-    return render_template('home.html')
+    product_manager = ProductManager()
+
+    all_products = product_manager.get_all_products()
+    # Use a seed for the random number generator to ensure consistency
+    random.seed(41)  # You can use any integer as the seed
+    random.shuffle(all_products)
+    products = all_products[:4]
+
+    product_manager.close_connection()
+    return render_template('home.html', products=products)
 
 @app.route('/contactUs', methods=['GET', 'POST'])
 def contact_us():
@@ -498,6 +512,11 @@ def adminDashboard():
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
+
+def get_auth_url():
+    flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    auth_url, _ = flow.authorization_url(prompt='consent')
+    return auth_url
 
 
 
@@ -842,6 +861,7 @@ def checkout():
 
             if product:
                 selected_items.append({
+                    'image': product.image_path,
                     'CartID': cart_item[0],
                     'Product': product,
                     'Quantity': cart_item[3],
@@ -888,6 +908,24 @@ def process_payment():
         else:
             print(f"Cart item with ID {cart_id} not found in the cart database.")
 
+    user_name = request.form.get('name')
+    user_email = request.form.get('email')  # Retrieve user's email from the form
+    user_address = request.form.get('address')
+    user_postalcode = request.form.get('postalcode')
+    user_unitno = request.form.get('unitno')
+
+    # Assuming you want to store this user information in the order database
+    order_info = {
+        'name': user_name,
+        'email': user_email,
+        'address': user_address,
+        'postalcode': user_postalcode,
+        'unitno': user_unitno
+    }
+
+    # Store the order information in the session for later use
+    session['order_info'] = order_info
+
     # Create a Stripe Checkout Session
     line_items = []
     for item in selected_items:
@@ -913,6 +951,7 @@ def process_payment():
 
     return redirect(stripe_session.url, code=303)  # Redirect to Stripe Checkout page
 
+
 @app.route('/payment_success')
 def payment_success():
     selected_item_ids = session.get('selected_item_ids', [])
@@ -923,6 +962,7 @@ def payment_success():
 
     # Insert selected items into the order database
     ordermanager = OrderManager()
+    order_items = []
     for cart_id in selected_item_ids:
         cartmanager = CartManager()
         cart_item = cartmanager.get_cart_item_by_id(cart_id)
@@ -931,33 +971,129 @@ def payment_success():
         if cart_item:
             # Assuming your order database schema is similar to cart items
             ordermanager.insert_order_item(cart_item)
+            order_items.append(cart_item)
             # Remove selected items from the cart database
             cartmanager = CartManager()
             cartmanager.remove_cart_item_by_id(cart_id)
             cartmanager.close_connection()
+
 
     # Clear the session after successful payment
     session.pop('selected_item_ids', None)
 
     return render_template('payment_success.html')
 
+
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
 def payment_cancel():
     return render_template('payment_cancel.html')
+#
+# @app.route('/webhook/stripe', methods=['POST'])
+# def stripe_webhook():
+#     payload = request.get_json()
+#
+#     # Check if the event type is payment_intent.succeeded
+#     if payload['type'] == 'payment_intent.succeeded':
+#         # Extract relevant data from the payload
+#         email = payload['data']['object']['charges']['data'][0]['billing_details']['email']
+#         # Extract other relevant data such as order ID, customer ID, etc.
+#         # Assuming you have order ID in the payload or can fetch it from your database
+#
+#         # Fetch order items from the database based on order ID
+#         order_id = payload['data']['object']['metadata']['order_id']  # Assuming order ID is stored in metadata
+#
+#         # Connect to the SQLite database
+#         conn = sqlite3.connect('your_database.db')
+#         cursor = conn.cursor()
+#
+#         # Query the database for order items associated with the given order ID
+#         cursor.execute("SELECT * FROM order_items WHERE order_id = ?", (order_id,))
+#         order_items = cursor.fetchall()
+#
+#         # Close the database connection
+#         conn.close()
+#
+#         # Format the fetched order items into a suitable format (list of dictionaries)
+#         formatted_order_items = [{'name': item[1], 'quantity': item[2]} for item in order_items]
+#
+#         # Compose email message
+#         email_data = {
+#             'to': email,
+#             'from': 'burner69213@gmail.com',
+#             'subject': 'Your Order Confirmation',
+#             'html': render_template('order_email.html', order_items=formatted_order_items)
+#         }
+#
+#         # Send email using Brevo API
+#         headers = {
+#             'Content-Type': 'application/json',
+#             'Authorization': 'Bearer ' + os.environ.get('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')
+#         }
+#         response = requests.post('https://api.brevo.co/v1/emails', json=email_data, headers=headers)
+#
+#         if response.status_code == 200:
+#             print('Email sent successfully!')
+#             return jsonify({'success': True}), 200
+#         else:
+#             print('Error sending email:', response.text)
+#             return jsonify({'error': 'Error sending email'}), 500
+#
+#     return jsonify({'success': True}), 200
 
-@app.route('/calendarAPI')
+
+
+@app.route('/Calendar_API')
+def google_login_callback():
+    return redirect(url_for('adminDashboard'))
+def get_credentials():
+    if 'credentials' not in session:
+        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+        creds = flow.run_local_server(port=0)
+        session['credentials'] = creds_to_dict(creds)
+    else:
+        creds_dict = session['credentials']
+        creds = dict_to_creds(creds_dict)
+        if not creds.valid:
+            if creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                    session['credentials'] = creds_to_dict(creds)
+                except RefreshError:
+                    return None  # Unable to refresh token, redirect user to login
+            else:
+                return None  # Token is invalid, redirect user to login
+    return creds
+
+def creds_to_dict(creds):
+    return {
+        "token": creds.token,
+        "refresh_token": creds.refresh_token,
+        "id_token": creds.id_token,
+        "token_uri": creds.token_uri,
+        "client_id": creds.client_id,
+        "client_secret": creds.client_secret,
+        "scopes": creds.scopes
+    }
+
+def dict_to_creds(creds_dict):
+    return Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict["refresh_token"],
+        id_token=creds_dict["id_token"],
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"]
+    )
+
+
+def remove_timezone_offset(datetime_str):
+    datetime_without_offset = datetime_str[:-6]
+    return datetime_without_offset[:10] + ' Time: ' + datetime_without_offset[11:]
 def calendar_API():
-    creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+    creds = get_credentials()
+    if creds is None:
+        return None
 
     try:
         service = build("calendar", "v3", credentials=creds)
@@ -970,11 +1106,13 @@ def calendar_API():
             orderBy="startTime",
         ).execute()
         events = events_result.get("items", [])
-        print(events)
+        for event in events:
+            if 'dateTime' in event['start']:
+                event['start']['dateTime'] = remove_timezone_offset(event['start']['dateTime'])
         return events
     except Exception as e:
         print(f"An error occurred: {e}")
-        return []
+        return None
 
 
 

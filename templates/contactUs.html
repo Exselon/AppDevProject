@@ -1,37 +1,249 @@
 {% extends "base.html" %}
-{% block title %}Library Loan System - Home{% endblock %}
+{% block title %}Eco-Wear Contactus{% endblock %}
 {% block content %}
+<style>
+
+.faq-card {
+        margin-bottom: 10px;
+    }
+
+    .faq-card .card-header button {
+        padding: 0;
+        color: black;
+        text-decoration: none;
+        font-weight:bold;
+    }
+
+    .faq-card .card-header button:hover {
+        text-decoration: none;
+    }
+
+    .faq-card .card-body a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .faq-card .card-body a:hover {
+        color: #0056b3;
+        text-decoration: none;
+    }
+
+    .faq-card:hover {
+        cursor: pointer;
+    }
+
+    .card{
+        margin: 15px;
+    }
+    .card-header{
+        height:80px;
+        vertical-align: middle;
+    }
+    .card-header h5{
+        margin:10px 10px 10px 10px!important;
+    }
+    .card-body{
+        height:80px;
+    }
+    #faqAccordion{
+    margin-bottom:80px;
+    }
+
+</style>
+
+<header class="banner mb-3" style="background-image: url({{ url_for('static', filename='image/Enquiry.jpg') }}); height: 100p"><!-- ======= Need change ======= -->
+    <div class=" d-flex h-100 align-items-center">
+      <div class="mx-auto text-center Text-Outline">
+        <h1 class="mx-auto my-0 text-uppercase">FAQ</h1>
+      </div>
+    </div>
+</header>
+
+<div class="container mt-5">
+
+    <div id="faqAccordion">
+        <!-- Question 1 -->
+        <div class="card faq-card" data-toggle="collapse " data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        1. How can I contact customer support?
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#faqAccordion">
+                <div class="card-body">
+                    You can reach our customer support team by sending an email to <a href="mailto:contact@ecowear.com">contact@ecowear.com</a> or by filling out the contact form on our contact page <a href="#anchor">here</a>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        2. What are your customer support hours?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Our customer support team is available from Monday to Friday, 9:00 AM to 6:00 PM (local time). We aim to respond to all inquiries within 24 hours.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <div class="card-header" id="headingFour">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        3. How can I track my order?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Once your order has been shipped, you will receive a confirmation email with a tracking number. You can use this number to track your order on the courier's website.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+            <div class="card-header" id="headingFive">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        4. What payment methods do you accept?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#faqAccordion">
+                <div class="card-body">
+                    We accept a variety of payment methods, including credit/debit cards, PayPal, and other secure online payment options. You can find more details on our payment methods <a href="#">here</a>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+            <div class="card-header" id="headingSix">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        5. How do I return an item?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#faqAccordion">
+                <div class="card-body">
+                    If you need to return an item, please visit our <a href="#">Returns and Exchanges</a> page for detailed instructions on how to initiate the return process.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+            <div class="card-header" id="headingSeven">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        6. Is it possible to change or cancel my order after it has been placed?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Once an order has been placed, it is processed quickly to ensure timely delivery. Therefore, changes or cancellations are not possible. Please double-check your order before confirming the purchase.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+            <div class="card-header" id="headingEight">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        7. Do you ship internationally?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Yes, we offer international shipping. Shipping costs and delivery times may vary depending on the destination. Please refer to our <a href="#">Shipping Information</a> page for more details.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+            <div class="card-header" id="headingNine">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        8. Are my personal details secure when I contact you?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#faqAccordion">
+                <div class="card-body">
+                    Yes, we take the security and privacy of your personal information seriously. Our website uses secure encryption protocols to protect your data. You can find more information in our <a href="#">Privacy Policy</a>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="card faq-card" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+            <div class="card-header" id="headingTen">
+                <h5 class="mb-0">
+                    <button class="btn btn-link">
+                        9. How can I subscribe to your newsletter?
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseTen" class="collapse" aria-labelledby="headingTen" data-parent="#faqAccordion">
+                <div class="card-body">
+                    You can subscribe to our newsletter by entering your email address in the subscription box on our homepage or during the checkout process. Subscribers receive exclusive offers and updates.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
-<p>do faq here</p>
+<header class="enquirybanner mb-3" id="anchor" style="background-image: url({{ url_for('static', filename='image/form.jpg') }});"><!-- ======= Need change ======= -->
+</header>
+
 
 <div class="contactpg">
 
     <div class="row justify-content-center">
 				<div class="col-md-12 col-lg-10">
 					<div class="wrap d-md-flex">
-						<div class="img" style="background-image: url({{ url_for('static', filename='image/green-leaves.jpg') }});"></div>
+						<div class="img" style="background-image: url({{ url_for('static', filename='image/contact-pages.jpg') }});"></div>
 
 						<div class="login-wrap p-4 p-md-5">
 
-                            <div class="d-flex">
-                                <div class="w-100">
-                                    <h3 class="mb-4" style="font-weight:bold;">Enquiry Form</h3>
-                                </div>
-                            </div>
-
-                            <form method="post" action="{{ url_for('contact_us') }}">
+                            <form method="post" action="{{ url_for('contact_us') }}" onsubmit="return validateForm()">
                                 {{ form.name.label }}
                                     {{ form.name(class="form-control") }}
+                                <div id="nameError" style="color: red;"></div>
 
                                 {{ form.email.label }}
                                     {{ form.email(class="form-control") }}
+                                <div id="emailError" style="color: red;"></div>
 
                                 {{ form.subject.label }}
                                     {{ form.subject(class="form-control") }}
 
                                 {{ form.enquiry.label }}
                                     {{ form.enquiry(class="form-control") }}
+                                <div id="enquiryError" style="color: red;"></div>
+
+                                <div class="form-group mb-3 pb-3 pt-3">
+                                    <div class="g-recaptcha" data-sitekey="{{ site_key }}"></div>
+                                </div>
+                                <div id="recaptchaError" style="color: red;"></div>
 
                                 <div class="form-group pt-3">
                                     <button type="submit" class="form-control btn btn-primary rounded submit px-3">Send</button>
@@ -46,10 +258,50 @@
 
 
 </div>
+
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.030251239847!2d103.69503399999999!3d1.3212309999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0564ea0fa489%3A0x6287c06e84c03376!2sSingapore%20627753!5e0!3m2!1sen!2ssg!4v1707463220906!5m2!1sen!2ssg" width="100%" height="500px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
 
 <script>
+function validateForm() {
+    var name = document.getElementById('name').value;
+    var nameError = document.getElementById('nameError');
+    nameError.innerHTML = "";
+
+    var email = document.getElementById('email').value;
+    var emailError = document.getElementById('emailError');
+    emailError.innerHTML = "";
+
+    var enquiry = document.getElementById('enquiry').value;
+    var enquiryError = document.getElementById('enquiryError');
+    enquiryError.innerHTML = "";
+
+    var recaptchaError = document.getElementById('captchaError');
+    recaptchaError.innerHTML = "";
+
+    // Validate reCAPTCHA
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (recaptchaResponse.length === 0) {
+            recaptchaError.innerHTML = "Please complete the reCAPTCHA verification.";
+            return false;
+        }
+
+        if (name.trim() === "") {
+            nameError.innerHTML = "Name is required.";
+        }
+        if (email.trim() === "") {
+            emailError.innerHTML = "email is required.";
+        }
+        if (enquiry.trim() === "") {
+            enquiryError.innerHTML = "enquiry is required.";
+        }
+
+        if(name.trim() === "" || email.trim() === ""||enquiry.trim() === ""){
+           return false;
+        } else {
+            return true;
+        }
+}
   document.addEventListener('DOMContentLoaded', function () {
     // Check if the page URL contains a parameter indicating a successful form submission
     const urlParams = new URLSearchParams(window.location.search);

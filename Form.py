@@ -22,9 +22,9 @@ class ProductForm(Form):
     size = SelectMultipleField('Size', choices=[('Freesize', 'Free size'),('XS', 'XS'),('S', 'S'), ('M', 'M'), ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'), ('XXXL', 'XXXL')])
 
 class PromotionForm(Form):
-    ID = StringField("ID",[validators.DataRequired()])
+    ID = StringField("ID")
     name = StringField("Name")
-    discount = FloatField("Discount", [validators.DataRequired()])
+    discount = StringField("Discount")
     description = TextAreaField("Description")
 
 class PasswordChange(Form):

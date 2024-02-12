@@ -1,36 +1,140 @@
 {% extends "base.html" %}
-{% block title %}Library Loan System - Home{% endblock %}
+{% block title %}Eco-Wear Checkout{% endblock %}
 {% block content %}
-<header>Checkout</header>
 
-<!--    <h1>Checkout</h1>-->
-<!--    <div>-->
-<!--        <h2>Selected Items</h2>-->
-<!--        <ul>-->
-<!--            {% for item in selected_items %}-->
-<!--            <li>{{ item.Product.name }} - Quantity: {{ item.Quantity }} - Subtotal: ${{ item.Subtotal }}</li>-->
-<!--            {% endfor %}-->
-<!--        </ul>-->
-<!--        <p>Total Price: ${{ total_price }}</p>-->
-<!--    </div>-->
-<!--    <form action="/process-payment" method="POST">-->
-<!--        <button type="submit">Proceed to Payment</button>-->
-<!--    </form>-->
+<script>
+    /* Set font styles */
+    body {
+        font-family: Arial, sans-serif;
+    }
 
+    /* Style header */
+    h1 {
+        font-size: 48px; /* Increase font size for Checkout */
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
 
+    /* Style image */
+    img {
+        margin-right: 10px;
+    }
 
-<h1>Checkout</h1>
-    <ul>
-        {% for item in selected_items %}
-            <li>{{ item.Product.name }} - Quantity: {{ item.Quantity }} - Subtotal: ${{ item.Subtotal }}</li>
-        {% endfor %}
-    </ul>
-    <p>Total Price: ${{ total_price }}</p>
+    /* Style product details */
+    ul {
+        list-style-type: none;
+    }
 
-    <!-- Add a form to submit payment -->
-    <form action="/process_payment" method="POST">
-        <input type="hidden" name="selected_items[]" value="{{ selected_items }}">
-        <input type="hidden" name="total_price" value="{{ total_price }}">
-        <button type="submit">Pay Now</button>
-    </form>
+    /* Style total price */
+    p {
+        font-weight: bold;
+    }
+
+    /* Style form */
+    form {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    /* Style form labels */
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Style form inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+    }
+
+    /* Style submit button */
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    .required {
+        color: #FF0000;
+    }
+</script>
+
+<h1 class="text-center mb-4">Checkout</h1>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Selected Items</h2> <!-- Decrease font size for Selected Items -->
+            <ul class="list-group">
+                {% for item in selected_items %}
+                <li class="list-group-item">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename='image/' + item.Product.image_path) }}" alt="Product Image" height="100px" width="100px" class="mr-3">
+                        <div>
+                            <h5 class="mb-1">{{ item.Product.name }}</h5>
+                            <p class="mb-1">Quantity: {{ item.Quantity }}</p>
+                            <p class="mb-1">Subtotal: ${{ item.Subtotal }}</p>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <p class="mt-3">Total Price: ${{ total_price }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <h2>Shipping Information</h2> <!-- Decrease font size for Shipping Information -->
+            <form action="/process_payment" method="POST">
+                <input type="hidden" name="selected_items[]" value="{{ selected_items }}">
+                <input type="hidden" name="total_price" value="{{ total_price }}">
+
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <span class="required">*</span>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <span class="required">*</span>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <span class="required">*</span>
+                    <input type="text" class="form-control" id="address" name="address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="postalcode">Postal Code:</label>
+                    <span class="required">*</span>
+                    <input type="text" class="form-control" id="postalcode" name="postalcode" maxlength="6" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="unitno">Unit No:</label>
+                    <input type="text" class="form-control" id="unitno" name="unitno">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mt-3">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
