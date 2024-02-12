@@ -553,14 +553,23 @@ def adminDashboard():
 
         plot_html = fig.to_html(full_html=False)
 
+        product_manager = ProductManager()
+
+        all_products = product_manager.get_all_products()
+        # Use a seed for the random number generator to ensure consistency
+        random.seed(24)  # You can use any integer as the seed
+        random.shuffle(all_products)
+        products = all_products[:3]
+
+        product_manager.close_connection()
+
         events = calendar_API()
 
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html, events=events)
+        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], plot_html=plot_html, events=events , products=products)
 
     else:
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
-
 def get_auth_url():
     flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
     auth_url, _ = flow.authorization_url(prompt='consent')

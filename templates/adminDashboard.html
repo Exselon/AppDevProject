@@ -38,33 +38,19 @@
 <div class="table">
     {{ plot_html|safe }}
 </div>
-<div class="container">
-    <div class="row">
-        <div class="image-container col-md-4">
-            <div class="card">
+<h1 style="text-align: center; padding-top: 50px;">Popular items</h1>
+<div class="product-container">
+    {% for product in products %}
+        <a href="{{ url_for('display_product', product_id=product.id) }}">
+            <div class="card product-card">
+                <img src="{{ url_for('static', filename='image/' + product.image_path) }}" class="card-img-top" alt="">
                 <div class="card-body">
-                    Popular Item
-                    <img src="static/image/Shirt.jpeg" alt="">
+                    <p class="card-text">{{ product.name }}</p>
+                    <p class="card-text">${{ product.price }}</p>
                 </div>
             </div>
-        </div>
-        <div class="image-container col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    New item
-                    <img src="static/image/Shirt.jpeg" alt="">
-                </div>
-            </div>
-        </div>
-        <div class="image-container col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    Limited Item
-                    <img src="static/image/Shirt.jpeg" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
+        </a>
+    {% endfor %}
 </div>
 
 <div class="Calendar API">
