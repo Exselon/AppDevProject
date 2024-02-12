@@ -15,6 +15,7 @@ import pandas as pd
 import io
 import stripe
 import requests
+from requests.exceptions import RequestException
 
 import os.path
 import datetime
@@ -543,37 +544,46 @@ def del_user():
 
 def adminDashboard():
     if 'User_ID' in session:
+        try:
 
-        product_sales_graph = create_product_sales_graph()
-        graph_html = product_sales_graph.to_html(full_html=False)
-
-
-        product_manager = ProductManager()
-
-        all_products = product_manager.get_all_products()
-        # Use a seed for the random number generator to ensure consistency
-        random.seed(24)  # You can use any integer as the seed
-        random.shuffle(all_products)
-        products = all_products[:3]
-
-        product_manager.close_connection()
-
-        conn = sqlite3.connect('Order.db')
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT ProductID, SUM(Quantity) AS TotalQuantity
-            FROM orders
-            GROUP BY ProductID
-            ORDER BY TotalQuantity DESC
-            LIMIT 3
-        ''')
-        top_items = cursor.fetchall()
-        conn.close()
+            product_sales_graph = create_product_sales_graph()
+            graph_html = product_sales_graph.to_html(full_html=False)
 
 
-        events = calendar_API()
+            product_manager = ProductManager()
 
-        return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], graph_html=graph_html, events=events , products=products, top_items=top_items)
+            all_products = product_manager.get_all_products()
+            # Use a seed for the random number generator to ensure consistency
+            random.seed(24)  # You can use any integer as the seed
+            random.shuffle(all_products)
+            products = all_products[:3]
+
+            product_manager.close_connection()
+
+            conn = sqlite3.connect('Order.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT ProductID, SUM(Quantity) AS TotalQuantity
+                FROM orders
+                GROUP BY ProductID
+                ORDER BY TotalQuantity DESC
+                LIMIT 3
+            ''')
+            top_items = cursor.fetchall()
+            conn.close()
+
+
+            events = calendar_API()
+
+            return render_template('adminDashboard.html', username=session['Username'], role=session['Role'],UserID=session['User_ID'], graph_html=graph_html, events=events , products=products, top_items=top_items)
+
+        except RequestException as e:
+            flash('Network error occurred. Please try again later.', 'error')
+            return redirect(url_for('login'))
+
+        except Exception as e:
+            flash('An error occurred. Please try again later.', 'error')
+            return redirect(url_for('login'))
 
     else:
         flash('You need to log in first.', 'warning')
