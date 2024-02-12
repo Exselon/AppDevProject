@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, before_render_template, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template , send_file
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm, ContactForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , ContactForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -15,6 +15,7 @@ import pandas as pd
 import io
 import stripe
 import requests
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -180,19 +181,15 @@ def create_Order():
             ProductID INTEGER,
             Quantity INTEGER,
             Size TEXT,
-            OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- You can use DATETIME or TEXT for the order date
-            FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Make sure to replace 'users' with your actual users table name
-            FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Replace 'products' with your actual products table name
+            OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (UserID) REFERENCES users(UserID),
+            FOREIGN KEY (ProductID) REFERENCES products(ProductID)
         )
     ''')
     conn.commit()
     conn.close()
 
 create_Order()
-#
-
-
-
 # ---------------Code for Home---------------#
 @app.route('/')
 def home():
@@ -284,7 +281,6 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-
 # ---------------Code For signup---------------#
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -317,7 +313,7 @@ def signup():
 
             return redirect(url_for('login'))
 
-    return render_template('Signup.html', form=userSignupform)
+    return render_template('Signup.html', form=userSignupform, site_key=RECAPTCHA_SITE_KEY)
 
 
 # ---------------Code for product---------------#
@@ -437,9 +433,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchange.CurrentPasswordField.data
-        NewPassword = passwordchange.NewPasswordField.data
-        ConfirmPassword = passwordchange.ConfirmPasswordField.data
+        CurrentPassword = passwordchangeform.CurrentPassword.data
+        NewPassword = passwordchangeform.NewPassword.data
+        ConfirmPassword = passwordchangeform.ConfirmPassword.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw
@@ -452,7 +448,9 @@ def passwordchange():
                 update_password = DisplayUser()
                 update_password.update_password(hashed_password, UserID)
                 update_password.close_connection()
-                #put alert to inform user that pw is updated
+                flash('Your password has been changed successfully', 'success')
+                print('changed')
+                return redirect(url_for('passwordchange'))
             else:
                 #pw dont match
                 return render_template('passwordchange.html', form=passwordchangeform)
@@ -763,6 +761,8 @@ def get_current_quantity(cart_id):
         # Return 0 if the cart item is not found
         return 0
 
+
+# <---------------------admin thing------------------------->
 @app.route('/adminDownloads')
 def adminDownloads():
 
@@ -925,12 +925,10 @@ def payment_success():
     session.pop('selected_item_ids', None)
 
     return render_template('payment_success.html')
-    return render_template('payment_success.html')
 
 @app.route('/payment_cancel')  # Define the payment cancel endpoint
 def payment_cancel():
     return render_template('payment_cancel.html')
-
 
 if __name__ == '__main__':
     app.run()

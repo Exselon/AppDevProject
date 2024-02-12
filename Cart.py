@@ -74,6 +74,10 @@ class CartManager:
             # Return 0 if the cart item is not found
             return 0
 
+    def remove_cart_item_by_id(self, cart_id):
+        sql = "DELETE FROM Cart WHERE CartID = ?"
+        self.cursor.execute(sql, (cart_id,))
+        self.conn.commit()
 
     def close_connection(self):
         self.conn.close()

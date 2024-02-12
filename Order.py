@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 class Order:
     def __init__(self, user_id, product_id, quantity, size,  order_date):
@@ -12,6 +13,24 @@ class OrderManager:
     def __init__(self, db="Order.db"):
         self.conn = sqlite3.connect(db)
         self.cursor = self.conn.cursor()
+
+    def create_order(self, product_id, quantity, order_date):
+        sql = "INSERT INTO Orders (ProductID, Quantity, OrderDate) VALUES (?, ?, ?)"
+        self.cursor.execute(sql, (product_id, quantity, order_date))
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def get_order_by_id(self, order_id):
+        sql = "SELECT * FROM Orders WHERE OrderID = ?"
+        self.cursor.execute(sql, (order_id,))
+        return self.cursor.fetchone()
+
+    def insert_order_item(self, cart_item):
+        product_id = cart_item[2]  # Assuming cart_item is a tuple with (CartID, ProductID, Quantity)
+        quantity = cart_item[3]
+        order_date = datetime.now()  # Capture the current date and time
+        return self.create_order(product_id, quantity, order_date)
+
 
     # def checkout(user_id):
     #     conn = sqlite3.connect('Cart.db')
