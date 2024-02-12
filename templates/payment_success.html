@@ -2,24 +2,61 @@
 {% block title %}Payment_Success{% endblock %}
 {% block content %}
 
-<h1>Payment Success/h1>
-    <p>Dear {{ customer_name }},</p>
+<script>
+    .card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    }
 
-    <p>Thank you for your purchase!</p>
+    .card-title {
+        font-size: 28px;
+    }
 
-    <p>Here is a summary of your order:</p>
-    <ul>
-        {% for item in order_items %}
-        <li>{{ item['product_name'] }} - Quantity: {{ item['quantity'] }}</li>
-        {% endfor %}
-    </ul>
+    .card-text {
+        font-size: 16px;
+    }
 
-    <p>Total amount: ${{ total_price }}</p>
+    .list-group-item {
+        font-size: 14px;
+    }
 
-    <p>If you have any questions or concerns, feel free to contact us.</p>
+    .btn {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+</script>
 
-    <p>Best regards,<br>
-    Your Company</p>
-    <a href="/">Return to Home</a>
-    <a href="/Product">Continue Shopping</a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Payment Success</h1>
+
+                    <p class="card-text">Thank you for your purchase!</p>
+
+                    <p class="card-text">Here is a summary of your order:</p>
+                    <ul class="list-group">
+                        {% for item in order_items %}
+                        <li class="list-group-item">{{ item['product_name'] }} - Quantity: {{ item['quantity'] }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <p class="card-text mt-3">Total amount: ${{ total_price }}</p>
+
+                    <p class="card-text">If you have any questions or concerns, feel free to contact us.</p>
+
+                    <p class="card-text">Best regards,<br>
+                    ECOWEAR</p>
+
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-success">Return to Home</a>
+                        <a href="/Product" class="btn btn-secondary">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

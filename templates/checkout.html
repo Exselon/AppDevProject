@@ -3,14 +3,14 @@
 {% block content %}
 
 <script>
-        /* Set font styles */
+    /* Set font styles */
     body {
         font-family: Arial, sans-serif;
     }
 
     /* Style header */
-    header {
-        font-size: 24px;
+    h1 {
+        font-size: 48px; /* Increase font size for Checkout */
         font-weight: bold;
         margin-bottom: 20px;
     }
@@ -74,12 +74,12 @@
     }
 </script>
 
-<header class="text-center mb-4">Checkout</header>
+<h1 class="text-center mb-4">Checkout</h1>
 
-<div class="container">
+<div class="container mb-4">
     <div class="row">
         <div class="col-md-6">
-            <h1>Selected Items</h1>
+            <h2>Selected Items</h2> <!-- Decrease font size for Selected Items -->
             <ul class="list-group">
                 {% for item in selected_items %}
                 <li class="list-group-item">
@@ -98,7 +98,7 @@
         </div>
 
         <div class="col-md-6">
-            <h1>Shipping Information</h1>
+            <h2>Shipping Information</h2> <!-- Decrease font size for Shipping Information -->
             <form action="/process_payment" method="POST">
                 <input type="hidden" name="selected_items[]" value="{{ selected_items }}">
                 <input type="hidden" name="total_price" value="{{ total_price }}">

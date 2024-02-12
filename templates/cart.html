@@ -1,139 +1,141 @@
 {% extends "base.html" %}
 {% block title %}Shopping Cart{% endblock %}
 {% block content %}
-
-
-
-
 <style>
+    /* General Styles */
     body {
         font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
     }
 
-    /* Style header */
     header {
         font-size: 24px;
         font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
     }
 
-    /* Style image */
-    img {
-        max-width: 100%;
-        height: auto;
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
-    /* Style product details */
+    /* Item Styles */
     .item-container {
-        border: 1px solid #ccc;
-        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
         border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
     }
 
-    /* Style form labels */
-    label {
-        font-weight: bold;
-    }
-
-    /* Style form inputs */
-    input[type="number"] {
-        width: 60px;
-        padding: 5px;
-    }
-
-    /* Style delete button */
-    .delete {
-        margin-top: 5px;
-    }
-
-    /* Style checkout buttons */
-    .checkout button {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    /* Style order summary */
-    .cart-content {
-        border: 1px solid #ccc;
-        padding: 10px;
+    .product-image {
+        width: 100px; /* Adjust width as needed */
+        height: auto;
         border-radius: 5px;
+        margin-right: 20px;
     }
-    </style>
 
-    <p>User ID: {{ UserID }}</p>
+    .product-details {
+        flex: 1;
+    }
 
-<header class="text-center mb-4">
+    .quantity-size-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quantity-size-price > div {
+        margin-right: 20px;
+    }
+
+    .delete button {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    /* Cart Summary Styles */
+    .cart-summary {
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+    }
+
+    .checkout-buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .checkout-buttons .btn {
+        width: 48%;
+    }
+</style>
+
+<header>
     <h1>Your Shopping Cart</h1>
 </header>
 
 <form method="POST" action="/checkout">
-    <div class="container-fluid mt-2 main">
+    <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <div class="cart-container">
-                    {% for i in range(cart|length) %}
-                    {% if i < product_data_list|length %}
-                    <div class="item-container mb-3">
-                        <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <img src="{{ url_for('static', filename='image/' + product_data_list[i].image_path) }}" alt="Product Image" class="img-fluid">
-                                        </div>
-                                        <div class="col-md">
-                                            <h5>Product Name</h5>
-                                            <small>{{ product_data_list[i].name }}</small>
-                                        </div>
-                                        <div class="col-md">
-                                            <h5>Quantity</h5>
-                                            <form method="POST" action="{{ url_for('update_quantity') }}">
-                                                <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
-                                                <button class="btn btn-secondary btn-sm" type="submit" name="action" value="decrement">-</button>
-                                                <span>{{ cart[i][3] }}</span>
-                                                <button class="btn btn-secondary btn-sm" type="submit" name="action" value="increment">+</button>
-                                            </form>
-                                        </div>
-                                        <div class="col-md">
-                                            <h5>Size</h5>
-                                            <small>{{ cart[i][4] }}</small>
-                                        </div>
-                                        <div class="col-md">
-                                            <h5>Price</h5>
-                                            <small>{{ product_data_list[i].price }}</small>
-                                        </div>
-                                        <div class="col-md">
-                                            <form method="POST" action="{{ url_for('del_cart') }}">
-                                                <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
-                                                <button class="btn btn-warning delete" type="submit" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                            </form>
-                                        </div>
-                                        <div class="col-md">
-                                            <input type="checkbox" name="selected_items[]" value="{{ cart[i][0] }}">
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                {% for i in range(cart|length) %}
+                {% if i < product_data_list|length %}
+                <div class="item-container">
+                    <img src="{{ url_for('static', filename='image/' + product_data_list[i].image_path) }}" alt="Product Image" class="product-image">
+                    <div class="product-details">
+                        <h5>{{ product_data_list[i].name }}</h5>
+                        <div class="quantity-size-price">
+                            <div class="quantity">
+                                <h6>Quantity:</h6>
+                                <form method="POST" action="{{ url_for('update_quantity') }}">
+                                    <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
+                                    <button class="btn btn-secondary btn-sm" type="submit" name="action" value="decrement">-</button>
+                                    <span>{{ cart[i][3] }}</span>
+                                    <button class="btn btn-secondary btn-sm" type="submit" name="action" value="increment">+</button>
+                                </form>
+                            </div>
+                            <div class="size">
+                                <h6>Size:</h6>
+                                <span>{{ cart[i][4] }}</span>
+                            </div>
+                            <div class="price">
+                                <h6>Price:</h6>
+                                <span>${{ product_data_list[i].price }}</span>
+                            </div>
+                            <div class="delete">
+                                <form method="POST" action="{{ url_for('del_cart') }}">
+                                    <input type="hidden" name="CartID" value="{{ cart[i][0] }}">
+                                    <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                </form>
+                            </div>
+                            <div class="select">
+                                <input type="checkbox" name="selected_items[]" value="{{ cart[i][0] }}">
+                            </div>
+                        </div>
                     </div>
-                    {% endif %}
-                    {% endfor %}
                 </div>
+                {% endif %}
+                {% endfor %}
             </div>
-            <div class="order col-md-4">
-                <div class="cart-content">
-                    <h3>Order Summary</h3>
-                    <p class="mt-3">Total Items: {{ cart|length }}</p>
-                    <!-- Display total price -->
+            <div class="col-md-4">
+                <div class="cart-summary">
+                    <h3>Cart Summary</h3>
+                    <p>Total Items: {{ cart|length }}</p>
                     <p>Total Price: ${{ total_price }}</p>
                 </div>
-                <div class="d-grid gap-2 checkout mt-3">
+                <div class="checkout-buttons">
                     <button class="btn btn-success" type="submit">Checkout</button>
-                    <button class="btn btn-outline-dark" type="button"><a href="/Product">Continue Shopping</a></button>
+                    <a href="/Product" class="btn btn-secondary">Continue Shopping</a>
                 </div>
             </div>
         </div>
     </div>
 </form>
-
-
 {% endblock %}

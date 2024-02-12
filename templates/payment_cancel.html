@@ -1,12 +1,45 @@
 {% extends "base.html" %}
-{% block title %}Payment cancel{% endblock %}
+{% block title %}Payment Canceled - Library Loan System{% endblock %}
 {% block content %}
 
-<title>Cancel</title>
+
+<script>
+    .card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    }
+
+    .card-title {
+        font-size: 28px;
+    }
+
+    .card-text {
+        font-size: 16px;
+    }
+
+    .btn {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+
+</script>
 
 
-<h1>Payment Canceled</h1>
-<p>Your payment has been canceled.</p>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Payment Canceled</h1>
+                    <p class="card-text">Your payment has been canceled.</p>
 
-<a href="/cart">Back to Cart</a>
+                    <div class="text-center mt-4">
+                        <a href="/cart" class="btn btn-primary">Back to Cart</a>
+                        <a href="/checkout" class="btn btn-secondary">Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
