@@ -21,12 +21,17 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from google.auth.exceptions import RefreshError
+
+
 from googleapiclient.errors import HttpError
 import tkinter as tk
 
 
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -499,6 +504,11 @@ def adminDashboard():
         flash('You need to log in first.', 'warning')
         return redirect(url_for('login'))
 
+def get_auth_url():
+    flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    auth_url, _ = flow.authorization_url(prompt='consent')
+    return auth_url
+
 
 
 @app.route('/adminOrder')
@@ -945,19 +955,58 @@ def payment_success():
 def payment_cancel():
     return render_template('payment_cancel.html')
 
-@app.route('/calendarAPI')
+@app.route('/Calendar_API')
+def google_login_callback():
+    return redirect(url_for('adminDashboard'))
+def get_credentials():
+    if 'credentials' not in session:
+        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+        creds = flow.run_local_server(port=0)
+        session['credentials'] = creds_to_dict(creds)
+    else:
+        creds_dict = session['credentials']
+        creds = dict_to_creds(creds_dict)
+        if not creds.valid:
+            if creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                    session['credentials'] = creds_to_dict(creds)
+                except RefreshError:
+                    return None  # Unable to refresh token, redirect user to login
+            else:
+                return None  # Token is invalid, redirect user to login
+    return creds
+
+def creds_to_dict(creds):
+    return {
+        "token": creds.token,
+        "refresh_token": creds.refresh_token,
+        "id_token": creds.id_token,
+        "token_uri": creds.token_uri,
+        "client_id": creds.client_id,
+        "client_secret": creds.client_secret,
+        "scopes": creds.scopes
+    }
+
+def dict_to_creds(creds_dict):
+    return Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict["refresh_token"],
+        id_token=creds_dict["id_token"],
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"]
+    )
+
+
+def remove_timezone_offset(datetime_str):
+    datetime_without_offset = datetime_str[:-6]
+    return datetime_without_offset[:10] + ' Time: ' + datetime_without_offset[11:]
 def calendar_API():
-    creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+    creds = get_credentials()
+    if creds is None:
+        return None
 
     try:
         service = build("calendar", "v3", credentials=creds)
@@ -970,11 +1019,13 @@ def calendar_API():
             orderBy="startTime",
         ).execute()
         events = events_result.get("items", [])
-        print(events)
+        for event in events:
+            if 'dateTime' in event['start']:
+                event['start']['dateTime'] = remove_timezone_offset(event['start']['dateTime'])
         return events
     except Exception as e:
         print(f"An error occurred: {e}")
-        return []
+        return None
 
 
 

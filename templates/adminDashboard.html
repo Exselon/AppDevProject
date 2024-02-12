@@ -79,8 +79,8 @@
         <tbody>
             {% for event in events %}
             <tr>
-                <td>{{ event.start.dateTime.split(' ')[0] }}</td>
-                <td>{{ event.summary }}</td>
+                <td>{{ event['start']['dateTime'] }}</td>
+                <td>{{ event['summary'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

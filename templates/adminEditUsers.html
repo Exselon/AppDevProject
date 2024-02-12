@@ -41,7 +41,7 @@
         {% endfor %}
     </table>
 </div>
-<form method="post" action="{{ url_for('adminEditUsers') }}">
+<form method="post" action="{{ url_for('adminEditUsers') }}" onsubmit="return validateForm()">
 
     <div class="form-group mb-3">
         <label for="dName">Display Name:</label>
@@ -75,15 +75,79 @@
 
     <div class="form-group mb-3">
         <label for="Dob">Date of birth:</label>
-        {{ form.dob(class="form-control") }}
+        {{ form.dob(class="form-control", id="dob") }}
     </div>
     <div id="dobError" style="color: red;"></div>
 
     <input type="submit" value="Create User" class="form-control btn btn-primary rounded submit px-3">
 </form>
 <script>
+
   function confirmDelUser() {
     return confirm('Confirm Delete?');
+    }
+
+</script>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var password = document.getElementById('password').value;
+        var repeat_password = document.getElementById('cfmpassword').value;
+        var email = document.getElementById('email').value;
+        var number = document.getElementById('number').value;
+        var dob = document.getElementById('dob').value;
+
+        var usernameError = document.getElementById('usernameError');
+        var passwordError = document.getElementById('passwordError');
+        var cfmpasswordError = document.getElementById('cfmpasswordError');
+        var emailError = document.getElementById('emailError');
+        var dnameError = document.getElementById('dnameError');
+        var dobError = document.getElementById('dobError');
+        var recaptchaError = document.getElementById('recaptchaError');
+
+        usernameError.innerHTML = "";
+        passwordError.innerHTML = "";
+        cfmpasswordError.innerHTML = "";
+        emailError.innerHTML = "";
+        dnameError.innerHTML = "";
+        dobError.innerHTML = "";
+        recaptchaError.innerHTML = "";
+
+        // Validate reCAPTCHA
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (recaptchaResponse.length === 0) {
+            recaptchaError.innerHTML = "Please complete the reCAPTCHA verification.";
+            return false;
+        }
+
+        if (name === "") {
+            dnameError.innerHTML = "Name is required.";
+        }
+        if (password === "") {
+            passwordError.innerHTML = "Password is required.";
+        }
+        if (repeat_password === "" || password !== repeat_password) {
+            cfmpasswordError.innerHTML = "Confirm password is required and must match the password.";
+        }
+        if (email === "") {
+            emailError.innerHTML = "Email is required.";
+        }
+        if (number === "" || number === null) {
+            usernameError.innerHTML = "Contact Number is required.";
+        }
+        if (number.length !== 8) {
+            usernameError.innerHTML = "Invalid Contact number, must be 8 digits.";
+        }
+        if (dob === "") {
+            dobError.innerHTML = "Date of birth is required.";
+        }
+
+        if (name === "" || password === "" || repeat_password === "" || password !== repeat_password || email === "" || number === "" || dob === "" || number.length !== 8) {
+            return false;
+        } else {
+            return true;
+        }
     }
 </script>
 {% endblock %}
