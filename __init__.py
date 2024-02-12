@@ -934,6 +934,22 @@ def download_Userdata():
 
     return send_file(output, as_attachment=True, download_name='User_DataList.xlsx' )
 
+@app.route('/downloadPromotionData')
+def download_Promotiondata():
+    conn = sqlite3.connect('Promotion.db')
+
+    query = "SELECT * FROM promotions"
+    data = pd.read_sql(query, conn)
+
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    data.to_excel(writer, index=False)
+    writer.close()
+
+    output.seek(0)
+
+    return send_file(output, as_attachment=True, download_name='Promotion_List.xlsx' )
+
 
 #<--------------------- Check Out code --------------------->
 
