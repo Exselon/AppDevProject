@@ -85,14 +85,24 @@
 
         if (name === "") {
             nameError.innerHTML = "Name is required.";
-        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
-            nameError.innerHTML = "Name must contain only letters and spaces.";
+        } else if (!/^[\w\s\S]+$/.test(name)) {
+            nameError.innerHTML = "Cannot be empty.";
         }
 
         if (discount === "") {
             discountError.innerHTML = "Discount is required.";
-        } else if (isNaN(discount) || discount < 1 || discount > 100) {
-            discountError.innerHTML = "Discount must be a number between 1 and 100.";
+        } else if (!/^(\d{1,2}%?)$/.test(discount)) {
+            discountError.innerHTML = "Discount must be a valid percentage between 1 and 100.";
+        } else {
+            // Extract the numeric part of the discount for further validation
+            var numericDiscount = parseFloat(discount.replace(/[^\d.]/g, ''));
+
+            // Check if the discount is in the valid range for %
+            if (discount.includes('%')) {
+                if (numericDiscount < 1 || numericDiscount > 100) {
+                    discountError.innerHTML = "Discount must be a number between 1 and 100 for %.";
+                }
+            }
         }
 
         if (description === "") {

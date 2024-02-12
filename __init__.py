@@ -140,7 +140,7 @@ def create_Promotion():
         CREATE TABLE IF NOT EXISTS promotions (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            discount REAL,
+            discount TEXT,
             description TEXT
         )
     ''')
