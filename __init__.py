@@ -363,14 +363,12 @@ def Productpage():
         print(f"Selected Categories: {selected_categories}")
 
         if selected_categories:
-            # Debugging: Print the SQL query
             category_conditions = " OR ".join([f"category LIKE ?" for category in selected_categories])
             category_conditions_params = [f"%{category}%" for category in selected_categories]
             query = f"SELECT * FROM products WHERE ({category_conditions}) AND price BETWEEN ? AND ?"
             print(f"SQL Query: {query}")
-
-            # Filter products based on selected categories and price
-            filtered_products = product_manager.get_products_by_category(selected_price, category_conditions, category_conditions_params)
+            filtered_products = product_manager.get_products_by_category(selected_price, category_conditions,
+                                                                         category_conditions_params)
         else:
             # No categories selected, filter by price only
             query = "SELECT * FROM products WHERE price BETWEEN ? AND ?"
@@ -385,34 +383,36 @@ def Productpage():
     return render_template('Product.html', products=products, form=ProductFilterForm)
 
 
+
 @app.route('/category/men')
 def men_category():
     product_manager = ProductManager()
-    men_products = product_manager.get_products_by_category('men')
+    men_products = product_manager.get_products_by_category(category_conditions="category LIKE '%men%'")
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
     ProductFilterForm.category_men.data = True
-    return render_template('Product.html', products=men_products, category='Men',form=ProductFilterForm)
+    return render_template('Product.html', products=men_products, category='men', form=ProductFilterForm)
+
 
 
 @app.route('/category/women')
 def women_category():
     product_manager = ProductManager()
-    women_products = product_manager.get_products_by_category('women')
+    women_products = product_manager.get_products_by_category(category_conditions="category LIKE '%woman%'")
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
-    ProductFilterForm.category_women.data = True
-    return render_template('Product.html', products=women_products, category='Women',form=ProductFilterForm)
+    ProductFilterForm.category_woman.data = True
+    return render_template('Product.html', products=women_products, category='woman',form=ProductFilterForm)
 
 
 @app.route('/category/kids')
 def kids_category():
     product_manager = ProductManager()
-    kids_products = product_manager.get_products_by_category('kids')
+    kids_products = product_manager.get_products_by_category(category_conditions="category = 'kids'")
     product_manager.close_connection()
     ProductFilterForm = ProductFilter(request.form)
     ProductFilterForm.category_kids.data = True
-    return render_template('Product.html', products=kids_products, category='Kids',form=ProductFilterForm)
+    return render_template('Product.html', products=kids_products, category='kids',form=ProductFilterForm)
 
 
 @app.route('/product/<int:product_id>')

@@ -41,11 +41,11 @@ class ProductFilter(Form):
     category_kids = BooleanField('Kids')
     category_others = BooleanField('Others')
     pricerange = RadioField('Price', choices=[
-        ('1-25', '$1 ~ $25'),
-        ('26-50', '$26 ~ $50'),
-        ('51-75', '$51 ~ $75'),
-        ('76-100', '$76 ~ $100'),
-        ('100-999', '$100++')
+        ('1-10', '$1 ~ $10'),
+        ('11-20', '$11 ~ $20'),
+        ('21-30', '$21 ~ $30'),
+        ('31-40', '$31 ~ $40'),
+        ('41-999', '$41++')
     ])
 
 class CheckoutForm(Form):
