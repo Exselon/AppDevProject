@@ -147,6 +147,7 @@
             var currentQuantity = parseInt(quantitySpan.textContent);
             quantitySpan.textContent = currentQuantity + 1;
             updateQuantity(cartId, currentQuantity + 1); // Call the function to update quantity
+            window.location.reload();
         });
     });
 
@@ -158,6 +159,7 @@
             if (currentQuantity > 1) {
                 quantitySpan.textContent = currentQuantity - 1;
                 updateQuantity(cartId, currentQuantity - 1); // Call the function to update quantity
+                window.location.reload();
             }
         });
     });
@@ -175,6 +177,7 @@
                 var quantitySpan = document.querySelector('.quantity-value[data-id="' + cartId + '"]');
                 if (quantitySpan) {
                     quantitySpan.textContent = newQuantity;
+
                 }
             } else {
                 // Handle error if updating quantity fails
