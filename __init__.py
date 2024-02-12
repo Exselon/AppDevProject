@@ -609,7 +609,15 @@ def create_product_sales_graph():
 
 @app.route('/adminOrder')
 def adminOrder():
-    return render_template('adminOrder.html')
+    conn = sqlite3.connect('Order.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM orders")
+    orders = cursor.fetchall()
+    conn.close()
+    return render_template('adminOrder.html', orders=orders)
+
+
+
 
 @app.route('/adminProducts', methods=['GET', 'POST'])
 def adminProducts():

@@ -1,14 +1,43 @@
 {% extends "adminBase.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-
+<style>
+    table, th, td {
+  border: 1px solid;
+    }
+    table{
+    width:100%;
+    }
+</style>
 <h1 class="Header"> Orders </h1>
 <hr>
 
 <!--do your things within this table division-->
 <div class="table">
-
-
+    <table border="1">
+        <thead>
+            <tr>
+                <th>OrderID</th>
+                <th>UserID</th>
+                <th>ProductID</th>
+                <th>Quantity</th>
+                <th>Size</th>
+                <th>OrderDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order[0] }}</td>
+                <td>{{ order[1] }}</td>
+                <td>{{ order[2] }}</td>
+                <td>{{ order[3] }}</td>
+                <td>{{ order[4] }}</td>
+                <td>{{ order[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}
