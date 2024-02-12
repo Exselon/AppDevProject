@@ -55,5 +55,9 @@ class DisplayUser:
         self.cursor.execute("UPDATE users SET Password = ? WHERE UserID = ?", (new_password, user_id))
         self.conn.commit()
 
+    def update_password_by_email(self, random_new_password, email):
+        self.cursor.execute("UPDATE users SET Password = ? WHERE email = ?", (random_new_password, email))
+        self.conn.commit()
+
     def close_connection(self):
         self.conn.close()

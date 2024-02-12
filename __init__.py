@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify,before_render_template , send_file
 import sqlite3
 import os
-from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ProductFilter, CheckoutForm , ContactForm
+from Form import userSignup, userLogin, ProductForm, PromotionForm, PasswordChange, ForgetPasswordEmail, ProductFilter, CheckoutForm , ContactForm
 from Product import ProductManager, Product  # Import the Product class
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -15,6 +15,7 @@ import pandas as pd
 import io
 import stripe
 import requests
+
 import os.path
 import datetime
 from google.auth.transport.requests import Request
@@ -26,6 +27,9 @@ import random
 
 from googleapiclient.errors import HttpError
 import tkinter as tk
+
+import random
+import string
 
 
 
@@ -445,7 +449,6 @@ def userdashboard():
         return redirect(url_for('login'))
 
 
-#################INCOMPLETE#########################
 @app.route('/passwordchange', methods=['GET', 'POST'])
 def passwordchange():
 
@@ -457,9 +460,9 @@ def passwordchange():
     password_change.close_connection()
 
     if request.method == 'POST':
-        CurrentPassword = passwordchangeform.CurrentPassword.data
-        NewPassword = passwordchangeform.NewPassword.data
-        ConfirmPassword = passwordchangeform.ConfirmPassword.data
+        CurrentPassword = passwordchangeform.CurrentPasswordField.data
+        NewPassword = passwordchangeform.NewPasswordField.data
+        ConfirmPassword = passwordchangeform.ConfirmPasswordField.data
 
         # use this code cos i hashed the pw
         # this is to check the current password match the hashed pw
@@ -484,6 +487,51 @@ def passwordchange():
 
     return render_template('passwordchange.html', form=passwordchangeform)
 
+
+@app.route('/forgetpassword', methods=['GET', 'POST'])
+def forgetpassword():
+    #generate random pw
+    def generate_random_string(length=8):
+        characters = string.ascii_letters + string.digits
+        random_string = ''.join(random.choice(characters) for i in range(length))
+        return random_string
+
+    ForgetPasswordEmailForm = ForgetPasswordEmail(request.form)
+
+    if request.method == 'POST':
+
+        random_new_password = generate_random_string()
+        print(random_new_password)
+
+        hashed_password = generate_password_hash(random_new_password, method='pbkdf2:sha256')
+
+        # fetch email from user input
+        Email = ForgetPasswordEmail.EmailForResetField.data
+
+
+        forget_password = DisplayUser()
+        update_random_password = forget_password.update_password_by_email(random_new_password, Email)
+
+        flash('Your password has been successfully reset. Please check your email for further instructions')
+
+        email_subject = "Password Reset"
+        email_html_body = """<p>Dear User,</p>
+        
+        <p>Your password has been successfully reset. Your new password can be found below</p>
+        <p>You may change your password in your profile page.</p>
+        <p>{hashed_password}</p>
+        
+        """
+
+        send_email('contact@cowear.com', Email, email_subject, email_html_body)
+
+        print('Password has been reset')
+        return redirect(url_for('login'))
+    else:
+        None
+
+
+    return render_template('resetpassword.html', form=ForgetPasswordEmailForm)
 
 #################code for del button on user profile#########################
 @app.route('/del_user', methods=['POST'])

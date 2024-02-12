@@ -32,6 +32,9 @@ class PasswordChange(Form):
     NewPasswordField = PasswordField('NewPassword', [validators.DataRequired(), validators.length(min=8), validators.equal_to('ConfirmPassword', message='Passwords Must Match.')])
     ConfirmPasswordField = PasswordField('ConfirmPassword', [validators.DataRequired(), validators.length(min=8)])
 
+class ForgetPasswordEmail(Form):
+    Email = EmailField('Email', [validators.Email()])
+
 class ProductFilter(Form):
     category_men = BooleanField('Men')
     category_women = BooleanField('Women')

@@ -1,0 +1,17 @@
+*pyc
+Order.db
+Promotion.db
+Contact.db
+Cart.db
+__pycache__/User.cpython-311.pyc
+__pycache__/Promotion.cpython-311.pyc
+__pycache__/Product.cpython-311.pyc
+__pycache__/Order.cpython-311.pyc
+__pycache__/Form.cpython-311.pyc
+__pycache__/Contact.cpython-311.pyc
+__pycache__/Cart.cpython-311.pyc
+.idea/workspace.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/AppDevProject.iml

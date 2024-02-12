@@ -1,46 +1,64 @@
-<link rel="stylesheet" href="userprofile.css">
 
 {% extends "base.html" %}
 {% block title %}User Profile Page{% endblock %}
 {% block content %}
-
-<h1 class="UserHeader">User Profile</h1>
-
-
-    {% for user in userdata %}
-        <div class="container-fluid table-responsive" style="overflow-x:auto;">
-            <table class="profile">
-            <tr class="row1">
-                <td class="profile1label">Username:</td>
-                <td class="profile1">{{ user[1] }}</td>
-            </tr>
-            <tr class="row2">
-                <td class="profile2label">Phone Number:</td>
-                <td class="profile2">{{ user[3] }}</td>
-            </tr>
-            <tr class="row3">
-                <td class="profile3label">Email Address:</td>
-                <td class="profile3">{{ user[4] }}</td>
-            </tr>
-            <!-- Add more rows as needed for other user details -->
-            </table>
-        </div>
-            {% endfor %}
-
-
-<br>
-<!--<form method="POST" action="{{ url_for('del_user') }}">
+<div class="container mt-4">
+  <div class="profile-card">
+    <div class="card-header">
+      <h1 class="User-Header card-title">User Profile</h1>
+    </div>
+    <div class="profile-card-body card-body">
+      <nav class="user-navbar navbar-vertical bg-light">
+  <ul class=" ProfileNav navbar-nav">
+    <li class="ProfileNavItem1 nav-item">
+      <a class="nav-link" href="#">My Account</a>
+    </li>
+    <li class="ProfileNavItem2 nav-item">
+      <a class="nav-link" href="#">Addresses</a>
+    </li>
+    <li class="ProfileNavItem3 nav-item">
+      <a class="nav-link" href="#">Purchase History</a>
+    </li>
+    <li class="ProfileNavItem4 nav-item">
+      <a class="nav-link" href="#">Notifications</a>
+    </li>
+  </ul>
+</nav>
+      {% for user in userdata %}
+      <div class="container-fluid table-responsive" style="overflow-x:auto;">
+        <table class="profile">
+          <tr class="row1">
+            <td class="profile1label">Username:</td>
+            <td class="profile1">{{ user[1] }}</td>
+          </tr>
+          <tr class="row2">
+            <td class="profile2label">Phone Number:</td>
+            <td class="profile2">{{ user[3] }}</td>
+          </tr>
+          <tr class="row3">
+            <td class="profile3label">Email Address:</td>
+            <td class="profile3">{{ user[4] }}</td>
+          </tr>
+          <!-- Add more rows as needed for other user details -->
+        </table>
+      </div>
+      {% endfor %}
+      <br>
+      <!--<form method="POST" action="{{ url_for('del_user') }}">
         <input type="hidden" name="order" value="order">
         <input type="submit" value="View order">
 </form>-->
-<br>
-<div class="button-container">
-    <a href="/passwordchange">change pw</a>
+      <br>
+      <div class="button-container">
+        <button class="Password-change-button btn btn-primary" onclick="window.location.href='/passwordchange'">Change Password</button>
 
 
-    <button class="DeleteAccount">
-        <input type="hidden" name="delAccount" value="{{ UserID }}">
-        <input type="submit" onclick="return confirm('Are you sure you want to delete your account? This action is PERMANENT!');" value="Delete Account">
-    </button>
+        <form method="POST" action="{{ url_for('del_user') }}">
+          <input type="hidden" name="delAccount" value="{{ UserID }}">
+          <button class="Delete-Account btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete your account? This action is PERMANENT!');">Delete Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
